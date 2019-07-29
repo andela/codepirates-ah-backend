@@ -28,10 +28,3 @@
     "underscore": "^1.9.1"
   }
 }
-PORT = 8000
-NODE_ENV = production
-PG_HOST = localhost
-PG_USER = username
-PG_DATABASE = epicemail
-PG_PASSWORD = secretpassword
-PG_PORT = 5432
