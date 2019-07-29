@@ -390,3 +390,17 @@ No additional parameters required
 ### Get Tags
 
 `GET /api/tags`
+
+# Create A .env File In The Project Folder And Save The Following Credentials Inside
+
+  -  DB_HOST = "localhost"
+  -  DB_USER = "postgres"
+  -  DB_PASSWORD = "xxxxxxxxxx"
+  -  DB_NAME = "hoven"
+  -  DB_NAME_TEST = "hoven-test"
+  -  DB_PORT = 5000 (custom) or 5432 (default)
+  -  ADMIN_FIRSTNAME = "someone"
+  -  ADMIN_LASTNAME = "someone"
+  -  ADMIN_USERNAME = "someone"
+  -  ADMIN_EMAIL = "someone@gmail.com"
+  -  ADMIN_PASSWORD = "xxxxxxxxxx"
