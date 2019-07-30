@@ -404,3 +404,4 @@ No additional parameters required
   -  ADMIN_USERNAME = "someone"
   -  ADMIN_EMAIL = "someone@gmail.com"
   -  ADMIN_PASSWORD = "xxxxxxxxxx"
+  -  SECRET=qwerty
