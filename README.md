@@ -398,7 +398,7 @@ No additional parameters required
   -  DB_PASSWORD = "xxxxxxxxxx"
   -  DB_NAME = "hoven"
   -  DB_NAME_TEST = "hoven-test"
-  -  DB_PORT = 5000 (custom) or 5432 (default)
+  -  DB_PORT = 5432
   -  ADMIN_FIRSTNAME = "someone"
   -  ADMIN_LASTNAME = "someone"
   -  ADMIN_USERNAME = "someone"
