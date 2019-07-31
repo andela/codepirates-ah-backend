@@ -2,11 +2,13 @@
   "name": "express-authorshaven",
   "version": "1.0.0",
   "description": "A Social platform for the creative at heart",
-  "main": "index.js",
+  "main": "./src/app.js",
   "scripts": {
+    "start": "node dist/app.js",
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
     "test": "",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "dev": "nodemon --exec babel-node ./src/app.js"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -19,12 +21,13 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
     "@babel/runtime": "^7.5.5",
-    "body-parser": "^1.18.3",
-    "cors": "^2.8.4",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "ejs": "^2.6.1",
     "errorhandler": "^1.5.0",
-    "express": "^4.16.3",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
     "express-jwt": "^5.3.1",
     "express-session": "^1.15.6",
     "jsonwebtoken": "^8.3.0",
@@ -38,13 +41,17 @@
     "request": "^2.87.0",
     "sequelize": "^5.11.0",
     "sequelize-cli": "^5.5.0",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "swagger-jsdoc": "^3.3.0",
+    "swagger-ui-express": "^4.0.7",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "coveralls": "^3.0.5",
     "mocha-lcov-reporter": "^1.3.0",
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^13.2.0",
-    "eslint-plugin-import": "^2.18.2"
+    "eslint-plugin-import": "^2.18.2",
+    "nodemon": "^1.19.1"
   }
 }
