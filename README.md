@@ -1,6 +1,10 @@
 [![Build Status](https://travis-ci.org/andela/codepirates-ah-backend.svg?branch=develop)](https://travis-ci.org/andela/codepirates-ah-backend)
 
 # Authors Haven - A Social platform for the creative at heart.
+[![Reviewed by Hound CI](https://img.shields.io/badge/Reviewed%20by-Hound%20CI-blue.svg)](https://houndci.com)
+
+Authors Haven - A Social platform for the creative at heart.
+=======
 
 ## Vision
 
