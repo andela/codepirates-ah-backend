@@ -1,8 +1,8 @@
-import {chai, app} from './test-setuo';
+import {chai, server} from './test-setuo';
 
 describe('test index', () => {
     it('should return welcome to author\'s heaven', (done) => {
-        chai.request(app)
+        chai.request(server)
         .get('/')
         .end((error, res) => {
             res.status.should.eql(200);
