@@ -4,7 +4,11 @@
   "description": "A Social platform for the creative at heart",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "echo \"Error: no start specified\" && exit 1",
+    "dev": "echo \"Error: no devspecified\" && exit 1",
+    "build": "echo \"Error: no build specified\" && exit 1"
+
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
