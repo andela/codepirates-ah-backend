@@ -1,10 +1,11 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 
-import app from '../src/index';
+import server from '../src/app';
+
 
 chai.use(chaiHttp);
 should = chai.should();
 
 
-export {chai, app};
+export {chai, server};
