@@ -5,7 +5,7 @@ import server from '../src/app';
 
 
 chai.use(chaiHttp);
-should = chai.should();
+const {expect} = chai;
 
 
-export {chai, server};
+export {chai, server, expect};
