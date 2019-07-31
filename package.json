@@ -4,6 +4,7 @@
   "description": "A Social platform for the creative at heart",
   "main": "./src/app.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "npm run undoseeds && npm run undomigration && npm run migration && npm run seeds && babel-node ./src/app.js",
     "seeds": "babel-node node_modules/.bin/sequelize db:seed:all --seeders-path src/seeders",
     "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo:all",
@@ -12,6 +13,12 @@
     "runmigrations": "npm run undoseeds && npm run migration && npm run seeds",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && nyc --reporter=html --reporter=text mocha ./test --exit --require @babel/register",
+=======
+    "start": "node dist/app.js",
+    "migration": "babel-node node_modules/.bin/sequelize db:migrate",
+    "test": "",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+>>>>>>> #167313394 Setup API documentation using swagger (#6)
     "dev": "nodemon --exec babel-node ./src/app.js"
   },
   "author": "Andela Simulations Programme",
@@ -25,6 +32,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
     "@babel/runtime": "^7.5.5",
+<<<<<<< HEAD
     "@sendgrid/mail": "^6.4.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
@@ -34,6 +42,16 @@
     "dotenv": "^6.2.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
+=======
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^6.2.0",
+    "ejs": "^2.6.1",
+    "errorhandler": "^1.5.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "express-jwt": "^5.3.1",
+>>>>>>> #167313394 Setup API documentation using swagger (#6)
     "express-session": "^1.15.6",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
@@ -52,11 +70,17 @@
     "request": "^2.87.0",
     "sequelize": "^5.11.0",
     "sequelize-cli": "^5.5.0",
+<<<<<<< HEAD
     "slug": "^1.1.0",
     "swagger-jsdoc": "^3.3.0",
     "swagger-ui-express": "^4.0.7",
     "uniqid": "^5.0.3",
     "validator": "^11.1.0",
+=======
+    "underscore": "^1.9.1",
+    "swagger-jsdoc": "^3.3.0",
+    "swagger-ui-express": "^4.0.7",
+>>>>>>> #167313394 Setup API documentation using swagger (#6)
     "winston": "^3.2.1"
   },
   "devDependencies": {
@@ -71,6 +95,7 @@
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.18.2",
+<<<<<<< HEAD
     "mocha": "^6.2.0",
     "nodemon": "^1.19.1",
     "sinon": "^7.4.1",
@@ -82,5 +107,8 @@
       "src/models/index.js",
       "test"
     ]
+=======
+    "nodemon": "^1.19.1"
+>>>>>>> #167313394 Setup API documentation using swagger (#6)
   }
 }
