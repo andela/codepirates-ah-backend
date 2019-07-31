@@ -6,7 +6,7 @@ describe('test index', () => {
         .get('/')
         .end((error, res) => {
             res.status.should.eql(200);
-            res.body.message.should.eql('Welcome to Authors Haven.');
+            res.body.data.should.eql('Welcome to Authors Haven.');
             done();
         })
     })
