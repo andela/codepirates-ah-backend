@@ -1,7 +1,13 @@
 import winston from 'winston';
+<<<<<<< HEAD
 import express from 'express';
 
 import logging from './helpers/logging';
+=======
+import express from 'expres';
+
+import logging from './helpers/loggigng';
+>>>>>>> chore(heroku) add index.js to test
 import routes from './routes/index';
 
 const app = express();
