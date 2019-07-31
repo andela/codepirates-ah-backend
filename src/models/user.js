@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     role: { type: DataTypes.STRING, defaultValue: 'normal' },
     verified: { type: DataTypes.BOOLEAN, defaultValue: false },
     role: { type: DataTypes.STRING, defaultValue: 'normal' },
-    subscribed: {defaultValue: false, type: DataTypes.BOOLEAN },
+    subscribed: { defaultValue: false, type: DataTypes.BOOLEAN },
     inAppNotification: { defaultValue: false, type: DataTypes.BOOLEAN },
     verified: { type: DataTypes.BOOLEAN, defaultValue: false },
   }, {});
