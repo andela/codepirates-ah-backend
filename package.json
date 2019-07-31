@@ -7,8 +7,8 @@
     "start": "node dist/app.js",
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
     "test": "export NODE_ENV=test && mocha ./test --recurssive --timeout 20000 --exit --require @babel/register",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "dev": "nodemon --exec babel-node ./src/app.js"
+    "dev": "nodemon --exec babel-node ./src/app.js",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
