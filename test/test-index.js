@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import {chai, server, expect} from './test-setuo';
-=======
-import {chai, server} from './test-setuo';
->>>>>>> rename imported server
 
 describe('test index', () => {
     it('should return welcome to author\'s heaven', (done) => {
