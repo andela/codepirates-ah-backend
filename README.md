@@ -422,3 +422,5 @@ No additional parameters required
 - ADMIN_EMAIL = "someone@gmail.com"
 - ADMIN_PASSWORD = "xxxxxxxxxx"
 - SECRET="secret"
+- STATE="development"
+- api_version=v1
