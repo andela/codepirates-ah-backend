@@ -6,7 +6,7 @@ describe('test index', () => {
         .get('/')
         .end((error, res) => {
             expect(res.status).to.be.equal(200);
-            expect(res.body).to.have.property("data");
+            expect(res.body).to.have.deep.property("data", "Welcome to Authors Haven.");
             done();
         })
     })
