@@ -4,21 +4,14 @@
   "description": "A Social platform for the creative at heart",
   "main": "./src/app.js",
   "scripts": {
-<<<<<<< HEAD
     "start": "npm run undoseeds && npm run undomigration && npm run migration && npm run seeds && babel-node ./src/app.js",
     "seeds": "babel-node node_modules/.bin/sequelize db:seed:all --seeders-path src/seeders",
     "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo:all",
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
     "undomigration": "babel-node node_modules/.bin/sequelize db:migrate:undo:all",
-    "runmigrations": "npm run undoseeds && npm run migration && npm run seeds",
+    "runmigrations": " npm run undomigration && npm run migration && npm run seeds",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && nyc --reporter=html --reporter=text mocha ./test --exit --require @babel/register",
-=======
-    "start": "node dist/app.js",
-    "migration": "babel-node node_modules/.bin/sequelize db:migrate",
-    "test": "",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
->>>>>>> #167313394 Setup API documentation using swagger (#6)
     "dev": "nodemon --exec babel-node ./src/app.js"
   },
   "author": "Andela Simulations Programme",
@@ -32,7 +25,6 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
     "@babel/runtime": "^7.5.5",
-<<<<<<< HEAD
     "@sendgrid/mail": "^6.4.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
@@ -42,16 +34,6 @@
     "dotenv": "^6.2.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
-=======
-    "body-parser": "^1.19.0",
-    "cors": "^2.8.5",
-    "dotenv": "^6.2.0",
-    "ejs": "^2.6.1",
-    "errorhandler": "^1.5.0",
-    "express": "^4.17.1",
-    "express-async-errors": "^3.1.1",
-    "express-jwt": "^5.3.1",
->>>>>>> #167313394 Setup API documentation using swagger (#6)
     "express-session": "^1.15.6",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
