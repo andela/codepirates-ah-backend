@@ -3,13 +3,18 @@ import session from 'express-session';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+<<<<<<< HEAD
 import passport from 'passport';
 
+=======
+>>>>>>> #167313390 deploy base application to heroku  (#8)
 import api from './api/index.route';
 import oauth from './api/oauth/oauth.routes';
 import error from '../middlewares/error.middleware';
 import notfound from '../middlewares/404.middleware';
 import { mock } from '../middlewares/validators/socialLogin-mock';
+
+dotenv.config();
 
 dotenv.config();
 
