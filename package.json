@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/app.js",
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
-    "test": "export NODE_ENV=test && mocha ./test --recurssive --timeout 20000 --exit --require @babel/register",
+    "test": "export NODE_ENV=test && coverage mocha ./test --recurssive --timeout 20000 --exit --require @babel/register",
     "dev": "nodemon --exec babel-node ./src/app.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
