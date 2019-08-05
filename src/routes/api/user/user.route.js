@@ -3,6 +3,7 @@ import UserController from '../../../controllers/user.controller';
 import validateToken from '../../../middlewares/auth';
 import validateUser from '../../../middlewares/validators/signup.validation';
 import admin from '../../../middlewares/admin';
+import userService from '../../../services/user.service';
 
 const router = express.Router();
 router.get('/allusers', [validateToken, admin], UserController.getAllUsers);
@@ -12,4 +13,12 @@ router.get('/:id', [validateToken, admin], UserController.getOneUser);
 router.delete('/:id', [validateToken, admin], UserController.deleteUser);
 router.put('/update/:email', [validateToken, admin], UserController.updateUser);
 router.post('/signup/admin', [validateToken, admin], UserController.createAdmin);
+
+router.post('/signout', async (req, res) => {
+  const invalidToken = req.header('x_auth_token');
+  const schema = { invalidToken };
+  const dbObject = await userService.createDroppedToken(schema);
+  return res.status(200).json({ dbObject });
+});
+
 export default router;

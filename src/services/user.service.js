@@ -31,6 +31,22 @@ class UserService {
    *
    *
    * @static
+   * @param {*} invalidToken
+   * @returns {Object} return db result object
+   * @memberof UserService
+   */
+  static async createDroppedToken(invalidToken) {
+    try {
+      return await database.DroppedToken.create(invalidToken);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
    * @returns
    * @memberof UserService
    * @returns {Object} return db result object
@@ -131,4 +147,5 @@ class UserService {
     }
   }
 }
+
 export default UserService;
