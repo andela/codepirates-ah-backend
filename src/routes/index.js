@@ -17,7 +17,7 @@ const apiVersion = process.env.API_VERSION;
 
 const baseUrl = `/api/+ ${apiVersion}`;
 
-router.get('/', (req, res) => res.status(200).json({ status: 200, data: `Welcome to Authors Haven. you are in ${process.env.STATE}` }));
+router.get('/', (req, res) => res.status(200).json({ status: 200, data: 'Welcome to Authors Haven.' }));
 router.use(baseUrl, api);
 
 router.use(notfound);
