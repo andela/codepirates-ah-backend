@@ -8,7 +8,11 @@
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
     "test": "export NODE_ENV=test && coverage mocha ./test --recurssive --timeout 20000 --exit --require @babel/register",
     "dev": "nodemon --exec babel-node ./src/app.js",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+    "generate-lcov": "nyc report --reporter=text-lcov > lcov.info",
+    "coveralls-coverage": "coveralls < lcov.info",
+    "coveralls": "npm run generate-lcov && npm run coveralls-coverage"
+
+    
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
