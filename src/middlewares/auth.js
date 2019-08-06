@@ -24,6 +24,7 @@ const validateToken = (req, res, next) => {
           next();
         }
         return decode;
+        
       });
     } else {
         return res.status(400).send({

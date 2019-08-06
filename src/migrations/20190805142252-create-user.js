@@ -27,15 +27,18 @@ module.exports = {
       },
       username: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique:true
       },
       role: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue:'normal'
       },
       verified: {
         allowNull: false,
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,

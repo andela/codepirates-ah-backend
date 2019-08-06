@@ -1,9 +1,11 @@
 import database from '../models/index';
+import { Op } from 'sequelize'
+
 class UserService {
-  static async findOne(email) {
+  static async findOne(email, username) {
     try {
       return await database.user.findOne({
-        where: { email: String(email)}
+        where: { [Op.or]: [{ email }, {username: username}]}
       });
     } catch (error) {
       throw error;
@@ -56,7 +58,7 @@ class UserService {
     if (userToUpdate) {
       await database.user.update(updateUser, { where: { email: email } });
 
-      return updateUser;
+      return updateBook;
     }
     return null;
   } catch (error) {

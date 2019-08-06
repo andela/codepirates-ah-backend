@@ -1,17 +1,24 @@
 import UserService from '../services/user.service';
-import Helper from '../helpers/helper'
+import Helper from '../helpers/helper';
 
 
 class UserController{
     static async login(req, res) {
         try {
-          console.log(req.body);
-          const theUser = await UserService.findOne(req.body.email);
-          if (!theUser) {
+          let theUser;
+
+          if(req.body.email){
+            theUser = await UserService.findOne(req.body.email,'');
+          }else{
+            theUser = await UserService.findOne('',req.body.username);
+          }
+
+          if (!theUser){
               return res.status(404).send({
                   status:404,
-                  message:`Cannot find User with the email${req.body.email}`
-          })} else {
+                  message:`Cannot find User with the email or username`
+          })}
+
             const validPassword = await Helper.comparePassword( theUser.password,req.body.password);
             if (!validPassword) {
                 return res.status(401).send({
@@ -23,16 +30,13 @@ class UserController{
                     email: theUser.email,
                     role:theUser.role
                 }
-                console.log(payload);
               const token = await Helper.generateToken(payload);
-              console.log(token);
               return res.status(200).send({
                   status:200,
                   message:`welcome  back ${theUser.firstname}`,
                   token:token
               })
             }
-          }
         } catch (error) {
             return res.status(404).send({
                 status:404,
@@ -40,10 +44,57 @@ class UserController{
             })
         }
       }
+      static async createAdmin(req, res) {
+        const newUser=req.body;
+        newUser.email=req.body.email.toLowerCase();
+      try {
+        const theUser = await UserService.findOne(req.body.email);
+        const theUserName = await UserService.findOne(req.body.username);
+        if ((theUser) || (theUserName )){
+            return res.status(404).send({
+                status:404,
+                message:`Cannot register admin with the id ${req.body.email} which is already in use`
+        })} else {
+          const hashPassword= await Helper.hashPassword(req.body.password);
+          if (!hashPassword) {
+              return res.status(401).send({
+                  status:401,
+                  message:'occur error while hashing'
+              })
+          } else {
+              req.body.password=hashPassword;
+             const createdUser =  await UserService.addUser(newUser);
+             const { firstname, lastname, username, email} = createdUser;
+             const payload ={
+                 email: newUser.email,
+                 role:newUser.role,
+                 verified:newUser.verified
+             }
+            const token = await Helper.generateToken(payload);
+            return res.status(201).json({
+                status:201,
+                message:'successfully created account ',
+                data: { firstname, lastname, username, email},
+                token
+            })
+
+          }
+        }
+
+      } catch (error) {
+          const {errors} = error;
+          return res.status(404).send({
+              status:404,
+              message: errors[0].message
+          })
+      }
+    }
       static async signup(req, res) {
+
           const newUser=req.body;
-        try {
+          newUser.email=req.body.email.toLowerCase();
           
+        try {
           const theUser = await UserService.findOne(req.body.email);
           if (theUser) {
               return res.status(404).send({
@@ -61,9 +112,9 @@ class UserController{
                const createdUser =  await UserService.addUser(newUser);
                const payload ={
                    email: newUser.email,
-                   role:newUser.role
+                   role:newUser.role,
+                   verified:newUser.verified
                }
-               console.log("payload",payload);
               const token = await Helper.generateToken(payload);
               return res.status(201).json({
                   status:201,
