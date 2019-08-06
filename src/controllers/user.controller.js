@@ -76,7 +76,7 @@ class UserController {
       const theUserName = await UserService.findOne('', req.body.username);
       if ((theUser) || (theUserName)) {
         return res.status(404).send({
-          status: 404,
+          status: 409,
           message: `Cannot register admin with the  ${req.body.email} which is already in use`
         });
       }
