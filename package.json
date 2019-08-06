@@ -12,8 +12,6 @@
     "generate-lcov": "nyc report --reporter=text-lcov > lcov.info",
     "coveralls-coverage": "coveralls < lcov.info",
     "coveralls": "npm run generate-lcov && npm run coveralls-coverage"
-
-    
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
