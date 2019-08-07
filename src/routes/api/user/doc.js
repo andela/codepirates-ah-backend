@@ -78,4 +78,19 @@
  *         description: Your account has been successfully created.
  *         schema:
  *           $ref: '#/definitions/User'
+ * /users/signout:
+ *   post:
+ *     description: Logs out a user
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: x-access-token
+ *         in: header
+ *         schema:
+ *           type: string
+ *         required:
+ *           - authorization
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
  */

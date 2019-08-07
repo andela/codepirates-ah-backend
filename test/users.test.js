@@ -110,7 +110,7 @@ describe('Users', () => {
       .set('x-access-token', adminToken)
       .end((error, res) => {
         expect(res.status).to.be.equal(200);
-        expect(res.body).to.have.deep.property('message',);
+        expect(res.body).to.have.deep.property('message');
         done();
       });
   });
@@ -120,7 +120,7 @@ describe('Users', () => {
       .set('x-access-token', adminToken)
       .end((error, res) => {
         expect(res.status).to.be.equal(200);
-        expect(res.body).to.have.deep.property('message',);
+        expect(res.body).to.have.deep.property('message');
         done();
       });
   });
@@ -133,5 +133,29 @@ describe('Users', () => {
         expect(res.body).to.have.deep.property('message', 'User with id 2 is successfully deleted');
         done();
       });
+  });
+
+  describe('/Signout feature', () => {
+    it('should logout a user', (done) => {
+      chai.request(server)
+        .post('/api/v1/users/signout')
+        .set('x-access-token', adminToken)
+        .end((error, res) => {
+          expect(res.status).to.be.equal(200);
+          expect(res.body).to.have.deep.property('message', 'Successfully logged out.');
+          done();
+        });
+    });
+
+    it('should should return error if logged out user tries to access protected routes', (done) => {
+      chai.request(server)
+        .get('/api/v1/users/allusers')
+        .set('x-access-token', adminToken)
+        .end((error, res) => {
+          expect(res.status).to.be.equal(401);
+          expect(res.body).to.have.deep.property('message', 'You are logged out!');
+          done();
+        });
+    });
   });
 });

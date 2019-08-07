@@ -44,6 +44,24 @@ class UserService {
   }
 
   /**
+     *
+     *
+     * @static
+     * @param {*} id
+     * @returns {Object} database object
+     * @memberof UserService
+     */
+  static async findDroppedToken(id) {
+    try {
+      return await database.DroppedToken.findOne({
+        where: { identifier: id }
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    *
    *
    * @static
