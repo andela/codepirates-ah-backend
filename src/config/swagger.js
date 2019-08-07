@@ -9,7 +9,7 @@ const swaggerDefinition = {
     version: '1.0.0',
     description: 'A Social platform for the creative at heart'
   },
-  host: `${process.env.BASE_URL}${process.env.PORT}`,
+  host: `${process.env.BASE_URL}:${process.env.PORT}/api/`,
   basePath: `${process.env.API_VERSION}`,
   schemes: ['http', 'https']
 };

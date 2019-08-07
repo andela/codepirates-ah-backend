@@ -3,6 +3,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/andela/codepirates-ah-backend/badge.svg?branch=develop)](https://coveralls.io/github/andela/codepirates-ah-backend?branch=develop)
 [![Reviewed by Hound CI](https://img.shields.io/badge/Reviewed%20by-Hound%20CI-blue.svg)](https://houndci.com)
 
+Authors Haven - A Social platform for the creative at heart.
+=======
+
 ## Vision
 
 Create a community of like minded authors to foster inspiration and innovation
