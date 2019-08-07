@@ -3,6 +3,7 @@ import express from 'express';
 
 import logging from './helpers/logging';
 import routes from './routes/index';
+// import routes from './routes/api/user/user.route';
 
 const app = express();
 
