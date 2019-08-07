@@ -4,6 +4,7 @@
   "description": "A Social platform for the creative at heart",
   "main": "./src/app.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "npm run undoseeds && npm run undomigration && npm run migration && npm run seeds && babel-node ./src/app.js",
     "seeds": "babel-node node_modules/.bin/sequelize db:seed:all --seeders-path src/seeders",
     "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo:all",
@@ -13,6 +14,18 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && nyc --reporter=html --reporter=text mocha ./test --exit --require @babel/register",
     "dev": "nodemon --exec babel-node ./src/app.js"
+=======
+    "start": "node dist/app.js",
+    "seeds": "babel-node node_modules/.bin/sequelize db:seed:all --seeders-path src/seeders",
+    "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo",
+    "migration": "export NODE_ENV=test && babel-node node_modules/.bin/sequelize db:migrate",
+    "undomigration": "export NODE_ENV=test && npm run undoseeds && babel-node node_modules/.bin/sequelize db:migrate:undo:all",
+    "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && coverage mocha ./test --recurssive --no-timeout --exit --require @babel/register",
+    "dev": "nodemon --exec babel-node ./src/app.js",
+    "generate-lcov": "nyc report --reporter=text-lcov > lcov.info",
+    "coveralls-coverage": "coveralls < lcov.info",
+    "coveralls": "npm run generate-lcov && npm run coveralls-coverage"
+>>>>>>> #167313396 Build out Admin REST endpoints for resources(CRUD) (#10)
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -25,7 +38,10 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
     "@babel/runtime": "^7.5.5",
+<<<<<<< HEAD
     "@sendgrid/mail": "^6.4.0",
+=======
+>>>>>>> #167313396 Build out Admin REST endpoints for resources(CRUD) (#10)
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.14.0",

@@ -1,6 +1,5 @@
 import { chai, server, expect } from './test-setup';
 
-
 describe('test index', () => {
   it('should return welcome to author\'s heaven', (done) => {
     chai.request(server)
