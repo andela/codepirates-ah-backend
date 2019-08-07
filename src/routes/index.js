@@ -15,7 +15,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(cors());
 const apiVersion = process.env.API_VERSION;
 
-const baseUrl = `/api/+ ${apiVersion}`;
+const baseUrl = `/api/${apiVersion}`;
 
 router.get('/', (req, res) => res.status(200).json({ status: 200, data: 'Welcome to Authors Haven.' }));
 router.use(baseUrl, api);
