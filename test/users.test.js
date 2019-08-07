@@ -1,7 +1,6 @@
 import { chai, server, expect } from './test-setup';
 
 let adminToken;
-
 describe('Users', () => {
   it('should return welcome to author\'s heaven', (done) => {
     chai.request(server)
@@ -36,6 +35,21 @@ describe('Users', () => {
         done();
       });
   });
+  it('should sign up second user', (done) => {
+    chai.request(server)
+      .post('/api/v1/users/signup')
+      .send({
+        firstname: 'nshuti',
+        lastname: 'jonath',
+        email: 'eliee@gmmail.com',
+        username: 'mauricee',
+        password: 'ASqw12e'
+      }).end((error, res) => {
+        expect(res.status).to.be.equal(201);
+        expect(res.body).to.have.deep.property('message');
+        done();
+      });
+  });
   it('should throw error when user exists', (done) => {
     chai.request(server)
       .post('/api/v1/users/signup')
@@ -57,9 +71,24 @@ describe('Users', () => {
       .send({
         email: 'admin@gmail.com',
         password: 'ASqw12'
-      }).end((error, res) => {
-        console.log(res.body);
+      })
+      .set('Accept', 'Application/JSON')
+      .end((error, res) => {
+        adminToken = `Bearer ${res.body.token}`;
         expect(res.status).to.be.equal(200);
+        expect(res.body).to.have.deep.property('message', 'welcome  back admin');
+        expect(res.body).to.have.deep.property('token');
+        done();
+      });
+  });
+  it('should not sign in the user when username is incorrect', (done) => {
+    chai.request(server)
+      .post('/api/v1/users/login')
+      .send({
+        email: 'admfin@gmail.com',
+        password: 'ASqw12'
+      }).end((error, res) => {
+        expect(res.status).to.be.equal(404);
         done();
       });
   });
@@ -78,10 +107,30 @@ describe('Users', () => {
   it('should retrieve all users', (done) => {
     chai.request(server)
       .get('/api/v1/users/allusers')
-      .set('')
+      .set('x-access-token', adminToken)
       .end((error, res) => {
         expect(res.status).to.be.equal(200);
         expect(res.body).to.have.deep.property('message',);
+        done();
+      });
+  });
+  it('should retrieve single user', (done) => {
+    chai.request(server)
+      .get('/api/v1/users/1')
+      .set('x-access-token', adminToken)
+      .end((error, res) => {
+        expect(res.status).to.be.equal(200);
+        expect(res.body).to.have.deep.property('message',);
+        done();
+      });
+  });
+  it('should delete single user with id 2', (done) => {
+    chai.request(server)
+      .delete('/api/v1/users/2')
+      .set('x-access-token', adminToken)
+      .end((error, res) => {
+        expect(res.status).to.be.equal(200);
+        expect(res.body).to.have.deep.property('message', 'User with id 2 is successfully deleted');
         done();
       });
   });
