@@ -70,7 +70,7 @@ describe('Users', () => {
       .post('/api/v1/users/login')
       .send({
         email: 'admin@gmail.com',
-        password: 'ASqw12'
+        password: 'ASqw12345'
       })
       .set('Accept', 'Application/JSON')
       .end((error, res) => {
@@ -86,7 +86,7 @@ describe('Users', () => {
       .post('/api/v1/users/login')
       .send({
         email: 'admfin@gmail.com',
-        password: 'ASqw12'
+        password: 'ASqw12345'
       }).end((error, res) => {
         expect(res.status).to.be.equal(404);
         done();

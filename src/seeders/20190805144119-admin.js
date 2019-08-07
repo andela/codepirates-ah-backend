@@ -1,7 +1,7 @@
 import Helper from '../helpers/helper';
 
 
-const hashedpass = Helper.hashPassword(process.env.adminpass);
+const hashedpass = Helper.hashPassword(process.env.ADMIN_PASSWORD);
 export default {
   up: queryInterface => queryInterface.bulkInsert(
     'users',
