@@ -130,9 +130,9 @@ class UserController {
     try {
       const theUser = await UserService.findOne(req.body.email, '');
       if (theUser) {
-        return res.status(404).send({
-          status: 404,
-          message: `Cannot register User with the id ${req.body.email} which is already in use`
+        return res.status(409).send({
+          status: 409,
+          message: 'An account with this email already exists'
         });
       }
       const hashPassword = await Helper.hashPassword(req.body.password);
@@ -153,7 +153,7 @@ class UserController {
       const token = await Helper.generateToken(payload);
       return res.status(201).json({
         status: 201,
-        message: 'successfully created account ',
+        message: 'Your account has been successfully created. An email has been sent to you with detailed instructions on how to activate it.',
         data: { firstname, lastname, email },
         token
       });

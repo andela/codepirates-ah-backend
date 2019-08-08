@@ -28,7 +28,7 @@ describe('Users', () => {
         lastname: 'jonath',
         email: 'maurice@gmmail.com',
         username: 'maurice',
-        password: 'ASqw12'
+        password: 'ASqw12345'
       }).end((error, res) => {
         expect(res.status).to.be.equal(201);
         expect(res.body).to.have.deep.property('message');
@@ -43,7 +43,7 @@ describe('Users', () => {
         lastname: 'jonath',
         email: 'eliee@gmmail.com',
         username: 'mauricee',
-        password: 'ASqw12e'
+        password: 'ASqw12ee'
       }).end((error, res) => {
         expect(res.status).to.be.equal(201);
         expect(res.body).to.have.deep.property('message');
@@ -58,10 +58,10 @@ describe('Users', () => {
         lastname: 'jonath',
         email: 'maurice@gmmail.com',
         username: 'maurice',
-        password: 'ASqw12'
+        password: 'ASqw12345'
       }).end((error, res) => {
-        expect(res.status).to.be.equal(404);
-        expect(res.body).to.have.deep.property('message', 'Cannot register User with the id maurice@gmmail.com which is already in use');
+        expect(res.status).to.be.equal(409);
+        expect(res.body).to.have.deep.property('message', 'An account with this email already exists');
         done();
       });
   });
