@@ -4,10 +4,14 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import passport from 'passport';
 
 =======
 >>>>>>> #167313390 deploy base application to heroku  (#8)
+=======
+
+>>>>>>> #167313399 User should be able to sign out (#12)
 import api from './api/index.route';
 import oauth from './api/oauth/oauth.routes';
 import error from '../middlewares/error.middleware';
