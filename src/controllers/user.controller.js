@@ -1,6 +1,6 @@
 import UserService from '../services/user.service';
 import Helper from '../helpers/helper';
-
+import verifyUser from '../helpers/verification-email';
 
 /**
  *
@@ -33,7 +33,6 @@ class UserController {
           message: 'Cannot find User with the email or username'
         });
       }
-
       const validPassword = await Helper.comparePassword(theUser.password, req.body.password);
       if (!validPassword) {
         return res.status(401).send({
@@ -41,6 +40,13 @@ class UserController {
           message: 'Password is not correct'
         });
       }
+      if (!theUser.verified) {
+        return res.status(401).send({
+          status: 401,
+          message: 'User verification not completed. Confirm your email address'
+        });
+      }
+
       const payload = {
         email: theUser.email,
         role: theUser.role
@@ -74,7 +80,7 @@ class UserController {
     try {
       const theUser = await UserService.findOne(req.body.email, '');
       const theUserName = await UserService.findOne('', req.body.username);
-      if ((theUser) || (theUserName)) {
+      if (theUser || theUserName) {
         return res.status(404).send({
           status: 409,
           message: `Cannot register admin with the  ${req.body.email} which is already in use`
@@ -98,11 +104,18 @@ class UserController {
         verified: newUser.verified
       };
       const token = await Helper.generateToken(payload);
+      const verifyUrl = `${process.env.BACKEND_URL}/api/${
+        process.env.API_VERSION
+      }/users/verify?token=${token}`;
+      verifyUser(payload.email, username, verifyUrl);
       return res.status(201).json({
         status: 201,
         message: 'successfully created account ',
         data: {
-          firstname, lastname, username, email
+          firstname,
+          lastname,
+          username,
+          email
         },
         token
       });
@@ -146,14 +159,19 @@ class UserController {
       const createdUser = await UserService.addUser(newUser);
       const { firstname, lastname, email } = createdUser;
       const payload = {
-        email: newUser.email,
-        role: newUser.role,
-        verified: newUser.verified
+        email: createdUser.email,
+        role: createdUser.role,
+        verified: createdUser.verified
       };
       const token = await Helper.generateToken(payload);
+      const verifyUrl = `${process.env.BACKEND_URL}/api/${
+        process.env.API_VERSION
+      }/users/verify?token=${token}`;
+      verifyUser(payload.email, newUser.username, verifyUrl);
       return res.status(201).json({
         status: 201,
-        message: 'Your account has been successfully created. An email has been sent to you with detailed instructions on how to activate it.',
+        message:
+          'Your account has been successfully created. An email has been sent to you with detailed instructions on how to activate it.',
         data: { firstname, lastname, email },
         token
       });
@@ -288,7 +306,6 @@ class UserController {
       return res.status(400).send({
         status: 400,
         message: 'Please provide invalid numeric value'
-
       });
     }
     try {
@@ -296,8 +313,7 @@ class UserController {
       if (!updateUser) {
         return res.status(404).send({
           status: 404,
-          message: `User with email ${email} is not not found `,
-
+          message: `User with email ${email} is not not found `
         });
       }
 
