@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import api from './api/index.route';
+import oauth from './oauth/oauth.routes';
 import error from '../middlewares/error.middleware';
 import notfound from '../middlewares/404.middleware';
 
@@ -20,6 +21,7 @@ const baseUrl = `/api/${apiVersion}`;
 
 router.get('/', (req, res) => res.status(200).json({ status: 200, data: 'Welcome to Authors Haven.' }));
 router.use(baseUrl, api);
+router.use(oauth);
 
 router.use(notfound);
 router.use(error);
