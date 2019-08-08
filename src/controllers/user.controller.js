@@ -130,8 +130,8 @@ class UserController {
     try {
       const theUser = await UserService.findOne(req.body.email, '');
       if (theUser) {
-        return res.status(400).send({
-          status: 400,
+        return res.status(409).send({
+          status: 409,
           message: 'An account with this email already exists'
         });
       }

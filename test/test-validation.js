@@ -30,7 +30,7 @@ describe('test register user validations', () => {
         password: 'Noah2019'
       })
       .end((error, res) => {
-        expect(res.status).to.equal(400);
+        expect(res.status).to.equal(409);
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.deep.property('message', 'An account with this email already exists');
         done();

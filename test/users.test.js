@@ -60,7 +60,7 @@ describe('Users', () => {
         username: 'maurice',
         password: 'ASqw12345'
       }).end((error, res) => {
-        expect(res.status).to.be.equal(400);
+        expect(res.status).to.be.equal(409);
         expect(res.body).to.have.deep.property('message', 'An account with this email already exists');
         done();
       });

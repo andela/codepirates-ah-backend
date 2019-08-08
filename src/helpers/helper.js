@@ -54,16 +54,5 @@ class Helper {
       return error.message;
     }
   }
-
-  /**
-   * checks for the existence of any data in the database
-   * @param {object} model The database model.
-   * @param {object} searchParam The search parameter needed to query the database.
-   * @returns {boolean} existing
-   */
-  static async findRecord(model, searchParam) {
-    const existing = await model.findOne({ where: searchParam });
-    return existing;
-  }
 }
 export default Helper;
