@@ -39,9 +39,13 @@
     "@babel/register": "^7.5.5",
     "@babel/runtime": "^7.5.5",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@sendgrid/mail": "^6.4.0",
 =======
 >>>>>>> #167313396 Build out Admin REST endpoints for resources(CRUD) (#10)
+=======
+    "@sendgrid/mail": "^6.4.0",
+>>>>>>> feature(email verification): Email should be verified before a registered user gets access to different routes [Finishes #167313397] (#13)
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.14.0",
