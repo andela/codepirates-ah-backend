@@ -12,4 +12,6 @@ router.get('/:id', [validateToken, admin], UserController.getOneUser);
 router.delete('/:id', [validateToken, admin], UserController.deleteUser);
 router.put('/update/:email', [validateToken, admin], UserController.updateUser);
 router.post('/signup/admin', [validateToken, admin], UserController.createAdmin);
+router.post('/signout', validateToken, UserController.signoutUser);
+
 export default router;

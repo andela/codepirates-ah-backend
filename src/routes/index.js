@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
 import api from './api/index.route';
 import error from '../middlewares/error.middleware';
 import notfound from '../middlewares/404.middleware';

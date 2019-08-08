@@ -313,6 +313,29 @@ class UserController {
       });
     }
   }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} signout confirmation message
+   * @memberof UserController
+   */
+  static async signoutUser(req, res) {
+    const { token } = req;
+    const identifier = token.match(/\d+/g).join(''); // Extract numbers only from token to be used to uniquely identify a token in db
+    const invalidToken = await Helper.hashPassword(token);
+    const schema = { identifier, invalidToken };
+    const rejectedToken = await UserService.createDroppedToken(schema);
+
+    return res.status(200).json({
+      status: 200,
+      message: 'Successfully logged out.',
+      data: rejectedToken
+    });
+  }
 }
 
 export default UserController;

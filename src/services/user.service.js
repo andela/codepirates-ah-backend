@@ -31,6 +31,40 @@ class UserService {
    *
    *
    * @static
+   * @param {*} invalidToken
+   * @returns {Object} return db result object
+   * @memberof UserService
+   */
+  static async createDroppedToken(invalidToken) {
+    try {
+      return await database.DroppedToken.create(invalidToken);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+     *
+     *
+     * @static
+     * @param {*} id
+     * @returns {Object} database object
+     * @memberof UserService
+     */
+  static async findDroppedToken(id) {
+    try {
+      return await database.DroppedToken.findOne({
+        where: { identifier: id }
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
    * @returns
    * @memberof UserService
    * @returns {Object} return db result object
@@ -131,4 +165,5 @@ class UserService {
     }
   }
 }
+
 export default UserService;
