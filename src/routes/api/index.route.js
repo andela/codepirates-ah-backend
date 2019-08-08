@@ -8,7 +8,6 @@ import user from './user/user.route';
 
 const router = express.Router();
 
-// router.use('/login', oauth);
 router.use(oauth);
 router.use('/users', user);
 router.use('/api-docs', swaggerui.serve, swaggerui.setup(swaggerSpecification));
