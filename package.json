@@ -18,7 +18,7 @@
     "start": "node dist/app.js",
     "seeds": "babel-node node_modules/.bin/sequelize db:seed:all --seeders-path src/seeders",
     "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo",
-    "migration": "export NODE_ENV=test && babel-node node_modules/.bin/sequelize db:migrate",
+    "migration": "babel-node node_modules/.bin/sequelize db:migrate",
     "undomigration": "export NODE_ENV=test && npm run undoseeds && babel-node node_modules/.bin/sequelize db:migrate:undo:all",
     "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && coverage mocha ./test --recurssive --no-timeout --exit --require @babel/register",
     "dev": "nodemon --exec babel-node ./src/app.js",

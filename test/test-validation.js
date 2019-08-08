@@ -1,6 +1,5 @@
 import { chai, server, expect } from './test-setup';
 
-
 describe('test register user validations', () => {
   it('test for valid inputs', (done) => {
     chai.request(server)
