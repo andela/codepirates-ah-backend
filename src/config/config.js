@@ -31,7 +31,12 @@ module.exports = {
     username: DB_USER,
     password: DB_PASSWORD,
     database: DB_NAME,
+<<<<<<< HEAD
     host: DB_HOST,
+=======
+    url: process.env.DATABASE_URL,
+    host: HOST,
+>>>>>>> bg(heroku) rename Procfile file
     dialect: 'postgres',
     port: DB_PORT
   }

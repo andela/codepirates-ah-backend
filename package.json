@@ -4,7 +4,7 @@
   "description": "A Social platform for the creative at heart",
   "main": "./src/app.js",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "babel-node ./src/app.js",
     "seeds": "babel-node node_modules/.bin/sequelize db:seed:all --seeders-path src/seeders",
     "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo",
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
