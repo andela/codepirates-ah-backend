@@ -5,28 +5,19 @@
       "ADMIN_EMAIL": {
         "required": true
       },
-      "ADMIN_FIRSTNAME": {
-        "required": true
-      },
-      "ADMIN_LASTNAME": {
-        "required": true
-      },
       "ADMIN_PASSWORD": {
         "required": true
       },
-      "ADMIN_USERNAME": {
+      "API_VERSION": {
         "required": true
       },
-      "API_VERSION": {
+      "DATABASE_URL": {
         "required": true
       },
       "DB_HOST": {
         "required": true
       },
       "DB_NAME": {
-        "required": true
-      },
-      "DB_NAME_TEST": {
         "required": true
       },
       "DB_PASSWORD": {
@@ -42,6 +33,9 @@
         "required": true
       },
       "STATE": {
+        "required": true
+      },
+      "USER_PASSWORD": {
         "required": true
       }
     },

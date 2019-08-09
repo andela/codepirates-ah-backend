@@ -7,7 +7,8 @@ const {
   DB_PORT,
   DB_NAME,
   DB_NAME_TEST,
-  DB_HOST
+  DB_HOST,
+  DATABASE_URL
 } = process.env;
 
 module.exports = {
@@ -30,13 +31,9 @@ module.exports = {
   production: {
     username: DB_USER,
     password: DB_PASSWORD,
+    use_env_variable: 'DATABASE_URL',
     database: DB_NAME,
-<<<<<<< HEAD
-    host: DB_HOST,
-=======
-    url: process.env.DATABASE_URL,
-    host: HOST,
->>>>>>> bg(heroku) rename Procfile file
+    url: DATABASE_URL,
     dialect: 'postgres',
     port: DB_PORT
   }
