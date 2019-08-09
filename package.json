@@ -4,13 +4,13 @@
   "description": "A Social platform for the creative at heart",
   "main": "./src/app.js",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "npm run undoseeds && npm run migration && npm run seeds && babel-node ./src/app.js",
     "seeds": "babel-node node_modules/.bin/sequelize db:seed:all --seeders-path src/seeders",
     "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo",
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
     "undomigration": "export NODE_ENV=test && npm run undoseeds && babel-node node_modules/.bin/sequelize db:migrate:undo:all",
     "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && coverage mocha ./test --recurssive --no-timeout --exit --require @babel/register",
-    "dev": "nodemon --exec babel-node ./src/app.js",
+    "dev": "npm run migration && npm run seeds && nodemon --exec babel-node ./src/app.js",
     "generate-lcov": "nyc report --reporter=text-lcov > lcov.info",
     "coveralls-coverage": "coveralls < lcov.info",
     "coveralls": "npm run generate-lcov && npm run coveralls-coverage"
