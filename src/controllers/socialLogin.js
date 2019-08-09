@@ -1,10 +1,11 @@
 import User from '../services/user.service';
 import Helper from '../helpers/helper';
+import verifyUser from '../helpers/verification-email';
 
 const login = async (req, res) => {
   const data = req.user;
   const firstname = data.name.givenName;
-  const lastname = data.name.middleName;
+  const lastname = data.name.middleName || data.name.familyName;
   const email = data.emails[0].value;
   const username = `${firstname}.${lastname}`;
 
@@ -33,19 +34,20 @@ const login = async (req, res) => {
   const dbSchema = {
     firstname, lastname, email, username, password: hasspassword
   };
-  console.log(dbSchema);
   const createdUser = await User.addUser(dbSchema);
   const payload = {
     email: createdUser.email,
     role: createdUser.role,
     verified: createdUser.verified
   };
-  console.log('yeyeyess', payload);
   const token = Helper.generateToken(payload);
-  console.log('token', token);
+  const verifyUrl = `${process.env.BACKEND_URL}/api/${
+    process.env.API_VERSION
+  }/users/verify?token=${token}`;
+  verifyUser(payload.email, createdUser.username, verifyUrl);
   return res.status(201).json({
     status: 201,
-    message: 'Successfully signed up, please verify your account from your email address',
+    message: 'Your account has been successfully created. An email has been sent to you with detailed instructions on how to activate it.',
     data: {
       firstname: createdUser.firstname,
       lastname: createdUser.lastname,
@@ -56,28 +58,5 @@ const login = async (req, res) => {
     token,
   });
 };
-// if user not in db create new user
-
-//   console.log(`creating user ${user}`);
-//   const createdUser = UserService.addUser(socialUser);
-//   const {
-//     firstname, lastname, username, email
-//   } = createdUser;
-//   const payload = {
-//     email: socialUser.email,
-//     role: socialUser.role,
-//     verified: socialUser.verified
-//   };
-//   const token = Helper.generateToken(payload);
-//   return res.status(201).json({
-//     status: 201,
-//     message: 'successfully created account ',
-//     data: {
-//       firstName, lastName, email
-//     },
-//     token
-//   });
-//   });
-// };
 
 export default login;
