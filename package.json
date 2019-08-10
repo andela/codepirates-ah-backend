@@ -9,9 +9,10 @@
     "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo",
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
     "undomigration": "export NODE_ENV=test && npm run undoseeds && babel-node node_modules/.bin/sequelize db:migrate:undo:all",
-    "dev": "npm run migration && npm run seeds && nodemon --exec babel-node ./src/app.js",
-    "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && nyc mocha ./test --recurssive --no-timeout --exit --require @babel/register",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && nyc --reporter=html --reporter=text mocha ./test --no-timeout --exit --require @babel/register",
+    "dev": "npm run undoseeds && npm run seeds && nodemon --exec babel-node ./src/app.js"
+  
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -68,5 +69,11 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "mocha": "^6.2.0"
+  },
+  "nyc": {
+    "exclude": [
+      "src/middlewares/error.middleware.js ",
+      "src/models/index.js"
+    ]
   }
 }

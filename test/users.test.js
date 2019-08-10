@@ -1,12 +1,7 @@
 import { chai, server, expect } from './test-setup';
-import { verify } from 'crypto';
 
 let adminToken;
-// const adminToken = Helper.generateToken({
-//   email: 'admin@gmail.com',
-//   username: 'admin',
-//   verified: true
-// });
+let usertoken;
 
 describe('Users', () => {
   it("should return welcome to author's heaven", (done) => {
@@ -38,9 +33,11 @@ describe('Users', () => {
         lastname: 'jonath',
         email: 'maurice@gmmail.com',
         username: 'maurice',
-        password: 'ASqw12345',
+        password: 'ASqw12345'
       })
+      .set('Accept', 'Application/JSON')
       .end((error, res) => {
+        usertoken = `Bearer ${res.body.token}`;
         expect(res.status).to.be.equal(201);
         expect(res.body).to.have.deep.property('message');
         done();
@@ -100,7 +97,7 @@ describe('Users', () => {
         done();
       });
   });
-  it('should not sign in the user when username is incorrect', (done) => {
+  it('should not sign in the user when email is incorrect', (done) => {
     chai
       .request(server)
       .post('/api/v1/users/login')
@@ -134,6 +131,46 @@ describe('Users', () => {
       .set('Authorization', adminToken)
       .end((error, res) => {
         expect(res.status).to.be.equal(200);
+        expect(res.body).to.have.deep.property('message');
+        done();
+      });
+  });
+  it('Admin should create users', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/users/signup')
+      .set('Authorization', adminToken)
+      .send({
+        firstname: 'chris',
+        lastname: 'habineza',
+        email: 'habineza@gmail.com',
+        username: 'habninezachris',
+        password: 'ASqw12345'
+      })
+      .end((error, res) => {
+        expect(res.status).to.be.equal(201);
+        expect(res.body).to.have.deep.property('status');
+        expect(res.body).to.have.deep.property('message');
+        expect(res.body).to.have.deep.property('data');
+        expect(res.body).to.have.deep.property('token');
+        done();
+      });
+  });
+  it('should throw an error when username or email already exists', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/users/signup')
+      .set('Authorization', adminToken)
+      .send({
+        firstname: 'chris',
+        lastname: 'habineza',
+        email: 'habineza@gmail.com',
+        username: 'habninezachris',
+        password: 'ASqw12345'
+      })
+      .end((error, res) => {
+        expect(res.status).to.be.equal(409);
+        expect(res.body).to.have.deep.property('status');
         expect(res.body).to.have.deep.property('message');
         done();
       });
@@ -182,6 +219,28 @@ describe('Users', () => {
         .end((error, res) => {
           expect(res.status).to.be.equal(401);
           expect(res.body).to.have.deep.property('message', 'You are logged out!');
+          done();
+        });
+    });
+    it('should throw an error when the role is not the admin', (done) => {
+      chai
+        .request(server)
+        .get('/api/v1/users/allusers')
+        .set('x-access-token', usertoken)
+        .end((error, res) => {
+          expect(res.status).to.be.equal(403);
+          expect(res.body).to.have.deep.property('message');
+          done();
+        });
+    });
+    it('should throw an error when token is not verified', (done) => {
+      chai
+        .request(server)
+        .get('/api/v1/users/allusers')
+        .set('x-access-token', `21${usertoken}`)
+        .end((error, res) => {
+          expect(res.status).to.be.equal(401);
+          expect(res.body).to.have.deep.property('message');
           done();
         });
     });

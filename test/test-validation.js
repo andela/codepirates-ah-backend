@@ -1,5 +1,6 @@
 import { chai, server, expect } from './test-setup';
 
+
 describe('test register user validations', () => {
   it('test for valid inputs', (done) => {
     chai.request(server)
@@ -263,6 +264,58 @@ describe('test register user validations', () => {
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.property('message');
         expect(res.body).to.have.deep.property('message', 'No username was specified');
+        done();
+      });
+  });
+  it('No password specified', (done) => {
+    chai.request(server)
+      .post('/api/v1/users/signup')
+      .send({
+        firstname: 'Noah',
+        lastname: 'name',
+        email: 'noah.kalyesubula@andela.com',
+        username: 'knoah',
+        password: ''
+      })
+      .end((error, res) => {
+        expect(res.status).to.equal(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('message');
+        expect(res.body).to.have.deep.property('message');
+        done();
+      });
+  });
+  it('No password specified', (done) => {
+    chai.request(server)
+      .post('/api/v1/users/signup')
+      .send({
+        firstname: 'Noah',
+        lastname: 'name',
+        email: 'noah.kalyesubula@andela.com',
+        username: 'knoah',
+      })
+      .end((error, res) => {
+        expect(res.status).to.equal(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('message');
+        expect(res.body).to.have.deep.property('message');
+        done();
+      });
+  });
+  it('username is required', (done) => {
+    chai.request(server)
+      .post('/api/v1/users/signup')
+      .send({
+        firstname: 'Noah',
+        lastname: 'name',
+        email: 'noah.kalyesubula@andela.com',
+        password: 'ASqw123456'
+      })
+      .end((error, res) => {
+        expect(res.status).to.equal(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('message');
+        expect(res.body).to.have.deep.property('message');
         done();
       });
   });
