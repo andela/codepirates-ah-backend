@@ -3,15 +3,17 @@ import User from '../services/user.service';
 import Helper from '../helpers/helper';
 import verifyUser from '../helpers/verification-email';
 
+let data;
+
 /**
  *
  *
  * @class Social
  */
 class Social {
-  constructor(data = {}) {
-    this.data = data;
-  }
+  // constructor(data = {}) {
+  //   data = data;
+  // }
 
   /**
    *
@@ -23,10 +25,10 @@ class Social {
    * @memberof Social
    */
   static async login(req, res) {
-    this.data = req.user;
-    const firstname = this.data.name ? this.data.name.givenName : this.data.displayName.split(' ')[0];
-    const lastname = this.data.name ? this.data.name.middleName || this.data.name.familyName : this.data.displayName.split(' ')[1];
-    const email = this.data.emails ? this.data.emails[0].value : '';
+    data = req.user;
+    const firstname = data.name ? data.name.givenName : data.displayName.split(' ')[0];
+    const lastname = data.name ? data.name.middleName || data.name.familyName : data.displayName.split(' ')[1];
+    const email = data.emails ? data.emails[0].value : '';
     const username = `${firstname}.${lastname}`;
 
     // check if user is in db
@@ -62,9 +64,9 @@ class Social {
     * @memberof Social
     */
   static async signup(req, res) {
-    const firstname = this.data.name ? this.data.name.givenName : this.data.displayName.split(' ')[0];
-    const lastname = this.data.name ? this.data.name.middleName || this.data.name.familyName : this.data.displayName.split(' ')[1];
-    const email = this.data.emails ? this.data.emails[0].value : '';
+    const firstname = data.name ? data.name.givenName : data.displayName.split(' ')[0];
+    const lastname = data.name ? data.name.middleName || data.name.familyName : data.displayName.split(' ')[1];
+    const email = data.emails ? data.emails[0].value : '';
     const username = `${firstname}.${lastname}`;
     const hasspassword = Helper.hashPassword('password');
     const dbSchema = {

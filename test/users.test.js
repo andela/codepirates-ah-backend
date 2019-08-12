@@ -1,4 +1,3 @@
-import { verify } from 'crypto';
 import { chai, server, expect } from './test-setup';
 
 let adminToken;
