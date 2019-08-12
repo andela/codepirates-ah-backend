@@ -146,13 +146,11 @@ describe('social signup', () => {
     describe('submit form', () => {
       before((done) => {
         browser
-<<<<<<< HEAD
-
           .fill('email', 'mikeanguandia@gmail.com');
         browser.fill('pass', 'kukuer1211');
         browser.pressButton('login', done);
           .fill('session[username_or_email]', 'steve.bruce');
->>>>>>> work around twitter account security concern
+          >>>>>>> work around twitter account security concern
         browser.fill('session[password]', 'kukuer1211');
         browser.pressButton('#allow', done);
 >>>>>>> Purpose
@@ -166,10 +164,14 @@ describe('social signup', () => {
         browser.visit('http://localhost:3000/signup/social', done);
       });
 <<<<<<< HEAD
+<<<<<<< HEAD
       it.skip('should create user', () => {
 =======
       it('should create user', () => {
 >>>>>>> Purpose
+=======
+      it.skip('should create user', () => {
+>>>>>>> twitter security
         expect(browser.status).to.be.equal(201);
         expect(browser.text()).to.contain('Your account has been successfully');
       });
