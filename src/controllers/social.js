@@ -11,10 +11,6 @@ let data;
  * @class Social
  */
 class Social {
-  // constructor(data = {}) {
-  //   data = data;
-  // }
-
   /**
    *
    *

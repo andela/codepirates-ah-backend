@@ -1,12 +1,20 @@
-import { server, expect } from './test-setup';
-
+const chai = require('chai');
+const chaiHttp = require('chai-http');
 const Browser = require('zombie');
 
+const server = require('../src/app');
 
-describe('should singup user via twitter', () => {
+chai.use(chaiHttp);
+const { expect } = chai;
+
+
+Browser.localhost('localhost.com', 3000);
+
+describe('should singup user via with twitter', () => {
   const browser = new Browser();
 
   before((done) => {
+    browser.timeout = 3600000;
     browser.visit('http://localhost:3000/login/twitter', done);
   });
 
@@ -24,7 +32,11 @@ describe('should singup user via twitter', () => {
 
     it('should login existing user', () => {
       expect(browser.status).to.be.equal(200);
+<<<<<<< HEAD
       // expect(browser.text()).to.contain('Logged in successfully');
+=======
+      expect(browser.text()).to.contain('Logged in successfully');
+>>>>>>> Purpose
     });
   });
 });
@@ -51,7 +63,11 @@ describe('should prompt for singup of new user from twitter', () => {
 
     it('should send promt to user', () => {
       expect(browser.status).to.equal(200);
+<<<<<<< HEAD
       // expect(browser.text()).to.contain('does not exist, create?');
+=======
+      expect(browser.text()).to.contain('does not exist, create?');
+>>>>>>> Purpose
     });
   });
 });
@@ -135,26 +151,44 @@ describe('should singup user via google', () => {
   });
 });
 
+<<<<<<< HEAD
 describe.skip('social signup', () => {
+=======
+describe('social signup', () => {
+>>>>>>> Purpose
   describe('should signup non-existing social user when consented', () => {
     const browser = new Browser();
 
     before((done) => {
       browser.timeout = 3600000;
+<<<<<<< HEAD
       browser.visit('http://localhost:3000/login/facebook', done);
+=======
+      browser.visit('http://localhost:3000/login/twitter', done);
+>>>>>>> Purpose
     });
 
     describe('submit form', () => {
       before((done) => {
         browser
+<<<<<<< HEAD
           .fill('email', 'mikeanguandia@gmail.com');
         browser.fill('pass', 'kukuer1211');
         browser.pressButton('login', done);
+=======
+          .fill('session[username_or_email]', '@AnguandiaMike');
+        browser.fill('session[password]', 'kukuer1211');
+        browser.pressButton('#allow', done);
+>>>>>>> Purpose
       });
       before((done) => {
         browser.visit('http://localhost:3000/signup/social', done);
       });
+<<<<<<< HEAD
       it.skip('should create user', () => {
+=======
+      it('should create user', () => {
+>>>>>>> Purpose
         expect(browser.status).to.be.equal(201);
         expect(browser.text()).to.contain('Your account has been successfully');
       });

@@ -30,8 +30,12 @@ export const twitterConfig = {
 >>>>>>> feature(social login): user has to login with social platforms [Finishes #167313401]
 =======
   callbackURL: process.env.BACKEND_URL + process.env.TWITTER_CALLBACK_URL,
+<<<<<<< HEAD
 >>>>>>> Purpose of this PR
   profileFields: ['id', 'name', 'email', 'photos']
+=======
+  profileFields: ['id', 'name', 'email', 'photos'],
+>>>>>>> Purpose
 };
 
 export const googleConfig = {

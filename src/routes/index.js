@@ -21,7 +21,7 @@ router.use(session({
   secret: process.env.SECRET_KEY,
   resave: true,
   cookie: {
-    maxAge: 3600000,
+    maxAge: 360000,
   },
   saveUninitialized: true
 }));

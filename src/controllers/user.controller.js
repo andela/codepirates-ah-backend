@@ -180,10 +180,17 @@ class UserController {
         verified: createdUser.verified
       };
       const token = await Helper.generateToken(payload);
+<<<<<<< HEAD
       const verifyUrl = `${process.env.BACKEND_URL}/api/${
         process.env.API_VERSION
       }/users/verify?token=${token}`;
       sendEmail(payload.email, newUser.username, verifyUrl);
+=======
+      // const verifyUrl = `${process.env.BACKEND_URL}/api/${
+      //   process.env.API_VERSION
+      // }/users/verify?token=${token}`;
+      // verifyUser(payload.email, newUser.username, verifyUrl);
+>>>>>>> Purpose
       return res.status(201).json({
         status: 201,
         message:
