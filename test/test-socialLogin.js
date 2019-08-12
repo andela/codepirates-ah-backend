@@ -134,7 +134,7 @@ describe('should singup user via google', () => {
   });
 });
 
-describe('social signup', () => {
+describe.skip('social signup', () => {
   describe('should signup non-existing social user when consented', () => {
     const browser = new Browser();
 
