@@ -30,7 +30,6 @@ class Social {
     const lastname = data.name ? data.name.middleName || data.name.familyName : data.displayName.split(' ')[1];
     const email = data.emails ? data.emails[0].value : '';
     const username = `${firstname}.${lastname}`;
-
     // check if user is in db
     const registeredUser = await User.findOne(email, username);
 

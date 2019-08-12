@@ -13,7 +13,7 @@ describe('should singup user via twitter', () => {
   describe('should submit form', () => {
     before((done) => {
       browser
-        .fill('session[username_or_email]', 'mikeanguandia@gmail.com');
+        .fill('session[username_or_email]', '@KukuerM');
       browser.fill('session[password]', 'kukuer1211');
       browser.pressButton('#allow', done);
     });
