@@ -15,7 +15,7 @@ export const twitterConfig = {
   consumerKey: process.env.TWITTER_ID,
   consumerSecret: process.env.TWITTER_SECRET,
   callbackURL: process.env.BACKEND_URL + process.env.TWITTER_CALLBACK_URL,
-  profileFields: ['id', 'name', 'email', 'photos'],
+  profileFields: ['id', 'name', 'email', 'photos']
 };
 
 export const googleConfig = {
