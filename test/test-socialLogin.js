@@ -24,7 +24,7 @@ describe('should singup user via twitter', () => {
 
     it('should login existing user', () => {
       expect(browser.status).to.be.equal(200);
-      // expect(browser.text()).to.contain('Logged in successfully');
+      expect(browser.text()).to.contain('Logged in successfully');
     });
   });
 });
