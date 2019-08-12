@@ -23,7 +23,7 @@ export default {
         lastname: 'anguandia',
         email: 'anguamike@yahoo.com',
         password: 'kukuer1211',
-        username: 'kukuer.miki',
+        username: 'papa.doris',
         role: 'admin',
         verified: true,
         createdAt: new Date(),
