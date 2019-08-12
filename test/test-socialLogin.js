@@ -1,20 +1,13 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
+import { server, expect } from './test-setup';
+
 const Browser = require('zombie');
 
-const server = require('../src/app');
 
-chai.use(chaiHttp);
-const { expect } = chai;
-
-
-Browser.localhost('localhost.com', 3000);
-
-describe('should singup user via with twitter', () => {
+describe('should singup user via twitter', () => {
   const browser = new Browser();
 
   before((done) => {
-    browser.timeout = 3600000;
+    // browser.timeout = 3600000;
     browser.visit('http://localhost:3000/login/twitter', done);
   });
 
