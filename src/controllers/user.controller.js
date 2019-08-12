@@ -1,6 +1,6 @@
 import UserService from '../services/user.service';
 import Helper from '../helpers/helper';
-import verifyUser from '../helpers/verification-email';
+import sendEmail from '../helpers/verification-email';
 
 /**
  *
@@ -75,15 +75,21 @@ class UserController {
    * @memberof UserController
    */
   static async createAdmin(req, res) {
-    const newUser = req.body;
-    newUser.email = req.body.email.toLowerCase();
     try {
       const theUser = await UserService.findOne(req.body.email, '');
       const theUserName = await UserService.findOne('', req.body.username);
-      if (theUser || theUserName) {
-        return res.status(404).send({
+      if (theUser) {
+        return res.status(409).send({
           status: 409,
-          message: `Cannot register admin with the  ${req.body.email} which is already in use`
+          message: `Cannot register admin with an email ${req.body.email} which is already in use.`
+        });
+      }
+      if (theUserName) {
+        return res.status(409).send({
+          status: 409,
+          message: `Cannot register admin with the username ${
+            req.body.username
+          } which is already in use.`
         });
       }
       const hashPassword = await Helper.hashPassword(req.body.password);
@@ -93,32 +99,41 @@ class UserController {
           message: 'occur error while hashing'
         });
       }
-      req.body.password = hashPassword;
-      const createdUser = await UserService.addUser(newUser);
       const {
-        firstname, lastname, username, email
-      } = createdUser;
+        firstname, lastname, email, role, username
+      } = req.body;
+      const newUser = {
+        firstname,
+        lastname,
+        email: email.toLowerCase(),
+        password: hashPassword,
+        role,
+        username
+      };
+      const createdUser = await UserService.addUser(newUser);
       const payload = {
-        email: newUser.email,
-        role: newUser.role,
-        verified: newUser.verified
+        email: createdUser.email,
+        role: createdUser.role,
+        verified: createdUser.verified
       };
       const token = await Helper.generateToken(payload);
-      const verifyUrl = `${process.env.BACKEND_URL}/api/${
-        process.env.API_VERSION
-      }/users/verify?token=${token}`;
-      verifyUser(payload.email, username, verifyUrl);
-      return res.status(201).json({
-        status: 201,
-        message: 'successfully created account ',
-        data: {
-          firstname,
-          lastname,
-          username,
-          email
-        },
-        token
-      });
+      const verifyUrl = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}/users/verify?
+      token=${token}`;
+      const verify = sendEmail(payload.email, username, verifyUrl);
+
+      return verify
+        ? res.status(201).json({
+          status: 201,
+          message: 'successfully created account ',
+          data: {
+            firstname,
+            lastname,
+            username,
+            email
+          },
+          token
+        })
+        : 'No verified';
     } catch (error) {
       const { errors } = error;
       return res.status(404).send({
@@ -167,7 +182,7 @@ class UserController {
       const verifyUrl = `${process.env.BACKEND_URL}/api/${
         process.env.API_VERSION
       }/users/verify?token=${token}`;
-      verifyUser(payload.email, newUser.username, verifyUrl);
+      sendEmail(payload.email, newUser.username, verifyUrl);
       return res.status(201).json({
         status: 201,
         message:

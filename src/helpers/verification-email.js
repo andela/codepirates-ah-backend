@@ -31,6 +31,7 @@ const sendEmail = (email, username, url) => {
     </div>`,
   };
   sgMail.send(msg);
+  return true;
 };
 
 export default sendEmail;
