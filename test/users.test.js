@@ -1,13 +1,10 @@
-<<<<<<< HEAD
-=======
 import { verify } from 'crypto';
->>>>>>> disable failing tests for further inspection
 import { chai, server, expect } from './test-setup';
 
 let adminToken;
 let usertoken;
 
-describe.skip('Users', () => {
+describe('Users', () => {
   it("should return welcome to author's heaven", (done) => {
     chai
       .request(server)
