@@ -3,6 +3,32 @@ import { server, expect } from './test-setup';
 const Browser = require('zombie');
 
 
+describe('should singup user via twitter', () => {
+  const browser = new Browser();
+
+  before((done) => {
+    browser.visit('http://localhost:3000/login/twitter', done);
+  });
+
+  describe('should submit form', () => {
+    before((done) => {
+      browser
+        .fill('session[username_or_email]', 'mikeanguandia@gmail.com');
+      browser.fill('session[password]', 'kukuer1211');
+      browser.pressButton('#allow', done);
+    });
+
+    it('should be successful', () => {
+      browser.assert.success();
+    });
+
+    it('should login existing user', () => {
+      expect(browser.status).to.be.equal(200);
+      // expect(browser.text()).to.contain('Logged in successfully');
+    });
+  });
+});
+
 describe('should prompt for singup of new user from twitter', () => {
   const browser = new Browser();
 
@@ -14,7 +40,7 @@ describe('should prompt for singup of new user from twitter', () => {
   describe('submit form', () => {
     before((done) => {
       browser
-        .fill('session[username_or_email]', 'steve.bruce');
+        .fill('session[username_or_email]', '@AnguandiaMike');
       browser.fill('session[password]', 'kukuer1211');
       browser.pressButton('#allow', done);
     });
@@ -121,7 +147,7 @@ describe('social signup', () => {
     describe('submit form', () => {
       before((done) => {
         browser
-          .fill('session[username_or_email]', 'steve.bruce');
+          .fill('session[username_or_email]', '@AnguandiaMike');
         browser.fill('session[password]', 'kukuer1211');
         browser.pressButton('#allow', done);
       });
@@ -132,32 +158,6 @@ describe('social signup', () => {
         expect(browser.status).to.be.equal(201);
         expect(browser.text()).to.contain('Your account has been successfully');
       });
-    });
-  });
-});
-
-describe('should singup user via twitter', () => {
-  const browser = new Browser();
-
-  before((done) => {
-    browser.visit('http://localhost:3000/login/twitter', done);
-  });
-
-  describe('should submit form', () => {
-    before((done) => {
-      browser
-        .fill('session[username_or_email]', 'steve.bruce');
-      browser.fill('session[password]', 'kukuer1211');
-      browser.pressButton('#allow', done);
-    });
-
-    it('should be successful', () => {
-      browser.assert.success();
-    });
-
-    it('should login existing user', () => {
-      expect(browser.status).to.be.equal(200);
-      expect(browser.text()).to.contain('Logged in successfully');
     });
   });
 });
