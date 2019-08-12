@@ -1,10 +1,12 @@
 import express from 'express';
+import session from 'express-session';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import passport from 'passport';
 
 import api from './api/index.route';
-import oauth from './oauth/oauth.routes';
+import oauth from './api/oauth/oauth.routes';
 import error from '../middlewares/error.middleware';
 import notfound from '../middlewares/404.middleware';
 
@@ -13,8 +15,17 @@ dotenv.config();
 const router = express.Router();
 
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.urlencoded({ extended: true }));
 router.use(cors());
+router.use(session({
+  secret: process.env.SECRET_KEY,
+  resave: true,
+  cookie: {
+    maxAge: 360000,
+  },
+  saveUninitialized: true
+}));
+router.use(passport.initialize());
 const apiVersion = process.env.API_VERSION;
 
 const baseUrl = `/api/${apiVersion}`;

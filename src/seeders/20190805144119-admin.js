@@ -17,6 +17,17 @@ export default {
         verified: true,
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        firstname: 'mike',
+        lastname: 'anguandia',
+        email: 'anguamike@gyahoo.com',
+        password: hashedpass,
+        username: 'mike.anguandia',
+        role: 'admin',
+        verified: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ],
     {}
