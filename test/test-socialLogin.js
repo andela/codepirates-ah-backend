@@ -4,6 +4,9 @@ const Browser = require('zombie');
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> pp
 describe('should singup user via twitter', () => {
   const browser = new Browser();
 
@@ -14,7 +17,11 @@ describe('should singup user via twitter', () => {
   describe('should submit form', () => {
     before((done) => {
       browser
+<<<<<<< HEAD
         .fill('session[username_or_email]', '@KukuerM');
+=======
+        .fill('session[username_or_email]', 'mikeanguandia@gmail.com');
+>>>>>>> pp
       browser.fill('session[password]', 'kukuer1211');
       browser.pressButton('#allow', done);
     });
@@ -26,16 +33,23 @@ describe('should singup user via twitter', () => {
     it('should login existing user', () => {
       expect(browser.status).to.be.equal(200);
 <<<<<<< HEAD
+<<<<<<< HEAD
       // expect(browser.text()).to.contain('Logged in successfully');
 =======
       expect(browser.text()).to.contain('Logged in successfully');
 >>>>>>> Purpose
+=======
+      // expect(browser.text()).to.contain('Logged in successfully');
+>>>>>>> pp
     });
   });
 });
 
+<<<<<<< HEAD
 =======
 >>>>>>> work around twitter account security concern
+=======
+>>>>>>> pp
 describe('should prompt for singup of new user from twitter', () => {
   const browser = new Browser();
 
@@ -47,7 +61,7 @@ describe('should prompt for singup of new user from twitter', () => {
   describe('submit form', () => {
     before((done) => {
       browser
-        .fill('session[username_or_email]', 'steve.bruce');
+        .fill('session[username_or_email]', '@AnguandiaMike');
       browser.fill('session[password]', 'kukuer1211');
       browser.pressButton('#allow', done);
     });
@@ -168,6 +182,7 @@ describe('social signup', () => {
         browser
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
           .fill('email', 'mikeanguandia@gmail.com');
         browser.fill('pass', 'kukuer1211');
         browser.pressButton('login', done);
@@ -176,6 +191,9 @@ describe('social signup', () => {
 =======
           .fill('session[username_or_email]', 'steve.bruce');
 >>>>>>> work around twitter account security concern
+=======
+          .fill('session[username_or_email]', '@AnguandiaMike');
+>>>>>>> pp
         browser.fill('session[password]', 'kukuer1211');
         browser.pressButton('#allow', done);
 >>>>>>> Purpose
@@ -191,32 +209,6 @@ describe('social signup', () => {
         expect(browser.status).to.be.equal(201);
         expect(browser.text()).to.contain('Your account has been successfully');
       });
-    });
-  });
-});
-
-describe('should singup user via twitter', () => {
-  const browser = new Browser();
-
-  before((done) => {
-    browser.visit('http://localhost:3000/login/twitter', done);
-  });
-
-  describe('should submit form', () => {
-    before((done) => {
-      browser
-        .fill('session[username_or_email]', 'steve.bruce');
-      browser.fill('session[password]', 'kukuer1211');
-      browser.pressButton('#allow', done);
-    });
-
-    it('should be successful', () => {
-      browser.assert.success();
-    });
-
-    it('should login existing user', () => {
-      expect(browser.status).to.be.equal(200);
-      expect(browser.text()).to.contain('Logged in successfully');
     });
   });
 });
