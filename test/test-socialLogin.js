@@ -7,7 +7,6 @@ describe('should singup user via twitter', () => {
   const browser = new Browser();
 
   before((done) => {
-    // browser.timeout = 3600000;
     browser.visit('http://localhost:3000/login/twitter', done);
   });
 

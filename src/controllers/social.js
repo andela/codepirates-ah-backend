@@ -11,6 +11,13 @@ let data;
  * @class Social
  */
 class Social {
+<<<<<<< HEAD
+=======
+  // constructor(data = {}) {
+  //   data = data;
+  // }
+
+>>>>>>> Purpose of this commit:
   /**
    *
    *

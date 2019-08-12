@@ -184,7 +184,6 @@ class UserController {
         process.env.API_VERSION
       }/users/verify?token=${token}`;
       sendEmail(payload.email, newUser.username, verifyUrl);
-      verifyUser(payload.email, newUser.username, verifyUrl);
       return res.status(201).json({
         status: 201,
         message:
