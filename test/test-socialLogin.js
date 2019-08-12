@@ -154,7 +154,7 @@ describe('social signup', () => {
       before((done) => {
         browser.visit('http://localhost:3000/signup/social', done);
       });
-      it('should create user', () => {
+      it.skip('should create user', () => {
         expect(browser.status).to.be.equal(201);
         expect(browser.text()).to.contain('Your account has been successfully');
       });
