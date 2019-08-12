@@ -21,8 +21,8 @@ export default {
       {
         firstname: 'mike',
         lastname: 'anguandia',
-        email: 'anguamike@gyahoo.com',
-        password: hashedpass,
+        email: 'anguamike@yahoo.com',
+        password: 'kukuer1211',
         username: 'mike.anguandia',
         role: 'admin',
         verified: true,
