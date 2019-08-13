@@ -12,12 +12,15 @@ let data;
  */
 class Social {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   // constructor(data = {}) {
   //   data = data;
   // }
 
 >>>>>>> Purpose of this commit:
+=======
+>>>>>>> respond to feedback
   /**
    *
    *
