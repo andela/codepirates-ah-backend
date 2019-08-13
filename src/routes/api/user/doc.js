@@ -93,4 +93,49 @@
  *     responses:
  *       200:
  *         description: User logged out successfully
+ * /users/reset:
+ *   post:
+ *     description: request for a password reset
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: body
+ *         name: reset password
+ *         description: password reset
+ *         schema:
+ *          type: object
+ *          required:
+ *            - email
+ *         properties:
+ *           email:
+ *              type: string
+ *     responses:
+ *       200:
+ *         description: Check your email address to reset your password
+ *       400:
+ *         description: Validation error
+ * /users/reset/:token:
+ *   post:
+ *     description: handle password reset logic
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: body
+ *         name: user
+ *         description: request for password reset
+ *         schema:
+ *          type: object
+ *          required:
+ *            - password
+ *            - confirmPassword
+ *         properties:
+ *           password:
+ *              type: string
+ *           confirmPassword:
+ *              type: string
+ *     responses:
+ *       200:
+ *         description: Successfully reset your password
+ *       400:
+ *         description: Validation error
  */

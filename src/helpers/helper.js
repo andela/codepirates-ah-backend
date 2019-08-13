@@ -31,13 +31,15 @@ class Helper {
   }
 
   /**
-   * Gnerate Token
+   * Generate Token
    * @param {string} payload
+   * @param {string} expiresInPeriod
    * @returns {string} token
    */
-  static generateToken(payload) {
+  static generateToken(payload, expiresInPeriod) {
+    const expiresInTime = expiresInPeriod || (24 * 60 * 60);
     const token = jwt.sign(payload,
-      process.env.SECRET_KEY);
+      process.env.SECRET_KEY, { expiresIn: expiresInTime });
     return token;
   }
 
