@@ -164,6 +164,30 @@ class UserService {
       throw error;
     }
   }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} profile
+   * @returns {Object} return db result object
+   * @memberof UserService
+   */
+  static async updateProfile(profile) {
+    try {
+      const { email } = profile;
+      return await database.user.update(
+        {
+          username: profile.username,
+          bio: profile.bio,
+          image: profile.image
+        },
+        { where: { email }, returning: true, plain: true }
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default UserService;

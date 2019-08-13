@@ -1,4 +1,6 @@
 import express from 'express';
+import connectmultiparty from 'connect-multiparty';
+import ProfileController from '../../../controllers/profile.controller';
 import UserController from '../../../controllers/user.controller';
 import validateToken from '../../../middlewares/auth';
 import validateUser from '../../../middlewares/validators/signup.validation';
@@ -9,7 +11,15 @@ import confirmEmaiAuth from '../../../middlewares/emailVarification.middleware';
 import followController from '../../../controllers/follow.controller';
 import resetPasswordValidation from '../../../middlewares/validators/resetpassword.validation';
 
+
+const connectMulti = connectmultiparty();
 const router = express.Router();
+// greate edit a viewing profile handlers
+
+router.get('/profile', validateToken, ProfileController.getProfile);
+router.get('/profile/:username', validateToken, ProfileController.getProfile);
+router.put('/profile', [validateToken, connectMulti], ProfileController.updateProfile);
+
 router.get('/verify', verifyEmail);
 router.get('/allusers', [validateToken, admin, confirmEmaiAuth], UserController.getAllUsers);
 router.post('/signup', validateUser, UserController.signup);
@@ -22,6 +32,7 @@ router.post('/signout', validateToken, UserController.signoutUser);
 router.post('/profiles/:userId/follow', [validateToken, validateUserId], followController.follow);
 router.get('/profiles/following', validateToken, followController.listOfFollowedUsers);
 router.get('/profiles/followers', validateToken, followController.listOfFollowers);
+
 
 // reset password route handlers
 router.post('/reset', UserController.requestPasswordReset);
