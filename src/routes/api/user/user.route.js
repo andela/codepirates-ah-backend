@@ -5,6 +5,7 @@ import validateUser from '../../../middlewares/validators/signup.validation';
 import admin from '../../../middlewares/admin';
 import verifyEmail from '../../../controllers/verify-controller';
 import confirmEmaiAuth from '../../../middlewares/emailVarification.middleware';
+import resetPasswordValidation from '../../../middlewares/validators/resetpassword.validation';
 
 const router = express.Router();
 router.get('/verify', verifyEmail);
@@ -16,5 +17,9 @@ router.delete('/:id', [validateToken, confirmEmaiAuth], UserController.deleteUse
 router.put('/update/:email', [validateToken, confirmEmaiAuth], UserController.updateUser);
 router.post('/signup/admin', [validateToken, admin, confirmEmaiAuth], UserController.createAdmin);
 router.post('/signout', validateToken, UserController.signoutUser);
+
+// reset password route handlers
+router.post('/reset', UserController.requestPasswordReset);
+router.patch('/reset/:token', resetPasswordValidation, UserController.handlePasswordReset);
 
 export default router;
