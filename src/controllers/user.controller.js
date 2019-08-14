@@ -1,7 +1,12 @@
 import UserService from '../services/user.service';
 import Helper from '../helpers/helper';
+<<<<<<< HEAD
 import EmailHelper from '../helpers/verification-email';
 import sendPasswordResetEmailHelper from '../services/resetpassword.service';
+=======
+import sendEmail from '../helpers/verification-email';
+import resetSendMail from '../services/resetpassword.service';
+>>>>>>> feature(reset password): add user reset password functionality [Finishes #167313400] (#18)
 
 /**
  *
@@ -93,7 +98,7 @@ class UserController {
           status: 409,
           message: `Cannot register admin with the username ${
             req.body.username
-          } which is already in use.`
+            } which is already in use.`
         });
       }
       const hashPassword = await Helper.hashPassword(req.body.password);
@@ -187,7 +192,7 @@ class UserController {
       const token = await Helper.generateToken(payload);
       const verifyUrl = `${process.env.BACKEND_URL}/api/${
         process.env.API_VERSION
-      }/users/verify?token=${token}`;
+        }/users/verify?token=${token}`;
       await EmailHelper.sendEmail(payload.email, newUser.username, verifyUrl);
       return res.status(201).json({
         status: 201,
@@ -386,6 +391,10 @@ class UserController {
   static async requestPasswordReset(req, res) {
     // check if email provided exists in db
     const { email } = req.body;
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature(reset password): add user reset password functionality [Finishes #167313400] (#18)
     if (!email) {
       return res.status(400).send({
         status: 400,
@@ -407,11 +416,20 @@ class UserController {
       };
 
       const token = await Helper.generateToken(payload, (60 * 60));
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature(reset password): add user reset password functionality [Finishes #167313400] (#18)
       // create password reset link
       const resetUrl = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}/users/reset/${token}`;
 
       // send email to user email address
+<<<<<<< HEAD
       const emailSent = await sendPasswordResetEmailHelper.sendEmail(user.email, user.username, resetUrl);
+=======
+      const emailSent = resetSendMail(user.email, user.username, resetUrl);
+
+>>>>>>> feature(reset password): add user reset password functionality [Finishes #167313400] (#18)
       if (!emailSent) { return res.status(500).send({ status: 500, message: 'Failed to send email. Please contact site administrator for support' }); }
 
       return res.status(200).send({

@@ -58,4 +58,8 @@ router.get('/profiles/followers', validateToken, followController.listOfFollower
 router.post('/reset', UserController.requestPasswordReset);
 router.patch('/reset/:token', resetPasswordValidation, UserController.handlePasswordReset);
 
+// reset password route handlers
+router.post('/reset', UserController.requestPasswordReset);
+router.patch('/reset/:token', resetPasswordValidation, UserController.handlePasswordReset);
+
 export default router;
