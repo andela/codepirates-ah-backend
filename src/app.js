@@ -2,6 +2,7 @@ import winston from 'winston';
 import express from 'express';
 import logging from './helpers/logging';
 import routes from './routes/index';
+import './config/cloudinary.config';
 
 
 const app = express();

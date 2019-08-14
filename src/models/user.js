@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
     verified: {type: DataTypes.BOOLEAN, defaultValue: false},
   }, {});
   user.associate = function(models) {
-    // associations can be defined here
+    user.hasMany(models.Article, {
+      as:'author',
+      foreignKey:'authorId'
+    })
   };
   return user;
 };
