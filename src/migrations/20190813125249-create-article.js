@@ -24,6 +24,12 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+<<<<<<< HEAD
+=======
+      taglist: {
+        type: Sequelize.ARRAY(Sequelize.STRING)
+      },
+>>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
       favorited: {
         type: Sequelize.BOOLEAN,
         allowNull: true,
