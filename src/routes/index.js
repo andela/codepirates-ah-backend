@@ -9,6 +9,7 @@ import api from './api/index.route';
 import oauth from './api/oauth/oauth.routes';
 import error from '../middlewares/error.middleware';
 import notfound from '../middlewares/404.middleware';
+import { mock } from '../middlewares/validators/socialLogin-mock';
 
 dotenv.config();
 
@@ -25,6 +26,9 @@ router.use(session({
   },
   saveUninitialized: true
 }));
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  router.use(mock);
+}
 router.use(passport.initialize());
 const apiVersion = process.env.API_VERSION;
 

@@ -1,9 +1,14 @@
 import express from 'express';
 import Social from '../../../controllers/social';
 import passport from '../../../middlewares/passport';
+import { fakeAuth } from '../../../middlewares/validators/socialLogin-mock';
 
 const router = express.Router();
 
+// test route
+router.get('/auth/fake', fakeAuth, Social.login);
+
+// social signup consent route
 router.get('/signup/social', Social.signup);
 
 router.get('/login/facebook', passport.authenticate('facebook', { scope: ['email'] }));

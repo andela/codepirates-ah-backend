@@ -23,13 +23,15 @@ class Social {
   static async login(req, res) {
     data = req.user;
     const firstname = data.name ? data.name.givenName : data.displayName.split(' ')[0];
-    const lastname = data.name ? data.name.middleName || data.name.familyName : data.displayName.split(' ')[1];
+    const lastname = data.name ? data.name.middleName : data.displayName.split(' ')[1];
     const email = data.emails ? data.emails[0].value : '';
     const username = `${firstname}.${lastname}`;
     // check if user is in db
     const registeredUser = await User.findOne(email, username);
-
-    // if yes generate token
+    // format response message for case of twitter user without email add and others with
+    const message = data.emails ? `account with name ${firstname} ${lastname} does not exist, create?`
+      : `account with name ${firstname} ${lastname} does not exist, to register send email in response`;
+    // if yes user exists, generate token
     if (registeredUser) {
       const payload = {
         email,
@@ -46,7 +48,7 @@ class Social {
         token
       });
     }
-    res.status(200).json({ message: `account with name ${firstname} ${lastname} does not exist, create?` });
+    res.status(200).json({ message });
   }
 
   /**
@@ -61,7 +63,7 @@ class Social {
   static async signup(req, res) {
     const firstname = data.name ? data.name.givenName : data.displayName.split(' ')[0];
     const lastname = data.name ? data.name.middleName || data.name.familyName : data.displayName.split(' ')[1];
-    const email = data.emails ? data.emails[0].value : '';
+    const email = data.emails ? data.emails[0].value : req.body.email || req.query.email;
     const username = `${firstname}.${lastname}`;
     const hasspassword = Helper.hashPassword('password');
     const dbSchema = {
@@ -80,7 +82,7 @@ class Social {
     verifyUser(payload.email, createdUser.username, verifyUrl);
     return res.status(201).json({
       status: 201,
-      message: 'Your account has been successfully created. An email has been sent to you with detailed instructions on how to activate it.',
+      message: 'Your account has been successfully created. An email has been sent to you with detailed instructions on how to activate it. Your default password is password, Please change on activatio',
       data: {
         firstname: createdUser.firstname,
         lastname: createdUser.lastname,

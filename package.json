@@ -12,11 +12,7 @@
     "runmigrations": "npm run undoseeds && npm run migration && npm run seeds",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && nyc --reporter=html --reporter=text mocha ./test --no-timeout --exit --require @babel/register",
-<<<<<<< HEAD
     "dev": "nodemon --exec babel-node ./src/app.js"
-=======
-    "dev": "npm run undoseeds && nodemon --exec babel-node ./src/app.js"
->>>>>>> twitter security
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
