@@ -4,8 +4,6 @@ import models from '../models/index';
 // import { newFollowerTemplate } from '../services/emailTemplates';
 import followhelper from '../helpers/follow.helper';
 
-const { Users, Follows } = models;
-
 /**
  * @description Contains all follow and unfollow functionalities
  * @export
@@ -23,18 +21,13 @@ class FollowController {
  * @memberof FollowController
  */
   static async follow(req, res, next) {
-    console.log(Users);
     try {
       const helperResult = await followhelper(req, res);
-      const { user, followerId } = helperResult;
-      console.log(user);
-      const {
-        id: authorId, username
-      } = user;
-      console.log(user);
-      await Follows.findOrCreate({
-        where: { authorId, followerId },
-        attributes: ['id', 'followerId', 'authorId']
+      const { followedUser, followerUser } = helperResult;
+
+      await models.Follow.findOrCreate({
+        where: { followerEmail: followerUser.email, followedUserEmail: followedUser.email },
+        attributes: ['id', 'followerEmail', 'followedUserEmail']
       }).spread(async (follow, created) => {
         if (created) {
         //   const location = req.get('host');
@@ -43,18 +36,14 @@ class FollowController {
         // eslint-disable-next-line max-len
         //   const message = `Hi ${username}, ${req.user.username} started following you on Authors Haven`;
         //   if (subscribed) sendEmail(email, `${message}`, emailTemplate);
-          return res.status(200).json({ status: '200', message: `You are now following ${username}` });
+          return res.status(200).json({ status: '200', message: `You are now following ${followedUser.username}` });
         }
 
-        const result = await follow.destroy();
-        console.log(result);
-        const { _changed: { deletedAt } } = result;
-        if (deletedAt) {
-          return res.status(200).json({
-            status: '200',
-            message: `You have unfollowed ${username}`
-          });
-        }
+        await follow.destroy();
+        return res.status(200).json({
+          status: '200',
+          message: `You have unfollowed ${followedUser.username}`
+        });
       });
     } catch (error) {
       return next(error);

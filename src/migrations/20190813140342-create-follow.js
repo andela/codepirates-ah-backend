@@ -8,11 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      followerId: {
-        type: Sequelize.INTEGER
+      followerEmail: {
+        type: Sequelize.STRING
       },
-      followedUserId: {
-        type: Sequelize.INTEGER
+      followedUserEmail: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

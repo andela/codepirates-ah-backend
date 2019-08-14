@@ -1,6 +1,7 @@
 import UserService from '../services/user.service';
 import Helper from '../helpers/helper';
 import sendEmail from '../helpers/verification-email';
+import resetSendMail from '../services/resetpassword.service';
 
 /**
  *
@@ -366,6 +367,124 @@ class UserController {
       message: 'Successfully logged out.',
       data: rejectedToken
     });
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} json data
+   * @memberof UserController
+   */
+  static async requestPasswordReset(req, res) {
+    // check if email provided exists in db
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).send({
+        status: 400,
+        message: 'Please provide an email address'
+      });
+    }
+    try {
+      const user = await UserService.findOne(email, '');
+      if (!user) {
+        return res.status(400).send({
+          status: 400,
+          message: `User with email ${email} is not not found `
+        });
+      }
+      // generate token
+      const payload = {
+        email: user.email,
+        role: user.role
+      };
+
+      const token = await Helper.generateToken(payload, (60 * 60));
+
+      // create password reset link
+      const resetUrl = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}/users/reset/${token}`;
+
+      // send email to user email address
+      const emailSent = resetSendMail(user.email, user.username, resetUrl);
+
+      if (!emailSent) { return res.status(500).send({ status: 500, message: 'Failed to send email. Please contact site administrator for support' }); }
+
+      return res.status(200).send({
+        status: 200,
+        message: 'Check your email address to reset your password',
+      });
+    } catch (error) {
+      return res.status(500).send({
+        status: 500,
+        message: error.message
+      });
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} json data
+   * @memberof UserController
+   */
+  static async handlePasswordReset(req, res) {
+    // verify token and if its not expired
+    const { token } = req.params;
+    const tokenDecoded = Helper.verifyToken(token);
+    if (tokenDecoded === 'invalid token') {
+      return res.status(400).send({
+        status: 400,
+        message: 'Invalid token or Token expired'
+      });
+    }
+
+    // check if payload's email address exists in database
+    const { email } = tokenDecoded;
+    const user = await UserService.findOne(email, '');
+    if (!user) {
+      return res.status(400).send({
+        status: 400,
+        message: `User with email ${email} is not not found `
+      });
+    }
+
+    // check if old password equals new password
+    const checkPassword = await Helper.comparePassword(user.password, req.body.password);
+    if (checkPassword) {
+      return res.status(400).send({
+        status: 400,
+        message: 'New password cannot be the same as current password'
+      });
+    }
+
+    // update password
+    const newPassword = req.body.password;
+    const password = await Helper.hashPassword(newPassword);
+    if (!password) {
+      return res.status(500).send({
+        status: 500,
+        message: 'An error occured, Contact your administrator'
+      });
+    }
+    try {
+      await UserService.updateUser(email, { password });
+
+      return res.status(200).send({
+        status: 200,
+        message: 'Password reset successfully'
+      });
+    } catch (error) {
+      return res.status(400).send({
+        status: 400,
+        message: 'Failed to fetch user'
+      });
+    }
   }
 }
 

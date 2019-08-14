@@ -1,24 +1,22 @@
-import Util from 'util';
+import Util from './util';
 import models from '../models/index';
 
 const util = new Util();
 
-const { Users } = models;
-
 export default async (req, res) => {
   const { email } = req.params;
-
-  const user = await Users.findOne({ where: { email } });
-
-  if (!user) {
+  const followedUser = await models.user.findOne({ where: { email } });
+  const followerUser = await models.user.findOne({ where: { email: req.auth.email } });
+  if (!followedUser) {
     util.setError(404, 'user does not exist');
     return util.send(res);
   }
-
-  if (req.auth.email === user.email) {
+  if (followerUser.email === followedUser.email) {
     util.setError(400, 'You cannot follow yourself');
     return util.send(res);
   }
 
-  return { user, followerId: req.auth.email };
+  return {
+    followedUser, followerUser
+  };
 };

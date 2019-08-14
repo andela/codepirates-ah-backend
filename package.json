@@ -9,9 +9,10 @@
     "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo",
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
     "undomigration": "export NODE_ENV=test && npm run undoseeds && babel-node node_modules/.bin/sequelize db:migrate:undo:all",
+    "runmigrations": "npm run undoseeds && npm run migration && npm run seeds",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && nyc --reporter=html --reporter=text mocha ./test --no-timeout --exit --require @babel/register",
-    "dev": "npm run undoseeds && npm run seeds && nodemon --exec babel-node ./src/app.js"
+    "dev": "nodemon --exec babel-node ./src/app.js"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
