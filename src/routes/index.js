@@ -5,6 +5,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Ft api social login 167313401 (#14)
 import passport from 'passport';
 
 =======
@@ -17,8 +20,11 @@ import oauth from './api/oauth/oauth.routes';
 import error from '../middlewares/error.middleware';
 import notfound from '../middlewares/404.middleware';
 import { mock } from '../middlewares/validators/socialLogin-mock';
+<<<<<<< HEAD
 
 dotenv.config();
+=======
+>>>>>>> Ft api social login 167313401 (#14)
 
 dotenv.config();
 
@@ -27,6 +33,7 @@ const router = express.Router();
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(cors());
+<<<<<<< HEAD
 router.use(
   session({
     secret: process.env.SECRET_KEY,
@@ -37,6 +44,16 @@ router.use(
     saveUninitialized: true
   })
 );
+=======
+router.use(session({
+  secret: process.env.SECRET_KEY,
+  resave: true,
+  cookie: {
+    maxAge: 3600000,
+  },
+  saveUninitialized: true
+}));
+>>>>>>> Ft api social login 167313401 (#14)
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   router.use(mock);
 }
