@@ -92,8 +92,8 @@ describe('Users', () => {
       .end((error, res) => {
         adminToken = `Bearer ${res.body.token}`;
         expect(res.status).to.be.equal(200);
-        expect(res.body).to.have.deep.property('message', 'welcome  back admin');
-        expect(res.body).to.have.deep.property('token');
+        expect(res.body).to.have.deep.property('message', 'welcome back admin');
+        expect(res.body).to.have.property('token');
         done();
       });
   });
