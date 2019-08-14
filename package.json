@@ -28,6 +28,7 @@
     "@sendgrid/mail": "^6.4.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
+    "cloudinary": "^1.14.0",
     "cors": "^2.8.5",
     "coverage": "^0.4.1",
     "dotenv": "^6.2.0",
@@ -41,6 +42,7 @@
     "jsonwebtoken": "^8.5.1",
     "method-override": "^2.3.10",
     "methods": "^1.1.2",
+    "multer": "^1.4.2",
     "nyc": "^14.1.1",
     "passport": "^0.4.0",
     "passport-facebook": "^3.0.0",
@@ -52,11 +54,13 @@
     "request": "^2.87.0",
     "sequelize": "^5.11.0",
     "sequelize-cli": "^5.5.0",
+    "slug": "^1.1.0",
     "swagger-jsdoc": "^3.3.0",
     "swagger-ui-express": "^4.0.7",
     "underscore": "^1.9.1",
     "winston": "^3.2.1",
-    "zombie": "^6.1.4"
+    "zombie": "^6.1.4",
+    "uniqid": "^5.0.3"
   },
   "devDependencies": {
     "coveralls": "^3.0.5",
@@ -77,7 +81,8 @@
   "nyc": {
     "exclude": [
       "src/middlewares/error.middleware.js ",
-      "src/models/index.js"
+      "src/models/index.js",
+      "test"
     ]
   }
 }

@@ -2,10 +2,14 @@ import winston from 'winston';
 import express from 'express';
 import logging from './helpers/logging';
 import routes from './routes/index';
-
+import './config/cloudinary.config';
+import { mock } from './middlewares/validators/socialLogin-mock';
 
 const app = express();
 
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  app.use(mock);
+}
 logging();
 app.use(routes);
 

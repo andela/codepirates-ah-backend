@@ -49,8 +49,10 @@ class UserController {
       }
 
       const payload = {
+        id: theUser.id,
         email: theUser.email,
-        role: theUser.role
+        role: theUser.role,
+        verified: theUser.verified
       };
       const token = await Helper.generateToken(payload);
       return res.status(200).send({
@@ -113,6 +115,7 @@ class UserController {
       };
       const createdUser = await UserService.addUser(newUser);
       const payload = {
+        id: createdUser.id,
         email: createdUser.email,
         role: createdUser.role,
         verified: createdUser.verified
@@ -175,6 +178,7 @@ class UserController {
       const createdUser = await UserService.addUser(newUser);
       const { firstname, lastname, email } = createdUser;
       const payload = {
+        id: createdUser.id,
         email: createdUser.email,
         role: createdUser.role,
         verified: createdUser.verified
