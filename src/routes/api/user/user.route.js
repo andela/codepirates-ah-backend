@@ -5,6 +5,7 @@ import validateUser from '../../../middlewares/validators/signup.validation';
 import admin from '../../../middlewares/admin';
 import verifyEmail from '../../../controllers/verify-controller';
 import confirmEmaiAuth from '../../../middlewares/emailVarification.middleware';
+import follow from '../../../controllers/follow.controller';
 
 const router = express.Router();
 router.get('/verify', verifyEmail);
@@ -16,5 +17,6 @@ router.delete('/:id', [validateToken, confirmEmaiAuth], UserController.deleteUse
 router.put('/update/:email', [validateToken, confirmEmaiAuth], UserController.updateUser);
 router.post('/signup/admin', [validateToken, admin, confirmEmaiAuth], UserController.createAdmin);
 router.post('/signout', validateToken, UserController.signoutUser);
+router.post('/profiles/:email/follow', validateToken, follow);
 
 export default router;

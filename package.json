@@ -12,7 +12,6 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && nyc --reporter=html --reporter=text mocha ./test --no-timeout --exit --require @babel/register",
     "dev": "npm run undoseeds && npm run seeds && nodemon --exec babel-node ./src/app.js"
-  
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
