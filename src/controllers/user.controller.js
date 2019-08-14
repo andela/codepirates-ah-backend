@@ -55,7 +55,7 @@ class UserController {
       const token = await Helper.generateToken(payload);
       return res.status(200).send({
         status: 200,
-        message: `welcome  back ${theUser.firstname}`,
+        message: `welcome back ${theUser.firstname}`,
         token
       });
     } catch (error) {
