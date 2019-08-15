@@ -9,8 +9,15 @@ module.exports = (sequelize, DataTypes) => {
     role: {type:DataTypes.STRING, defaultValue: 'normal'},
     verified: {type: DataTypes.BOOLEAN, defaultValue: false},
   }, {});
-  user.associate = function(models) {
-    // associations can be defined here
-  };
+  
+    user.associate = ({
+      Follow,
+     
+    }) => {
+      user.hasMany(Follow, {
+        foreignKey: 'followerId',
+        as: 'followerDetails'
+      });
+    };
   return user;
 };

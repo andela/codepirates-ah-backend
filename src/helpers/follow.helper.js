@@ -4,8 +4,7 @@ import models from '../models/index';
 const util = new Util();
 
 export default async (req, res) => {
-  const { email } = req.params;
-  const followedUser = await models.user.findOne({ where: { email } });
+  const followedUser = await models.user.findOne({ where: { id: req.params.userId } });
   const followerUser = await models.user.findOne({ where: { email: req.auth.email } });
   if (!followedUser) {
     util.setError(404, 'user does not exist');

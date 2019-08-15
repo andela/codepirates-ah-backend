@@ -2,6 +2,7 @@ import express from 'express';
 import UserController from '../../../controllers/user.controller';
 import validateToken from '../../../middlewares/auth';
 import validateUser from '../../../middlewares/validators/signup.validation';
+import validateUserId from '../../../middlewares/validators/userId.validation';
 import admin from '../../../middlewares/admin';
 import verifyEmail from '../../../controllers/verify-controller';
 import confirmEmaiAuth from '../../../middlewares/emailVarification.middleware';
@@ -18,7 +19,9 @@ router.delete('/:id', [validateToken, confirmEmaiAuth], UserController.deleteUse
 router.put('/update/:email', [validateToken, confirmEmaiAuth], UserController.updateUser);
 router.post('/signup/admin', [validateToken, admin, confirmEmaiAuth], UserController.createAdmin);
 router.post('/signout', validateToken, UserController.signoutUser);
-router.post('/profiles/:email/follow', validateToken, followController.follow);
+router.post('/profiles/:userId/follow', [validateToken, validateUserId], followController.follow);
+router.get('/profiles/following', validateToken, followController.listOfFollowedUsers);
+router.get('/profiles/followers', validateToken, followController.listOfFollowers);
 
 // reset password route handlers
 router.post('/reset', UserController.requestPasswordReset);
