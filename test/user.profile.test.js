@@ -1,53 +1,31 @@
 import { chai, server, expect } from './test-setup';
 
-let usertoken, tokentwo;
+let usertoken;
 
 describe('/Create Profile feature', () => {
-  it('should sign up', (done) => {
+  it('should login', (done) => {
     chai
       .request(server)
-      .post('/api/v1/users/signup')
+      .post('/api/v1/users/login')
       .send({
-        firstname: 'jean',
-        lastname: 'salvi',
-        email: 'jeansalvi@gmail.com',
-        username: 'salvi',
+        email: 'user@gmail.com',
         password: 'ASqw12345'
       })
       .end((error, res) => {
         if (error) done(error);
         usertoken = `Bearer ${res.body.token}`;
-        expect(res.status).to.be.equal(201);
+        expect(res.status).to.be.equal(200);
         expect(res.body).to.have.deep.property('message');
         done();
       });
   });
 
-  it('should sign up', (done) => {
-    chai
-      .request(server)
-      .post('/api/v1/users/signup')
-      .send({
-        firstname: 'salvio',
-        lastname: 'sage',
-        email: 'sage@gmail.com',
-        username: 'sage',
-        password: 'ASqw12345'
-      })
-      .end((error, res) => {
-        if (error) done(error);
-        tokentwo = `Bearer ${res.body.token}`;
-        expect(res.status).to.be.equal(201);
-        expect(res.body).to.have.deep.property('message');
-        done();
-      });
-  });
 
   it('should not update the profile when the username updated is not a string', (done) => {
     chai
       .request(server)
-      .put('/api/v1/users/profile')
-      .set('Authorization', tokentwo)
+      .put('/api/v1/profile')
+      .set('Authorization', usertoken)
       .send({
         bio: 'j is demonstrating this Bio',
         username: 123454
@@ -66,7 +44,7 @@ describe('/Create Profile feature', () => {
   it('should throw an error when user not authenticated ', (done) => {
     chai
       .request(server)
-      .put('/api/v1/users/profile')
+      .put('/api/v1/profile')
       .set('x-access-token', `21${usertoken}`)
       .end((error, res) => {
         if (error) done(error);
@@ -78,7 +56,7 @@ describe('/Create Profile feature', () => {
 
   it('Should successfully retrieve user profile', (done) => {
     chai.request(server)
-      .get('/api/v1/users/profile/salvi')
+      .get('/api/v1/profile/admin')
       .set('x-access-token', usertoken)
       .end((error, res) => {
         if (error) done(error);
@@ -93,10 +71,10 @@ describe('/Create Profile feature', () => {
   it('should not update profile when username is taken', (done) => {
     chai
       .request(server)
-      .put('/api/v1/users/profile')
+      .put('/api/v1/profile')
       .set('Authorization', usertoken)
       .field('bio', 'I am a software developer based in kigali, i like data science and AI')
-      .field('username', 'sage')
+      .field('username', 'admin')
       .end((error, res) => {
         if (error) done(error);
         expect(res).to.be.an('object');
@@ -109,7 +87,7 @@ describe('/Create Profile feature', () => {
   it('should not update profile when there  is invalid username', (done) => {
     chai
       .request(server)
-      .put('/api/v1/users/profile')
+      .put('/api/v1/profile')
       .set('Authorization', usertoken)
       .field('bio', 'I am a software developer based in kigali, i like data science and AI')
       .field('username', 12333)
@@ -125,7 +103,7 @@ describe('/Create Profile feature', () => {
   it('should not update profile when there  is invalid bio', (done) => {
     chai
       .request(server)
-      .put('/api/v1/users/profile')
+      .put('/api/v1/profile')
       .set('Authorization', usertoken)
       .field('bio', 'I am ')
       .field('username', 'salviosage')
@@ -141,7 +119,7 @@ describe('/Create Profile feature', () => {
   it('should update the profile', (done) => {
     chai
       .request(server)
-      .put('/api/v1/users/profile')
+      .put('/api/v1/profile')
       .set('Authorization', usertoken)
       .field('bio', 'I am a software developer based in kigali, i like data science and AI')
       .field('username', 'salvi')
@@ -159,7 +137,7 @@ describe('/Create Profile feature', () => {
 
   it('Should not retrieve user profile when there is none', (done) => {
     chai.request(server)
-      .get('/api/v1/users/profile/mikki')
+      .get('/api/v1/profile/mikki')
       .set('Authorization', usertoken)
       .end((error, res) => {
         if (error) done(error);

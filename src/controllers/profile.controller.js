@@ -1,15 +1,8 @@
 import cloudinary from 'cloudinary';
-import { config } from 'dotenv';
 import UserService from '../services/user.service';
 import Util from '../helpers/util';
 
 const util = new Util();
-config();
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET_KEY,
-});
 
 /**
  * @description User profile

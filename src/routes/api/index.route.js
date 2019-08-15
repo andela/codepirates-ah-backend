@@ -4,16 +4,18 @@ import path from 'path';
 import swaggerSpecification from '../../config/swagger';
 
 import oauth from './oauth/oauth.routes';
-
 import user from './user/user.route';
 import article from './article/article.routes';
+import profile from './profile/profile.route';
 
 const router = express.Router();
 router.use('/images', express.static(path.join(__dirname, 'images')));
 
 router.use(oauth);
+router.use('/profile', profile);
 router.use('/users', user);
 router.use('/', article);
 router.use('/api-docs', swaggerui.serve, swaggerui.setup(swaggerSpecification));
+
 
 export default router;

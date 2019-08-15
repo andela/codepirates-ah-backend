@@ -45,7 +45,6 @@
     "method-override": "^2.3.10",
     "methods": "^1.1.2",
     "multer": "^1.4.2",
-    "multer-storage-cloudinary": "^2.2.1",
     "nyc": "^14.1.1",
     "passport": "^0.4.0",
     "passport-facebook": "^3.0.0",
@@ -61,9 +60,9 @@
     "swagger-jsdoc": "^3.3.0",
     "swagger-ui-express": "^4.0.7",
     "underscore": "^1.9.1",
+    "uniqid": "^5.0.3",
     "winston": "^3.2.1",
-    "zombie": "^6.1.4",
-    "uniqid": "^5.0.3"
+    "zombie": "^6.1.4"
   },
   "devDependencies": {
     "coveralls": "^3.0.5",
