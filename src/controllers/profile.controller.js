@@ -27,16 +27,16 @@ class Profile {
     try {
       let userfound;
       if (userName) {
-        userfound = UserService.findOne('', userName);
+        userfound = await UserService.findOne('', userName);
       } else {
         userfound = await UserService.findOne(req.auth.email, '');
       }
-      if (!userfound.id) {
+      if (!userfound) {
         util.setError(404, 'Profile not found');
         return util.send(res);
       }
       const data = {
-        userName: userfound.userName,
+        username: userfound.username,
         bio: userfound.bio,
         image: userfound.image,
       };
@@ -55,29 +55,23 @@ class Profile {
          * @returns {object} return object containing updated user profile
          */
   static async updateProfile(req, res) {
-    console.log(req.body);
     let filename = '';
     if (req.files.image) {
       filename = req.files.image.path;
     }
-
-
     cloudinary.v2.uploader.upload(filename, { tags: 'CodepiratesAuthors-haven' }, async (err, image) => {
       try {
         const userName = req.auth.email;
-        const user = await UserService.findOne(userName);
+        const user = await UserService.findOne(userName, '');
         const oldURL = user.image;
         if (!user) {
           util.setError(400, 'User not found');
           return util.send(res);
         }
-        const inputUsername = req.body.userName;
-        if (inputUsername) {
-          const usernamefound = await UserService.findOneByUserName(inputUsername);
-          if (usernamefound) {
-            util.setError(409, 'Sorry! The profile username taken, try another one');
-            return util.send(res);
-          }
+        const usernamefound = await UserService.getUserByUserName(req.body.username, userName);
+        if (usernamefound) {
+          util.setError(409, 'Sorry! The profile username taken, try another one');
+          return util.send(res);
         }
         let imgURL;
         if (!err) {
@@ -87,23 +81,23 @@ class Profile {
           imgURL = oldURL;
         }
         const prof = {
-          email: req.params.email,
-          userName: inputUsername,
+          email: req.auth.email,
+          username: req.body.username,
           bio: req.body.bio,
           image: imgURL,
         };
         const updateProfile = await UserService.updateProfile(prof);
         const newProfile = {
-          userName: updateProfile.userName,
-          email: updateProfile.email,
-          bio: updateProfile.bio,
-          image: updateProfile.image,
-          upadatedAt: updateProfile.upadatedAt,
+          userName: updateProfile[1].username,
+          email: updateProfile[1].email,
+          bio: updateProfile[1].bio,
+          image: updateProfile[1].image,
+          upadatedAt: updateProfile[1].upadatedAt,
         };
-        util.setSuccess(200, 'Successfully updated the profile', newProfile);
+        util.setSuccess(200, 'Successfully Profile Updated.', newProfile);
         return util.send(res);
       } catch (error) {
-        util.setError(400, 'we are facing some problemsin system, please contact administrator');
+        util.setError(400, 'we are having some problems in system, please contact administrator');
         return util.send(res);
       }
     });

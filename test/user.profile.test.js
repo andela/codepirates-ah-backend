@@ -1,7 +1,7 @@
-import fs from 'fs';
 import { chai, server, expect } from './test-setup';
 
-let usertoken;
+let usertoken, tokentwo;
+
 describe('/Create Profile feature', () => {
   it('should sign up', (done) => {
     chai
@@ -22,46 +22,23 @@ describe('/Create Profile feature', () => {
         done();
       });
   });
-  it('Create a profile for User ', (done) => {
+
+  it('should sign up', (done) => {
     chai
       .request(server)
-      .patch('/api/v1/users/Profile')
-      .set('x-access-token', usertoken)
+      .post('/api/v1/users/signup')
       .send({
-        Bio: 'I am a software developer based in kigali, i like data science and AI',
-        username: 'salvi',
+        firstname: 'salvio',
+        lastname: 'sage',
+        email: 'sage@gmail.com',
+        username: 'sage',
+        password: 'ASqw12345'
       })
-      .attach('image', fs.readFileSync('dummyData/avatar.jpg'), 'avatar.jpg')
       .end((error, res) => {
         if (error) done(error);
-        expect(res.status).to.be.equal(200);
-        expect(res.body).to.have.deep.property('message', 'Successfully Profile Updated.');
-        done();
-      });
-  });
-  it('should throw an error when user not authenticated ', (done) => {
-    chai
-      .request(server)
-      .patch('/api/v1/users/profile')
-      .set('x-access-token', `21${usertoken}`)
-      .end((error, res) => {
-        if (error) done(error);
-        expect(res.status).to.be.equal(401);
+        tokentwo = `Bearer ${res.body.token}`;
+        expect(res.status).to.be.equal(201);
         expect(res.body).to.have.deep.property('message');
-        done();
-      });
-  });
-  it('Should successfully retrieve user profile', (done) => {
-    chai.request(server)
-      .get('/api/v1/users/profile/salvi')
-      .set('x-access-token', usertoken)
-      .end((error, res) => {
-        if (error) done(error);
-        expect(res).have.status(200);
-        expect(res).to.be.an('object');
-        expect(res.body).to.have.keys('message', 'data');
-        expect(res.body.message).to.deep.equal('successfully retrieved a user profile');
-        expect(res.body.data).to.have.keys('userName', 'bio', 'image');
         done();
       });
   });
@@ -69,8 +46,8 @@ describe('/Create Profile feature', () => {
   it('should not update the profile when the username updated is not a string', (done) => {
     chai
       .request(server)
-      .put('/api/v1/users/profile/salvi')
-      .set('Authorization', usertoken)
+      .put('/api/v1/users/profile')
+      .set('Authorization', tokentwo)
       .send({
         bio: 'j is demonstrating this Bio',
         username: 123454
@@ -80,56 +57,83 @@ describe('/Create Profile feature', () => {
         expect(res).to.be.an('object');
         expect(res.status).to.equal(400);
         expect(res.body)
-          .to.have.property('error')
+          .to.have.property('message')
           .to.be.a('string');
         done();
       });
   });
 
-  it('Should not retrieve user profile when there is none', (done) => {
+  it('should throw an error when user not authenticated ', (done) => {
+    chai
+      .request(server)
+      .put('/api/v1/users/profile')
+      .set('x-access-token', `21${usertoken}`)
+      .end((error, res) => {
+        if (error) done(error);
+        expect(res.status).to.be.equal(401);
+        expect(res.body).to.have.deep.property('message');
+        done();
+      });
+  });
+
+  it('Should successfully retrieve user profile', (done) => {
     chai.request(server)
-      .get('/api/v1/users/profile/mikki')
+      .get('/api/v1/users/profile/salvi')
+      .set('x-access-token', usertoken)
       .end((error, res) => {
         if (error) done(error);
-        expect(res).have.status(404);
+        expect(res).have.status(200);
         expect(res).to.be.an('object');
-        expect(res.body).to.have.keys('message');
-        expect(res.body.message).to.deep.equal('profile for mikki not found');
+        expect(res.body).to.have.keys('message', 'status', 'data');
+        expect(res.body.message).to.deep.equal('Successfully retrieved a user profile');
+        expect(res.body.data).to.have.keys('username', 'bio', 'image');
+        done();
+      });
+  });
+  it('should not update profile when username is taken', (done) => {
+    chai
+      .request(server)
+      .put('/api/v1/users/profile')
+      .set('Authorization', usertoken)
+      .field('bio', 'I am a software developer based in kigali, i like data science and AI')
+      .field('username', 'sage')
+      .end((error, res) => {
+        if (error) done(error);
+        expect(res).to.be.an('object');
+        expect(res.status).to.equal(409);
+        expect(res.body.message).to.deep.equal('Sorry! The profile username taken, try another one');
         done();
       });
   });
 
-  it('should get an error when there is a wrong input profile name', (done) => {
+  it('should not update profile when there  is invalid username', (done) => {
     chai
       .request(server)
-      .put('/api/v1/users/profile/mikki')
+      .put('/api/v1/users/profile')
       .set('Authorization', usertoken)
+      .field('bio', 'I am a software developer based in kigali, i like data science and AI')
+      .field('username', 12333)
       .end((error, res) => {
-        if (error) done(error);
-        expect(res).have.status(403);
-        expect(res).to.be.an('object');
-        expect(res.body).to.have.keys('error');
-        expect(res.body.error).to.deep.equal('sorry! you can not edit the profile that is not yours');
-        done();
-      });
-  });
-
-  it('should not update the profile when the user aploads a file which is not an image', (done) => {
-    chai
-      .request(server)
-      .put('/api/v1/users/profile/salvi')
-      .set('Authorization', usertoken)
-      .send({
-        username: 'salviosage',
-      })
-      .attach('image', fs.readFileSync('dummyData/wromg.js'), 'wrong.js')
-      .end((error, res) => {
-        if (error) done(error);
         expect(res).to.be.an('object');
         expect(res.status).to.equal(400);
-        expect(res.body)
-          .to.have.property('error')
-          .to.be.a('string');
+        expect(res.body).to.have.keys('status', 'message');
+        expect(res.body.status).to.deep.equal('error');
+        done();
+      });
+  });
+
+  it('should not update profile when there  is invalid bio', (done) => {
+    chai
+      .request(server)
+      .put('/api/v1/users/profile')
+      .set('Authorization', usertoken)
+      .field('bio', 'I am ')
+      .field('username', 'salviosage')
+      .end((error, res) => {
+        expect(res).to.be.an('object');
+        expect(res.status).to.equal(400);
+        expect(res.body).to.have.keys('status', 'message');
+        expect(res.body.status).to.deep.equal('error');
         done();
       });
   });
@@ -137,13 +141,10 @@ describe('/Create Profile feature', () => {
   it('should update the profile', (done) => {
     chai
       .request(server)
-      .put('/api/v1/users/profile/salvi')
+      .put('/api/v1/users/profile')
       .set('Authorization', usertoken)
-      .send({
-        bio: 'jean is a software developer with a demonstrated history of software engineering',
-        username: 'salvi'
-      })
-      .attach('image', fs.readFileSync('dummyData/avatar.jpg'), 'avatar.jpg')
+      .field('bio', 'I am a software developer based in kigali, i like data science and AI')
+      .field('username', 'salvi')
       .end((error, res) => {
         if (error) done(error);
         expect(res).to.be.an('object');
@@ -152,7 +153,20 @@ describe('/Create Profile feature', () => {
           .to.have.property('bio');
         expect(res.body.data)
           .to.have.property('image');
-        expect(res.body.data.password).to.be.equal(undefined);
+        done();
+      });
+  });
+
+  it('Should not retrieve user profile when there is none', (done) => {
+    chai.request(server)
+      .get('/api/v1/users/profile/mikki')
+      .set('Authorization', usertoken)
+      .end((error, res) => {
+        if (error) done(error);
+        expect(res).have.status(404);
+        expect(res).to.be.an('object');
+        expect(res.body).to.have.keys('message', 'status');
+        expect(res.body.message).to.deep.equal('Profile not found');
         done();
       });
   });

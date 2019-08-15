@@ -118,6 +118,32 @@ class UserService {
    *
    *
    * @static
+   * @param {*} userName
+   * @param {*} email
+   * @returns
+   * @memberof UserService
+   * @returns {Object} return db result object
+   */
+  static async getUserByUserName(userName, email) {
+    try {
+      const theUser = await database.user.findOne({
+        where: {
+          username: String(userName),
+          email: {
+            [Op.ne]: String(email)
+          }
+        }
+      });
+      return theUser;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
    * @param {*} id
    * @returns
    * @memberof UserService

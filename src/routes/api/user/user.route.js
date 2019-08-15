@@ -5,12 +5,12 @@ import UserController from '../../../controllers/user.controller';
 import validateToken from '../../../middlewares/auth';
 import validateUser from '../../../middlewares/validators/signup.validation';
 import validateUserId from '../../../middlewares/validators/userId.validation';
+import profileVAlidator from '../../../middlewares/validators/user.profile.validator';
 import admin from '../../../middlewares/admin';
 import verifyEmail from '../../../controllers/verify-controller';
 import confirmEmaiAuth from '../../../middlewares/emailVarification.middleware';
 import followController from '../../../controllers/follow.controller';
 import resetPasswordValidation from '../../../middlewares/validators/resetpassword.validation';
-
 
 const connectMulti = connectmultiparty();
 const router = express.Router();
@@ -18,7 +18,7 @@ const router = express.Router();
 
 router.get('/profile', validateToken, ProfileController.getProfile);
 router.get('/profile/:username', validateToken, ProfileController.getProfile);
-router.put('/profile', [validateToken, connectMulti], ProfileController.updateProfile);
+router.put('/profile', [validateToken, connectMulti, profileVAlidator], ProfileController.updateProfile);
 
 router.get('/verify', verifyEmail);
 router.get('/allusers', [validateToken, admin, confirmEmaiAuth], UserController.getAllUsers);
