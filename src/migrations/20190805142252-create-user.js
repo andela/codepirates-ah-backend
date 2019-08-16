@@ -30,6 +30,14 @@ module.exports = {
         type: Sequelize.STRING,
         unique:true
       },
+      bio: {
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
+      image: {
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
       role: {
         allowNull: false,
         type: Sequelize.STRING,

@@ -118,6 +118,32 @@ class UserService {
    *
    *
    * @static
+   * @param {*} userName
+   * @param {*} email
+   * @returns
+   * @memberof UserService
+   * @returns {Object} return db result object
+   */
+  static async getUserByUserName(userName, email) {
+    try {
+      const theUser = await database.user.findOne({
+        where: {
+          username: String(userName),
+          email: {
+            [Op.ne]: String(email)
+          }
+        }
+      });
+      return theUser;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
    * @param {*} id
    * @returns
    * @memberof UserService
@@ -160,6 +186,30 @@ class UserService {
         return updateUser;
       }
       return null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} profile
+   * @returns {Object} return db result object
+   * @memberof UserService
+   */
+  static async updateProfile(profile) {
+    try {
+      const { email } = profile;
+      return await database.user.update(
+        {
+          username: profile.username,
+          bio: profile.bio,
+          image: profile.image
+        },
+        { where: { email }, returning: true, plain: true }
+      );
     } catch (error) {
       throw error;
     }
