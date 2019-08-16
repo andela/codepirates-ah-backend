@@ -11,13 +11,17 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   
     user.associate = ({
-      Follow,
+      Follow,Article
      
     }) => {
       user.hasMany(Follow, {
         foreignKey: 'followerId',
         as: 'followerDetails'
       });
+      user.hasMany(Article, {
+        as:'author',
+        foreignKey:'authorId'
+      })
     };
   return user;
 };
