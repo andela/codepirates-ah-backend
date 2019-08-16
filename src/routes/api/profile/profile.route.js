@@ -11,6 +11,7 @@ const router = express.Router();
 // greate edit a viewing profile handlers
 
 router.get('/', validateToken, confirmEmaiAuth, ProfileController.getProfile);
+router.get('/authors', validateToken, confirmEmaiAuth, ProfileController.getProfiles);
 router.get('/:username', validateToken, confirmEmaiAuth, ProfileController.getProfile);
 router.put('/', [validateToken, confirmEmaiAuth, connectMulti, profileVAlidator], ProfileController.updateProfile);
 
