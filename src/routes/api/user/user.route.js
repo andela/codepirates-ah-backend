@@ -10,6 +10,7 @@ import followController from '../../../controllers/follow.controller';
 import resetPasswordValidation from '../../../middlewares/validators/resetpassword.validation';
 
 const router = express.Router();
+
 router.get('/verify', verifyEmail);
 router.get('/allusers', [validateToken, admin, confirmEmaiAuth], UserController.getAllUsers);
 router.post('/signup', validateUser, UserController.signup);
@@ -22,6 +23,7 @@ router.post('/signout', validateToken, UserController.signoutUser);
 router.post('/profiles/:userId/follow', [validateToken, validateUserId], followController.follow);
 router.get('/profiles/following', validateToken, followController.listOfFollowedUsers);
 router.get('/profiles/followers', validateToken, followController.listOfFollowers);
+
 
 // reset password route handlers
 router.post('/reset', UserController.requestPasswordReset);
