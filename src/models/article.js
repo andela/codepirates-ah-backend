@@ -18,7 +18,11 @@ module.exports = (sequelize, DataTypes) => {
       targetKey: 'id',
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
-    })
+    });
+    Article.hasMany(models.Likes, { as: 'like', foreignKey: 'id',constraints: false,
+    scope: {
+      commentable: 'article'
+    }});
   };
   return Article;
 };
