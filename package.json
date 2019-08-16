@@ -4,7 +4,7 @@
   "description": "A Social platform for the creative at heart",
   "main": "./src/app.js",
   "scripts": {
-    "start": "npm run undoseeds && npm run migration && npm run seeds && babel-node ./src/app.js",
+    "start": "npm run undoseeds && npm run undomigration && npm run migration && npm run seeds && babel-node ./src/app.js",
     "seeds": "babel-node node_modules/.bin/sequelize db:seed:all --seeders-path src/seeders",
     "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo:all",
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
