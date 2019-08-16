@@ -10,7 +10,7 @@ module.exports = {
       slug: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique:true,
+        unique: true,
       },
       title: {
         type: Sequelize.STRING,
@@ -39,12 +39,12 @@ module.exports = {
       },
       authorId: {
         type: Sequelize.INTEGER,
-        allowNull:false,  
+        allowNull: false,
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         references: {
-        model: 'users',
-        key: 'id'
+          model: 'users',
+          key: 'id'
         }
       },
       images: {
