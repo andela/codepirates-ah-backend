@@ -8,10 +8,12 @@ import user from './user/user.route';
 import article from './article/article.routes';
 import profile from './profile/profile.route';
 import rate from './rate/rate.route';
+import Comments from './comment/comments.route';
 
 const router = express.Router();
 router.use('/images', express.static(path.join(__dirname, 'images')));
 
+router.use('/comments', Comments);
 router.use(oauth);
 router.use('/profile', profile);
 router.use('/users', user);
