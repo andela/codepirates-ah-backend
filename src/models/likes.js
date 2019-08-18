@@ -1,9 +1,9 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Likes = sequelize.define('Likes', {
-    parentID: DataTypes.INTEGER,
-    commentable: DataTypes.STRING,
+    ArticleSlug: DataTypes.STRING,
     userId: DataTypes.INTEGER,
+    claps: DataTypes.INTEGER,
     status: DataTypes.ENUM({
       values: ['like', 'dislike', 'neutral']
     })
@@ -11,23 +11,12 @@ module.exports = (sequelize, DataTypes) => {
   Likes.associate = (models) => {
     Likes.belongsTo(models.user, {
       foreignKey: 'userId',
-      as: 'author',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     });
     Likes.belongsTo(models.Article, {
-      foreignKey: 'parentID',
-      constraints: false,
-      as: 'post',
-      targetKey: 'id',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
-    });
-    Likes.belongsTo(models.Comment, {
-      foreignKey: 'parentID',
-      constraints: false,
-      as: 'comment',
-      targetKey: 'id',
+      foreignKey: 'ArticleSlug',
+      targetKey: 'slug',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     });

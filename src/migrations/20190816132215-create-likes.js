@@ -8,14 +8,20 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      commentable:  {
+      ArticleSlug: {
+        type: Sequelize.STRING,
         allowNull: false,
-        type: Sequelize.STRING
-      },
-      parentID: {
-        type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
+        references: {
+          model: 'Articles',
+          key: 'slug'
+          }
+      },
+      claps: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: 0
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -28,7 +34,8 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM,
-        values: ['like', 'dislike', 'neutral']
+        values: ['like', 'dislike', 'neutral'],
+        defaultValue: 'neutral'
       },
       createdAt: {
         allowNull: false,
