@@ -20,7 +20,6 @@ describe('/Create Profile feature', () => {
       });
   });
 
-
   it('should not update the profile when the username updated is not a string', (done) => {
     chai
       .request(server)
@@ -55,7 +54,8 @@ describe('/Create Profile feature', () => {
   });
 
   it('Should successfully retrieve user profile', (done) => {
-    chai.request(server)
+    chai
+      .request(server)
       .get('/api/v1/profile/admin')
       .set('x-access-token', usertoken)
       .end((error, res) => {
@@ -79,7 +79,9 @@ describe('/Create Profile feature', () => {
         if (error) done(error);
         expect(res).to.be.an('object');
         expect(res.status).to.equal(409);
-        expect(res.body.message).to.deep.equal('Sorry! The profile username taken, try another one');
+        expect(res.body.message).to.deep.equal(
+          'Sorry! The profile username taken, try another one'
+        );
         done();
       });
   });
@@ -127,16 +129,15 @@ describe('/Create Profile feature', () => {
         if (error) done(error);
         expect(res).to.be.an('object');
         expect(res.status).to.equal(200);
-        expect(res.body.data)
-          .to.have.property('bio');
-        expect(res.body.data)
-          .to.have.property('image');
+        expect(res.body.data).to.have.property('bio');
+        expect(res.body.data).to.have.property('image');
         done();
       });
   });
 
   it('Should not retrieve user profile when there is none', (done) => {
-    chai.request(server)
+    chai
+      .request(server)
       .get('/api/v1/profile/mikki')
       .set('Authorization', usertoken)
       .end((error, res) => {
@@ -145,6 +146,20 @@ describe('/Create Profile feature', () => {
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status');
         expect(res.body.message).to.deep.equal('Profile not found');
+        done();
+      });
+  });
+  it('Should successfully get all profiles of all authors', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/profile/authors')
+      .set('x-access-token', usertoken)
+      .end((error, res) => {
+        if (error) done(error);
+        expect(res).have.status(200);
+        expect(res).to.be.an('object');
+        expect(res.body).to.have.keys('message', 'status', 'data');
+        expect(res.body.message).to.deep.equal("The list of users' profiles.");
         done();
       });
   });
