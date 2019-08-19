@@ -20,16 +20,21 @@ class LikesController {
       if (req.body.likeId) {
         const prof = {
           status: 'neutral',
-          claps: null,
+          claps: 0,
         };
-        const like = await likeService.updateLikes(prof, req.params.Article);
-        util.setSuccess(200, 'Successfully unliked', like);
+        const like = await likeService.updateLikes(prof, req.body.likeId);
+        const newLike = {
+          status: like[1].status,
+          claps: like[1].claps,
+          ArticleSlug: like[1].ArticleSlug,
+        };
+        util.setSuccess(200, 'Successfully unliked', newLike);
         return util.send(res);
       }
-      util.setError(404, 'you cant unlike article you didnt like');
+      util.setError(401, 'you cant unlike article you did not like');
       return util.send(res);
     } catch (error) {
-      util.setError(500, 'contact admin');
+      util.setError(500, 'server error contact admin');
       return util.send(res);
     }
   }
@@ -42,26 +47,43 @@ class LikesController {
    */
   static async dislike(req, res) {
     try {
+      if (req.body.author === req.body.userId) {
+        util.setError(401, 'You can not dislike to your own post');
+        return util.send(res);
+      }
       if (!req.body.likeId) {
         const prof = {
           userId: req.body.userId,
           ArticleSlug: req.params.Article,
           status: 'dislike',
-          claps: null,
+          claps: 0,
         };
         const like = await likeService.createLikes(prof);
-        util.setSuccess(200, 'Successfully disliked', like);
+        const newLike = {
+          status: like.status,
+          claps: like.claps,
+          ArticleSlug: like.ArticleSlug,
+        };
+        util.setSuccess(200, 'Successfully disliked', newLike);
         return util.send(res);
       }
       const prof = {
         status: 'dislike',
-        claps: null,
+        claps: 0,
       };
+      if (req.body.status === 'dislike') {
+        prof.status = 'neutral';
+      }
       const like = await likeService.updateLikes(prof, req.body.likeId);
-      util.setSuccess(200, 'Successfully disliked', like);
+      const newLike = {
+        status: like[1].status,
+        claps: like[1].claps,
+        ArticleSlug: like[1].ArticleSlug,
+      };
+      util.setSuccess(200, 'Successfully disliked', newLike);
       return util.send(res);
     } catch (error) {
-      util.setError(500, 'dislike not successfully server error');
+      util.setError(500, 'server error contact admin');
       return util.send(res);
     }
   }
@@ -74,13 +96,22 @@ class LikesController {
    */
   static async clap(req, res) {
     try {
+      if (req.body.author === req.body.userId) {
+        util.setError(401, 'You can not clap to your own post');
+        return util.send(res);
+      }
       if (req.body.likeId) {
         const prof = {
           status: 'like',
           claps: req.body.claps + 1,
         };
         const like = await likeService.updateLikes(prof, req.body.likeId);
-        util.setSuccess(200, 'Successfully claped', like);
+        const newLike = {
+          status: like[1].status,
+          claps: like[1].claps,
+          ArticleSlug: like[1].ArticleSlug,
+        };
+        util.setSuccess(200, 'Successfully claped', newLike);
         return util.send(res);
       }
       const prof = {
@@ -90,11 +121,15 @@ class LikesController {
         claps: 1,
       };
       const like = await likeService.createLikes(prof);
-      util.setSuccess(200, 'Successfully claped', like);
+      const newLike = {
+        status: like.status,
+        claps: like.claps,
+        ArticleSlug: like.ArticleSlug,
+      };
+      util.setSuccess(200, 'Successfully claped', newLike);
       return util.send(res);
     } catch (error) {
-      console.log(error);
-      util.setError(500, 'clap not successfully server error');
+      util.setError(500, 'server error contact admin');
       return util.send(res);
     }
   }
@@ -107,15 +142,16 @@ class LikesController {
    */
   static async getDislikes(req, res) {
     try {
-      const dislike = await likeService.getAllADislike(req.params.parentid);
+      const dislike = await likeService.getAllADislike(req.params.Article);
       if (dislike) {
-        util.setSuccess(200, 'Successfully claped', dislike);
+        const data = {
+          dislikes: dislike.count,
+        };
+        util.setSuccess(200, 'Dislike retrieved successfully', data);
         return util.send(res);
       }
-      util.setError(404, 'no dislike found');
-      return util.send(res);
     } catch (error) {
-      util.setError(400, 'unsuccessfull request server error');
+      util.setError(400, 'server error contact admin');
       return util.send(res);
     }
   }
@@ -128,16 +164,17 @@ class LikesController {
    */
   static async getClaps(req, res) {
     try {
-      const claps = await likeService.getAllAClaps(req.params.parentid);
+      const claps = await likeService.getAllAClaps(req.params.Article);
       if (claps) {
-        util.setSuccess(200, 'Successfully claps retrieved', claps);
+        const data = {
+          clapers: claps.count,
+          claps: Object.values(claps)[1],
+        };
+        util.setSuccess(200, 'Claps retrieved successfully', data);
         return util.send(res);
       }
-      util.setError(404, 'no claps found');
-      return util.send(res);
     } catch (error) {
-      console.log(error);
-      util.setError(400, 'unsuccessfull request');
+      util.setError(400, 'server error contact admin');
       return util.send(res);
     }
   }

@@ -13,22 +13,27 @@ export default async (req, res, next) => {
     const userId = user.id;
     const ArticleSlug = req.params.Article;
     const post = await models.Article.findOne({ where: { slug: ArticleSlug } });
+
     if (!post) {
       util.setError(404, 'post not found');
       return util.send(res);
     }
     const like = await models.Likes.findOne({ where: { ArticleSlug, userId } });
-    console.log(req.params.Article);
-    if (like) {
+    if (!like) {
+      req.body.author = post.authorId;
+      req.body.userId = userId;
+      req.body.likeId = null;
+      req.body.claps = null;
+      req.body.author = post.authorId;
+      next();
+    } else {
+      req.body.author = post.authorId;
       req.body.likeId = like.id;
       req.body.claps = like.claps;
       req.body.userId = userId;
+      req.body.status = like.status;
       next();
     }
-    req.body.likeId = null;
-    req.body.claps = null;
-    req.body.userId = userId;
-    next();
   } catch (error) {
     util.setError(500, 'server error');
     return util.send(res);

@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import models from '../models';
 
 const db = models.Likes;
@@ -18,11 +19,15 @@ class LikeService {
    */
   static async getAllADislike(ArticleSlug) {
     try {
-      const dislikes = await db.findAll({
+      const dislikes = await db.findAndCountAll({
         where: {
           ArticleSlug: String(ArticleSlug),
           status: 'dislike'
-        }
+        },
+        attributes: {
+          exclude: ['id', 'userId', 'createdAt', 'updatedAt', 'status']
+        },
+        raw: true
       });
       return dislikes;
     } catch (error) {
@@ -40,11 +45,12 @@ class LikeService {
    */
   static async getAllAClaps(ArticleSlug) {
     try {
-      const claps = await db.findAll({
+      const claps = await db.findAndCountAll({
         where: {
           ArticleSlug: String(ArticleSlug),
           status: 'like'
-        }
+        },
+        attributes: [[Sequelize.fn('sum', Sequelize.col('claps')), 'total']],
       });
       return claps;
     } catch (error) {

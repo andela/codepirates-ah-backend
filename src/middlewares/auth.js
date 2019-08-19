@@ -41,8 +41,6 @@ const validateToken = async (req, res, next) => {
       req.token = token;
       req.auth = decode;
       next();
-
-      return decode;
     });
   } else {
     return res.status(400).send({
