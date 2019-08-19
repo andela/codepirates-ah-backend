@@ -4,7 +4,7 @@ import fakeUsers from '../../mock-data';
 dotenv.config();
 
 export const mock = (req, res, next) => {
-  if (req.url.includes('login/')) {
+  if (req.url.includes('login/') && req.method === 'GET') {
     res.redirect(`/auth/fake?provider=${req.url.split('/')[2]}`);
   } else {
     next();

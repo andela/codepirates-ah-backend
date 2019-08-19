@@ -3,7 +3,7 @@ import { chai, server, expect } from './test-setup';
 let usertoken;
 
 describe('/Create Profile feature', () => {
-  it('should login', (done) => {
+  before('jsjsj', (done) => {
     chai
       .request(server)
       .post('/api/v1/users/login')
@@ -13,8 +13,6 @@ describe('/Create Profile feature', () => {
       })
       .end((error, res) => {
         usertoken = `Bearer ${res.body.token}`;
-        expect(res.status).to.be.equal(200);
-        expect(res.body).to.have.deep.property('message');
         done();
       });
   });

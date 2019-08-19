@@ -1,0 +1,183 @@
+/tags:
+  get:
+    summary: Gets all tags
+    description: >
+      Get all tags
+    tags:
+      - Tag
+    produces:
+      - application/json
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#definitions/Tag'
+  post:
+    summary: creates a tag
+    description: >
+      creates a tag
+    tags:
+      - Tag
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: articleSlug
+        in: path
+        description: Slug for article being rated
+        type: string
+        required: true
+      - name: rate
+        in: body
+        description: article rating
+        schema:
+          $ref: '#definitions/Tag'
+    responses:
+      200:
+        description: Tag successfully created
+        schema:
+          $ref: '#definitions/Tag'
+      400:
+        description: input Validation error
+/tags/{name}:
+  get:
+    summary: creates a specific tag
+    tags:
+      - Tag
+    description: >
+      creates a rating about a specific article
+    produces:
+      - application/json
+    parameters:
+      - name: name
+        in: path
+        description: name of tag being searched
+        type: string
+        required: true
+    responses:
+      200:
+        description: Tag successfully retrieved
+        schema:
+          $ref: '#definitions/Tag'
+      400:
+        $ref: '#/responses/400'
+      404:
+        $ref: '#/responses/404'
+  patch:
+    summary: update a tag
+    description: >
+      update a tag
+    tags:
+      - Tag
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: name
+        in: path
+        description: name for tag being updated
+        type: string
+        required: true
+      - name: tag
+        in: body
+        description: name of tag
+        schema:
+          $ref: '#definitions/Tag'
+    responses:
+      200:
+        description: Tag successfully created
+        schema:
+          $ref: '#definitions/Tag'
+      400:
+        description: input Validation error
+/tags/{name}/articles:
+  get:
+    summary: creates a specific tag
+    tags:
+      - Tag
+    description: >
+      creates a rating about a specific article
+    produces:
+      - application/json
+    parameters:
+      - name: name
+        in: path
+        description: name of tag
+        type: string
+        required: true
+    responses:
+      200:
+        description: Tag successfully retrieved
+        schema:
+          $ref: '#definitions/Tag'
+      400:
+        $ref: '#/responses/400'
+      404:
+        $ref: '#/responses/404'
+  delete:
+    summary: deletes a specific tag
+    tags:
+      - Tag
+    description: >
+      deletes a specific tag
+    produces:
+      - application/json
+    parameters:
+      - name: name
+        in: path
+        description: name of tag being searched
+        type: string
+        required: true
+    responses:
+      200:
+        description: Tag successfully retrieved
+        schema:
+          $ref: '#definitions/Tag'
+      400:
+        $ref: '#/responses/400'
+      404:
+        $ref: '#/responses/404'
+tags:
+  - name: Tag
+    description: Operations about tags
+responses:
+  200:
+    description: Success
+    schema:
+      $ref: '#/definitions/Rate'
+  400:
+    description: Bad request
+    schema:
+      $ref: '#/definitions/Error'
+  404:
+    description: Not found
+    schema:
+      $ref: '#/definitions/Error'
+definitions:
+  Tag:
+    type: object
+    properties:
+      name:
+        type: string
+        description: tag
+    required:
+      - name
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+        description: status code
+      message:
+        type: string
+        description: description of error

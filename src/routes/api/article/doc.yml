@@ -16,7 +16,7 @@
           - authorization
       - name: slug
         in: path
-        description: Slug for article 
+        description: Slug for article
         type: string
         required: true
     responses:
@@ -55,13 +55,13 @@
         in: formData
         type: string
         description: description
-        required: 
+        required:
           - description
       - name: body
         in: formData
         type: string
         description: body
-        required: 
+        required:
           - body
       - name: tagList
         in: formData
@@ -126,7 +126,7 @@
       400:
         $ref: '#/responses/BadRequest'
       404:
-        $ref: '#/responses/Notfound' 
+        $ref: '#/responses/Notfound'
 /articles:
   post:
     summary: Create an article
@@ -226,9 +226,146 @@
             $ref: '#definitions/Article'
         404:
           $ref: '#/responses/Notfound'
+/articles/{articleId}/tags:
+  post:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: articleId
+        in: path
+        description: article id
+        type: integer
+        required: true
+      - name: tagname
+        in: body
+        description: tag name
+        schema:
+          type: object
+          required:
+            - tagname
+          properties:
+            tag:
+              type: string
+    responses:
+      200:
+        description: Article tagged as tag name
+        schema:
+          $ref: '#/responses/Article'
+      400:
+        $ref: '#/responses/BadRequest'
+      404:
+        $ref: '#/responses/Notfound'
+  get:
+    produces:
+      - application/json
+    parameters:
+      - name: articleId
+        in: path
+        description: article id
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Article tagged as tag name
+        schema:
+          $ref: '#/responses/Article'
+      400:
+        $ref: '#/responses/BadRequest'
+      404:
+        $ref: '#/responses/Notfound'
+/articles/{articleId}/{name}:
+  patch:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: articleId
+        in: path
+        description: article id
+        type: integer
+        required: true
+      - name: name
+        in: path
+        description: name of tag
+        type: string
+        required: true
+      - name: tagname
+        in: body
+        description: tag name
+        schema:
+          type: object
+          required:
+            - tagname
+          properties:
+            tag:
+              type: string
+    responses:
+      200:
+        description: Article tagged as tag name
+        schema:
+          $ref: '#/responses/Article'
+      400:
+        $ref: '#/responses/BadRequest'
+      404:
+        $ref: '#/responses/Notfound'
+/articles/{articleId}/{tagId}:
+  delete:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: articleId
+        in: path
+        description: article id
+        type: integer
+        required: true
+      - name: tagId
+        in: path
+        description: id of tag
+        type: integer
+        required: true
+      - name: tagname
+        in: body
+        description: tag name
+        schema:
+          type: object
+          required:
+            - tagname
+          properties:
+            tag:
+              type: string
+    responses:
+      200:
+        description: Article tagged as tag name
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Tag with id has been removed
+      400:
+        $ref: '#/responses/BadRequest'
+      404:
+        $ref: '#/responses/Notfound'
 tags:
-- name: Article
-  description: Operations related to Article
+  - name: Article
+    description: Operations related to Article
 responses:
   success:
     description: Success

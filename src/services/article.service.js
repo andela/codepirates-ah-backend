@@ -33,7 +33,9 @@ class articleService {
    */
   static async getAllArticles() {
     try {
-      return await db.findAll();
+      return await db.findAll({
+        include: ['tags'],
+      });
     } catch (error) {
       throw error;
     }
