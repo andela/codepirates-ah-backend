@@ -1,0 +1,234 @@
+/users/login:
+  post:
+    tags:
+      - User
+    description: Creates a user
+    produces:
+      - application/json
+    parameters:
+      - name: user
+        description: User object
+        in:  body
+        required: true
+        type: string
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+              format: password
+    responses:
+      200:
+        description: User successfully created
+        schema:
+          $ref: '#/definitions/User'
+/users/signup:
+  post:
+    tags:
+      - User
+    description: Creates a user
+    produces:
+      - application/json
+    parameters:
+      - in: body
+        name: user
+        description: create an account.
+        schema:
+         type: object
+         required:
+           - username
+           - firstname
+           - lastname
+           - email
+           - password
+        properties:
+          username:
+             type: string
+          firstname:
+            type: string
+          lastname:
+             type: string
+          email:
+             type: string
+          password:
+             type: string
+             format: password
+    responses:
+      201:
+        description: Your account has been successfully created.
+        schema:
+          $ref: '#/definitions/User'
+/users/signout:
+  post:
+    tags:
+      - User
+    description: Logs out a user
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: User logged out successfully
+/users/reset:
+  post:
+    tags:
+      - User
+    description: request for a password reset
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: 'reset password'
+        in: body
+        description: password reset
+        schema:
+         type: object
+         properties:
+          email:
+             type: string
+         required:
+           - email
+    responses:
+      200:
+        description: Check your email address to reset your password
+      400:
+        description: Validation error
+/users/reset/:token:
+  patch:
+    tags:
+      - User
+    description: handle password reset logic
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - in: body
+        name: user
+        description: request for password reset
+        schema:
+         type: object
+        properties:
+          password:
+             type: string
+          confirmPassword:
+             type: string
+        required:
+          - password
+          - confirmPassword
+    responses:
+      200:
+        description: Successfully reset your password
+      400:
+        description: Validation error
+/users/profiles/{userId}/follow:
+  post:
+    tags:
+      - User
+    description: follow user
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - in: path
+        name: userId
+        schema:
+         type: integer
+         required: true
+    responses:
+      200:
+        description: You are now following
+      400:
+        description: userId must be a non negative integer
+/users/profiles/following:
+  get:
+    tags:
+      - User
+    description: get all users that i follow
+    produces:
+      - application/json
+    responses:
+      200:
+        description: You currently do not follow anyone
+/users/profiles/followers:
+  get:
+    tags:
+      - User
+    description: get all users that i follow
+    produces:
+      - application/json
+    responses:
+      200:
+        description: You currently do not have any followers
+      400:
+        $ref: #/responses/400
+      404:
+        $ref: #/responses/404
+tags:
+- name: User
+  description: Operations about user
+responses:
+  200:
+    description: Success
+    schema:
+      $ref: #/definitions/Rate
+  400:
+    description: Bad request
+    schema:
+      $ref: #/definitions/Error
+  404:
+    description: Not found
+    schema:
+      $ref: #/definitions/Error
+definitions:
+  User:
+    type: object
+    required:
+      - firstname
+      - lastname
+      - email
+      - username
+      - password
+    properties:
+      firstname:
+        type: string
+      lastname:
+        type: string
+      email:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+        format: 
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+        description: status code
+      message:
+        type: string
+        description: description of error
