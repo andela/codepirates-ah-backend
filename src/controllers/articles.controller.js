@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import 'dotenv/config';
 import slug from 'slug';
 import uniqid from 'uniqid';
@@ -55,12 +54,12 @@ class Articles {
           description: createdArticle.description,
           body: createdArticle.body,
           taglist: createdArticle.taglist,
-          createdAt: createdArticle.createdAt,
-          updatedAt: createdArticle.updatedAt,
+          flagged: createdArticle.flagged,
           favorited: createdArticle.favorited,
-          favoritesCount: createdArticle.favoritesCount,
-          authorId: createdArticle.authorId,
-          images: createdArticle.images
+          favoritedcount: createdArticle.favoritedcount,
+          images: createdArticle.images,
+          createdAt: createdArticle.createdAt,
+          updatedAt: createdArticle.updatedAt
         }
       });
     }
@@ -82,8 +81,8 @@ class Articles {
     }
     return res.status(200).json({
       status: 200,
-      articles,
-      message: 'List of all articles'
+      message: 'List of all articles',
+      articles
     });
   }
 
@@ -100,15 +99,15 @@ class Articles {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
     });
-    if (findArticle) {
+    if (!findArticle) {
       return res.status(200).json({
         status: 200,
-        findArticle
+        message: 'That article does not exist!'
       });
     }
     return res.status(200).json({
       status: 200,
-      message: 'That article does not exist!'
+      findArticle
     });
   }
 
@@ -181,16 +180,6 @@ class Articles {
       updatedArticle
     });
   }
-
-  /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @return {Object} articles
-   * @memberof Articles
-   */
 }
 
 export default Articles;

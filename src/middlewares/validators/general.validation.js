@@ -1,5 +1,3 @@
-/* eslint-disable no-useless-escape */
-/* eslint-disable no-shadow */
 import Joi from 'joi';
 import { restrictions } from './schemas';
 

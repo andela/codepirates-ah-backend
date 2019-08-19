@@ -138,4 +138,36 @@
  *         description: Successfully reset your password
  *       400:
  *         description: Validation error
+ * /users/profiles/{userId}/follow:
+ *   post:
+ *     description: follow user
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *          type: integer
+ *          required: true
+ *     responses:
+ *       200:
+ *         description: You are now following
+ *       400:
+ *         description: userId must be a non negative integer
+ * /users/profiles/following:
+ *   get:
+ *     description: get all users that i follow
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: You currently do not follow anyone
+ * /users/profiles/followers:
+ *   get:
+ *     description: get all users that i follow
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: You currently do not have any followers
  */
