@@ -269,6 +269,9 @@ definitions:
       favoritesCount:
         type: integer
         description: article tags
+      readtime:
+        type: string
+        description: article read time
       author:
         type: object
         properties:
