@@ -1,10 +1,13 @@
 import 'dotenv/config';
 import slug from 'slug';
+import _ from 'lodash';
 import uniqid from 'uniqid';
 import cloudinary from 'cloudinary';
 import models from '../models';
 import Userservice from '../services/user.service';
 import articleService from '../services/article.service';
+import Helper from '../helpers/helper';
+
 
 const db = models.Article;
 /**
@@ -79,10 +82,18 @@ class Articles {
     if (!articles) {
       return res.status(200).json({ status: 200, message: 'There is no article.' });
     }
+    const allArticles = _.map(articles, _.partialRight(_.pick, ['slug', 'title', 'description', 'body', 'taglist', 'favorited', 'favoritedcount', 'flagged', 'images', 'views']));
+
+    allArticles.map((article) => {
+      const readTime = Helper.calculateReadTime(article.body);
+      article.readtime = readTime;
+      return true;
+    });
+
     return res.status(200).json({
       status: 200,
       message: 'List of all articles',
-      articles
+      data: allArticles
     });
   }
 
@@ -105,9 +116,13 @@ class Articles {
         message: 'That article does not exist!'
       });
     }
+    const article = _.pick(findArticle, ['slug', 'title', 'description', 'body', 'taglist', 'favorited', 'favoritedcount', 'flagged', 'images', 'views']);
+    const readTime = Helper.calculateReadTime(article.body);
+    article.readtime = readTime;
     return res.status(200).json({
       status: 200,
-      findArticle
+      message: 'Article successfully retrieved',
+      data: article
     });
   }
 

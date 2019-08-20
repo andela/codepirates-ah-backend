@@ -43,4 +43,28 @@ describe('Articles', () => {
       });
     done();
   });
+  it('List of all articles', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/articles')
+      .set('Content-Type', 'application/json')
+      .set('Authorization', usertoken)
+      .end((err, res) => {
+        expect(res.status).to.be.deep.equal(200);
+        expect(res.body).to.have.deep.property('message', 'List of all articles');
+      });
+    done();
+  });
+  it('view single article', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/articles/fakeslug')
+      .set('Content-Type', 'application/json')
+      .set('Authorization', usertoken)
+      .end((err, res) => {
+        expect(res.status).to.be.deep.equal(200);
+        expect(res.body).to.have.deep.property('message', 'Article successfully retrieved');
+      });
+    done();
+  });
 });
