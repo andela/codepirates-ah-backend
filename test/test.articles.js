@@ -17,7 +17,6 @@ describe('Articles', () => {
       .post('/api/v1/articles')
       .set('Content-Type', 'application/json')
       .set('Authorization', usertoken)
-      .field('tagList', 'tag1, tag2, tag3')
       .attach('images', fs.readFileSync(`${__dirname}/mock/pic.jpeg`), 'pic.jpeg')
       .end((err, res) => {
         expect(res.status).to.be.deep.equal(400);
@@ -34,7 +33,6 @@ describe('Articles', () => {
       .field('title', 'Title')
       .field('body', 'body field')
       .field('description', 'description is here')
-      .field('tagList', 'tag1, tag2, tag3')
       .attach('images', fs.readFileSync(`${__dirname}/mock/pic.jpeg`), 'pic.jpeg')
       .end((err, res) => {
         expect(res.status).to.be.deep.equal(201);
