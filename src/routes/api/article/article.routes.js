@@ -15,6 +15,6 @@ router.post('/fake', auth, fakeCloud, validate(schema.articleSchema), articleCon
 router.post('/articles', [auth, confirmEmailAuth], imageUpload.array('images', 10), validate(schema.articleSchema), articleController.createArticles);
 router.get('/articles', [auth, confirmEmailAuth], articleController.getAllArticles);
 router.get('/articles/:slug', [auth, confirmEmailAuth], articleController.getOneArticle);
-router.delete('/articles/:slug', [auth, confirmEmailAuth], articleController.deleteArticle);
-router.patch('/articles/:slug', [auth, confirmEmailAuth], imageUpload.array('images', 10), articleController.UpdateArticle);
+router.delete('articles/:slug', [auth, confirmEmailAuth], articleController.deleteArticle);
+router.patch('articles/:slug', [auth, confirmEmailAuth], imageUpload.array('images', 10), articleController.UpdateArticle);
 export default router;
