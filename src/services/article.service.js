@@ -37,7 +37,7 @@ class articleService {
     try {
       return await db.findAll({
         order: [
-          ['updatedAt', 'DESC']
+          ['createdAt', 'DESC']
         ],
         offset,
         limit,
