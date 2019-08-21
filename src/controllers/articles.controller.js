@@ -69,6 +69,19 @@ class Articles {
    * @memberof Articles
    */
   static async getAllArticles(req, res) {
+    let page = parseInt(req.query.page, 10);
+    if (isNaN(page) || page < 1) {
+      page = 1;
+    }
+    let limit = parseInt(req.query.limit, 10);
+    if (isNaN(limit)) {
+      limit = 10;
+    } else if (limit > 50) {
+      limit = 50;
+    } else if (limit < 1) {
+      limit = 1;
+    }
+    const offset = (page - 1) * limit;
     const articles = await articleService.getAllArticles();
     if (!articles) {
       return res.status(200).json({ status: 200, message: 'There is no article.' });
