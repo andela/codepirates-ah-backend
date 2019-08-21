@@ -7,6 +7,7 @@ import oauth from './oauth/oauth.routes';
 import user from './user/user.route';
 import article from './article/article.routes';
 import profile from './profile/profile.route';
+import likes from './likes/likes.routes';
 import rate from './rate/rate.route';
 import Comments from './comment/comments.route';
 
@@ -16,6 +17,7 @@ router.use('/images', express.static(path.join(__dirname, 'images')));
 router.use('/comments', Comments);
 router.use(oauth);
 router.use('/profile', profile);
+router.use('/likes', likes);
 router.use('/users', user);
 router.use('/', article);
 router.use('/rate', rate);

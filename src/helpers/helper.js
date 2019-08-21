@@ -56,5 +56,37 @@ class Helper {
       return error.message;
     }
   }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} body
+   * @returns {integer} word count
+   * @memberof Helper
+   */
+  static countWords(body) {
+    // regex meaning:
+    // ^  -->  Match any character that is not the set in this case (\s)
+    // \s -->   Matches any whitespace character (spaces, tabs, line breaks)
+    // /g -->  Search everyting
+    return (body.match(/[^\s]+/g) || []).length;
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} body
+   * @returns {string} article read time
+   * @memberof Helper
+   */
+  static calculateReadTime(body) {
+    const readingSpeedInWordsPerMinute = 256; // Average reading speed of an adult
+    const wordCount = this.countWords(body);
+    const readTime = Math.ceil((wordCount / readingSpeedInWordsPerMinute));
+    const formatedReadTime = `${readTime} min read`;
+    return formatedReadTime;
+  }
 }
 export default Helper;

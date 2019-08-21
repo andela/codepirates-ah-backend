@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       targetKey: 'id',
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
-    })
+    });
   };
   return Article;
 };

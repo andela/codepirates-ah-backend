@@ -7,7 +7,7 @@ import { mock } from './middlewares/validators/socialLogin-mock';
 
 const app = express();
 
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
   app.use(mock);
 }
 logging();

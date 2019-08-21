@@ -38,9 +38,9 @@ const apiVersion = process.env.API_VERSION;
 const baseUrl = `/api/${apiVersion}`;
 
 router.get('/', (req, res) => res.status(200).json({ status: 200, data: 'Welcome to Authors Haven.' }));
+router.use(article);
 router.use(baseUrl, api);
 router.use(oauth);
-router.use(article);
 
 router.use(notfound);
 router.use(error);
