@@ -4,7 +4,6 @@ module.exports = (sequelize, DataTypes) => {
     title: { type: DataTypes.STRING, allowNull: false },
     description: { type: DataTypes.TEXT, allowNull: false },
     body: { type: DataTypes.TEXT, allowNull: false },
-    taglist: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true },
     favorited: { type: DataTypes.BOOLEAN, allowNull: true, defaultValue: false },
     favoritedcount: { type: DataTypes.INTEGER, defaultValue: 0 },
     flagged: { type: DataTypes.BOOLEAN, defaultValue: false },
