@@ -82,7 +82,7 @@ class Articles {
       limit = 1;
     }
     const offset = (page - 1) * limit;
-    const articles = await articleService.getAllArticles();
+    const articles = await articleService.getAllArticles(offset, limit);
     if (!articles) {
       return res.status(200).json({ status: 200, message: 'There is no article.' });
     }
