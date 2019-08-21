@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import 'dotenv/config';
 import slug from 'slug';
 import _ from 'lodash';
@@ -9,16 +8,6 @@ import articleService from '../services/article.service';
 import Helper from '../helpers/helper';
 import cloudinaryHelper from '../helpers/cloudinaryHelper';
 
-=======
-/* eslint-disable camelcase */
-import 'dotenv/config';
-import slug from 'slug';
-import uniqid from 'uniqid';
-import cloudinary from 'cloudinary';
-import models from '../models';
-import Userservice from '../services/user.service';
-import articleService from '../services/article.service';
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
 
 const db = models.Article;
 /**
@@ -39,33 +28,15 @@ class Articles {
   static async createArticles(req, res) {
     const userId = req.auth.id;
     const findUser = await Userservice.getOneUser(userId);
-<<<<<<< HEAD
     const images = await cloudinaryHelper(req.files);
 
     if (findUser) {
       const { title } = req.body;
-=======
-    let images = req.files;
-    images = await Promise.all(
-      images.map(async (file) => {
-        const { secure_url } = await cloudinary.v2.uploader.upload(file.path);
-        return secure_url;
-      })
-    );
-
-    if (findUser) {
-      const { title } = req.body;
-      const tags = req.body.taglist.split(' ');
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
       const article = {
         slug: `${slug(title)}-${uniqid()}`,
         title,
         description: req.body.description,
         body: req.body.body,
-<<<<<<< HEAD
-=======
-        taglist: tags,
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
         authorId: req.auth.id,
         images
       };
@@ -77,22 +48,12 @@ class Articles {
           title: createdArticle.title,
           description: createdArticle.description,
           body: createdArticle.body,
-<<<<<<< HEAD
           flagged: createdArticle.flagged,
           favorited: createdArticle.favorited,
           favoritedcount: createdArticle.favoritedcount,
           images: createdArticle.images,
           createdAt: createdArticle.createdAt,
           updatedAt: createdArticle.updatedAt
-=======
-          taglist: createdArticle.taglist,
-          createdAt: createdArticle.createdAt,
-          updatedAt: createdArticle.updatedAt,
-          favorited: createdArticle.favorited,
-          favoritesCount: createdArticle.favoritesCount,
-          authorId: createdArticle.authorId,
-          images: createdArticle.images
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
         }
       });
     }
@@ -112,7 +73,6 @@ class Articles {
     if (!articles) {
       return res.status(200).json({ status: 200, message: 'There is no article.' });
     }
-<<<<<<< HEAD
     const allArticles = _.map(articles, _.partialRight(_.pick, ['slug', 'title', 'description', 'body', 'taglist', 'favorited', 'favoritedcount', 'flagged', 'images', 'views']));
 
     allArticles.map((article) => {
@@ -125,12 +85,6 @@ class Articles {
       status: 200,
       message: 'List of all articles',
       data: allArticles
-=======
-    return res.status(200).json({
-      status: 200,
-      articles,
-      message: 'List of all articles'
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
     });
   }
 
@@ -147,7 +101,6 @@ class Articles {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
     });
-<<<<<<< HEAD
     if (!findArticle) {
       return res.status(200).json({
         status: 200,
@@ -161,17 +114,6 @@ class Articles {
       status: 200,
       message: 'Article successfully retrieved',
       data: article
-=======
-    if (findArticle) {
-      return res.status(200).json({
-        status: 200,
-        findArticle
-      });
-    }
-    return res.status(200).json({
-      status: 200,
-      message: 'That article does not exist!'
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
     });
   }
 
@@ -244,19 +186,6 @@ class Articles {
       updatedArticle
     });
   }
-<<<<<<< HEAD
-=======
-
-  /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @return {Object} articles
-   * @memberof Articles
-   */
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
 }
 
 export default Articles;

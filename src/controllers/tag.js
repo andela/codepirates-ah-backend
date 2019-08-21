@@ -5,10 +5,6 @@ import Util from '../helpers/util';
 import result from '../helpers/tags';
 
 const util = new Util();
-const internalError = () => {
-  util.setError(500, 'Internal Error');
-  return util;
-};
 
 const notFound = (msg) => {
   util.setError(404, `${msg} not found`);
@@ -35,9 +31,7 @@ class TagController {
         return res.status(201).json({ message: `tag ${name} created`, data: tag[0] });
       }
       res.status(200).json({ message: `tag ${name} exists`, data: tag[0] });
-    }).catch(() => {
-      internalError.send(res);
-    });
+    })
   }
 
   static async createArticleTag(req, res) {
@@ -67,7 +61,7 @@ class TagController {
       returning: true,
     }).then(updated => res.status(200).json({
       message: `tag ${name} updated to ${newName}`, data: updated[1]
-    })).catch(() => internalError().send(res));
+    }))
   }
 
   static async editArticleTag(req, res) {
@@ -91,8 +85,7 @@ class TagController {
         res.status(200).json({ message: 'update successful', data: updated[1][0] });
       }
       notFound(oldTag.name).send(res);
-    })
-      .catch(() => internalError());
+    });
   }
 
   static async getTags(req, res) {
@@ -105,7 +98,7 @@ class TagController {
         }
         // reduce tags list to give article numbers only
         res.status(200).json({ tags });
-      }).catch(() => internalError().send(res));
+      });
   }
 
   static getTag(req, res) {
@@ -122,7 +115,7 @@ class TagController {
         });
       }
       notFound('tag').send(res);
-    }).catch(() => internalError().send(res));
+    });
   }
 
   static async getTagArticles(req, res) {
@@ -138,7 +131,7 @@ class TagController {
       res.status(200).json({
         articles: articles.map(element => element.articles)
       });
-    }).catch(() => internalError().send(res));
+    });
   }
 
   static async getArticleTags(req, res) {
@@ -151,7 +144,7 @@ class TagController {
         return res.status(200).json({ message: 'article not tagged' });
       }
       res.status(200).json({ tags: article.tags.map(tag => tag.name) });
-    }).catch(() => internalError().send(res));
+    });
   }
 
   static async deleteArticleTag(req, res) {
@@ -170,7 +163,7 @@ class TagController {
       res.status(404).json({
         message: `this article has no tag ${req.params.tagId}`
       });
-    }).catch(() => internalError().send(res));
+    });
   }
 
   static async deleteTagArticles(req, res) {
@@ -187,7 +180,7 @@ class TagController {
       res.status(200).json({
         message: `all articles about ${req.params.name} deleted`
       });
-    }).catch(() => internalError().send(res));
+    });
   }
 }
 

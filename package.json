@@ -29,10 +29,7 @@
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.14.0",
-<<<<<<< HEAD
     "connect-multiparty": "^2.2.0",
-=======
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "express": "^4.17.1",
@@ -42,10 +39,6 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "method-override": "^2.3.10",
-<<<<<<< HEAD
-=======
-    "methods": "^1.1.2",
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
     "multer": "^1.4.2",
     "nyc": "^14.1.1",
     "passport": "^0.4.0",
@@ -60,16 +53,9 @@
     "slug": "^1.1.0",
     "swagger-jsdoc": "^3.3.0",
     "swagger-ui-express": "^4.0.7",
-<<<<<<< HEAD
     "uniqid": "^5.0.3",
     "validator": "^11.1.0",
     "winston": "^3.2.1"
-=======
-    "underscore": "^1.9.1",
-    "winston": "^3.2.1",
-    "zombie": "^6.1.4",
-    "uniqid": "^5.0.3"
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
   },
   "devDependencies": {
     "coveralls": "^3.0.5",

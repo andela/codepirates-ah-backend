@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-/* eslint-disable no-useless-escape */
-/* eslint-disable no-shadow */
->>>>>>> feature(create articles): user can create, read, update, and delete an article [Finishes #167313403]
 import Joi from 'joi';
 import { restrictions } from './schemas';
 
