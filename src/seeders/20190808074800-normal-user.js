@@ -15,7 +15,18 @@ export default {
       verified: true,
       createdAt: new Date(),
       updatedAt: new Date()
-    }
+    },
+    {
+      firstname: 'usertwo',
+      lastname: 'usertwo',
+      email: 'usertwo@gmail.com',
+      password: hashPassword,
+      username: 'usertwo',
+      role: 'normal',
+      verified: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
   ]),
 
   down: queryInterface => queryInterface.bulkDelete('users', null, {})

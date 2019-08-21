@@ -1,0 +1,165 @@
+
+/profile:
+  put:
+    summary: creates a user profile
+    description: >
+      creates a user profile
+    tags:
+      - Profile
+    produces:
+      - application/json
+    consumes:
+      - multipart/form-data
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: image
+        in: formData
+        type: file
+        description: image file upload
+      - name: bio
+        in: formData
+        type: string
+        description: bio
+      - name: username
+        in: formData
+        type: string
+        description: username
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#definitions/Profile'
+  get:
+    summary: get own profile
+    description: >
+      get own profile 
+    tags:
+      - Profile
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: body
+        in: body
+        description: profile schema
+        schema:
+          $ref: '#definitions/Profile'
+    responses:
+      200:
+        description: User profiles retrieved successfully
+        schema:
+          $ref: '#definitions/Profile'
+      400:
+        $ref: '#responses/BadRequest'
+/profile/{username}:
+  get:
+    summary: get profile 
+    description: >
+      get user profile
+    tags:
+      - Profile
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: username
+        in: path
+        description: username
+        type: string
+        required: true
+      - name: body
+        in: body
+        description: profile schema
+        schema:
+          $ref: '#definitions/Profile'
+    responses:
+      200:
+        description: User profile retrieved successfully
+        schema:
+          $ref: '#definitions/Profile'
+      400:
+        $ref: '#responses/BadRequest'
+/profile/authors:
+  get:
+    summary: get all user profile 
+    description: >
+      get all user profile 
+    tags:
+      - Profile
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: body
+        in: body
+        description: profile schema
+        schema:
+          $ref: '#definitions/Profile'
+    responses:
+      200:
+        description: User profiles retrieved successfully
+        schema:
+          $ref: '#definitions/Profile'
+      400:
+        $ref: '#responses/BadRequest'
+tags:
+- name: Profile
+  description: Operations related to Profile
+responses:
+  success:
+    description: Success
+    schema:
+      $ref: '#/definitions/Profile'
+  BadRequest:
+    description: Bad request
+    schema:
+      $ref: '#/definitions/Error'
+  Notfound:
+    description: Not found
+    schema:
+      $ref: '#/definitions/Error'
+definitions:
+  Profile:
+    type: object
+    properties:
+      username:
+        type: string
+        description: username
+      bio:
+        type: string
+        description: bio
+      image:
+        type: file
+        description: user profile image
+      required:
+      - body
+      - image
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+        description: status code
+      message:
+        type: string
+        description: description of error

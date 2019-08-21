@@ -1,0 +1,173 @@
+/likes/clap/{articleslug}:
+  put:
+    summary: clap for an article
+    description: >
+      slap for an article which is not yours 
+    tags:
+      - Like
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#definitions/success'
+      404:
+        $ref: '#responses/Notfound'
+      401:
+        $ref: '#responses/BadRequest'
+      400:
+        $ref: '#responses/BadRequest'
+/likes/claps/{articleslug}:
+  get:
+    summary: get all claps
+    description: >
+      get all claps for an article
+    tags:
+      - Like
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Claps retrieved successfully
+        schema:
+          $ref: '#definitions/success'
+      404:
+        $ref: '#responses/Notfound'
+      401:
+        $ref: '#responses/BadRequest'
+      400:
+        $ref: '#responses/BadRequest'
+/likes/dislikes/{articleslug}:
+  get:
+    summary: get all cdislikes
+    description: >
+      get all dislike for an article
+    tags:
+      - Like
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Dislike retrieved successfully
+        schema:
+          $ref: '#definitions/success'  
+      404:
+        $ref: '#responses/Notfound'
+      401:
+        $ref: '#responses/BadRequest'
+      400:
+        $ref: '#responses/BadRequest'
+/likes/dislike/{articleslug}:
+  put:
+    summary: dislike an article
+    description: >
+      dislike an existing article which is not yours
+    tags:
+      - Like
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Successfully disliked
+        schema:
+          $ref: '#definitions/success'
+      404:
+        $ref: '#responses/Notfound'
+      401:
+        $ref: '#responses/BadRequest'
+      400:
+        $ref: '#responses/BadRequest'
+/likes/unlike/{articleslug}:
+  put:
+    summary: Unlike an article 
+    description: >
+      unlike the article you arleady liked or disked
+    tags:
+      - Like
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Successfully unliked
+        schema:
+          $ref: '#definitions/success'
+      404:
+        $ref: '#responses/Notfound'
+      401:
+        $ref: '#responses/BadRequest'
+      400:
+        $ref: '#responses/BadRequest'
+tags:
+- name: Like
+  description: Operations related to Article Claping and liking
+responses:
+  success:
+    description: Success
+    schema:
+      $ref: '#/definitions/success'
+  BadRequest:
+    description: Bad request
+    schema:
+      $ref: '#/definitions/Error'
+  Notfound:
+    description: Not found
+    schema:
+      $ref: '#/definitions/Error'
+definitions:
+  success:
+    type: object
+    properties:
+      status:
+        type: string
+        description: status code
+      message:
+        type: string
+        description: description of success
+      data:
+        type: string
+        description: data about success request
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+        description: status code
+      message:
+        type: string
+        description: description of error

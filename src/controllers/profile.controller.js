@@ -59,9 +59,9 @@ class Profile {
       async (err, image) => {
         try {
           const userName = req.auth.email;
-          const user = await UserService.findOne(userName, '');
-          const oldURL = user.image;
-          if (!user) {
+          const User = await UserService.findOne(userName, '');
+          const oldURL = User.image;
+          if (!User) {
             util.setError(400, 'User not found');
             return util.send(res);
           }
