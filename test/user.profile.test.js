@@ -12,7 +12,6 @@ describe('/Create Profile feature', () => {
         password: 'ASqw12345'
       })
       .end((error, res) => {
-        if (error) done(error);
         usertoken = `Bearer ${res.body.token}`;
         expect(res.status).to.be.equal(200);
         expect(res.body).to.have.deep.property('message');
@@ -30,7 +29,6 @@ describe('/Create Profile feature', () => {
         username: 123454
       })
       .end((error, res) => {
-        if (error) done(error);
         expect(res).to.be.an('object');
         expect(res.status).to.equal(400);
         expect(res.body)
@@ -46,7 +44,6 @@ describe('/Create Profile feature', () => {
       .put('/api/v1/profile')
       .set('x-access-token', `21${usertoken}`)
       .end((error, res) => {
-        if (error) done(error);
         expect(res.status).to.be.equal(401);
         expect(res.body).to.have.deep.property('message');
         done();
@@ -59,7 +56,6 @@ describe('/Create Profile feature', () => {
       .get('/api/v1/profile/admin')
       .set('x-access-token', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
@@ -76,7 +72,6 @@ describe('/Create Profile feature', () => {
       .field('bio', 'I am a software developer based in kigali, i like data science and AI')
       .field('username', 'admin')
       .end((error, res) => {
-        if (error) done(error);
         expect(res).to.be.an('object');
         expect(res.status).to.equal(409);
         expect(res.body.message).to.deep.equal(
@@ -126,7 +121,6 @@ describe('/Create Profile feature', () => {
       .field('bio', 'I am a software developer based in kigali, i like data science and AI')
       .field('username', 'salvi')
       .end((error, res) => {
-        if (error) done(error);
         expect(res).to.be.an('object');
         expect(res.status).to.equal(200);
         expect(res.body.data).to.have.property('bio');
@@ -141,7 +135,6 @@ describe('/Create Profile feature', () => {
       .get('/api/v1/profile/mikki')
       .set('Authorization', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(404);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status');
@@ -155,7 +148,6 @@ describe('/Create Profile feature', () => {
       .get('/api/v1/profile/authors')
       .set('x-access-token', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
