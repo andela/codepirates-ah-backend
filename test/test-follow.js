@@ -25,6 +25,7 @@ describe('test for following and unfollowing a user', () => {
       .send({})
       .set('Authorization', usertoken)
       .end((error, res) => {
+        console.log(res);
         expect(res.status).to.equal(200);
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.property('message');

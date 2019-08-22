@@ -12,8 +12,8 @@ sgMail.setApiKey(process.env.SendGridApiKey);
  * @param {string} html
  */
 
-const sendEmail = (receiverEmail, subject, html) => {
-  sgMail.send({
+const sendEmail = async (receiverEmail, subject, html) => {
+  await sgMail.send({
     to: receiverEmail,
     from: `${process.env.SENDER_EMAIL}`,
     subject,

@@ -79,7 +79,7 @@ class Social {
     const verifyUrl = `${process.env.BACKEND_URL}/api/${
       process.env.API_VERSION
     }/users/verify?token=${token}`;
-    verifyUser(payload.email, createdUser.username, verifyUrl);
+    await verifyUser(payload.email, createdUser.username, verifyUrl);
     return res.status(201).json({
       status: 201,
       message: 'Your account has been successfully created. An email has been sent to you with detailed instructions on how to activate it. Your default password is password, Please change on activatio',

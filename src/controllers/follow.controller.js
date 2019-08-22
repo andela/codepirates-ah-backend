@@ -35,7 +35,7 @@ class FollowController {
           const message = `Hi ${followedUser.username}, ${followerUser.username} started following you on Authors Haven`;
 
           if (!process.env.NODE_ENV === 'test') {
-            sendEmail(followedUser.email, `${message}`, emailTemplate);
+            await sendEmail(followedUser.email, `${message}`, emailTemplate);
           }
           return res.status(200).json({ status: '200', message: `You are now following ${followedUser.username}` });
         }

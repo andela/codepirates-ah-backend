@@ -123,7 +123,7 @@ class UserController {
       const token = await Helper.generateToken(payload);
       const verifyUrl = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}/users/verify?
       token=${token}`;
-      const verify = sendEmail(payload.email, username, verifyUrl);
+      const verify = await sendEmail(payload.email, username, verifyUrl);
 
       return verify
         ? res.status(201).json({
@@ -187,7 +187,7 @@ class UserController {
       const verifyUrl = `${process.env.BACKEND_URL}/api/${
         process.env.API_VERSION
       }/users/verify?token=${token}`;
-      sendEmail(payload.email, newUser.username, verifyUrl);
+      await sendEmail(payload.email, newUser.username, verifyUrl);
       return res.status(201).json({
         status: 201,
         message:
@@ -412,7 +412,7 @@ class UserController {
       const resetUrl = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}/users/reset/${token}`;
 
       // send email to user email address
-      const emailSent = resetSendMail(user.email, user.username, resetUrl);
+      const emailSent = await resetSendMail(user.email, user.username, resetUrl);
 
       if (!emailSent) { return res.status(500).send({ status: 500, message: 'Failed to send email. Please contact site administrator for support' }); }
 
