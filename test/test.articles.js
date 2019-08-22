@@ -6,12 +6,12 @@ import { chai, server, expect } from './test-setup';
 import cloudinary from '../src/helpers/cloudinaryHelper';
 import articleController from '../src/controllers/articles.controller';
 
-const usertoken = Helper.generateToken({
-  id: 2,
-  email: 'user@gmail.com',
-  username: 'user',
-  verified: false
-});
+// const usertoken = Helper.generateToken({
+//   id: 2,
+//   email: 'user@gmail.com',
+//   username: 'user',
+//   verified: false
+// });
 
 describe('Articles', () => {
   it('throw error when fields are missing', (done) => {
