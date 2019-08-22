@@ -14,7 +14,6 @@ describe('/likes and dislikes  feature', () => {
         password: 'ASqw12345'
       })
       .end((error, res) => {
-        if (error) done(error);
         usertoken = `Bearer ${res.body.token}`;
         expect(res.status).to.be.equal(200);
         expect(res.body).to.have.deep.property('message');
@@ -30,7 +29,6 @@ describe('/likes and dislikes  feature', () => {
         password: 'ASqw12345'
       })
       .end((error, res) => {
-        if (error) done(error);
         mikeToken = `Bearer ${res.body.token}`;
         expect(res.status).to.be.equal(200);
         expect(res.body).to.have.deep.property('message');
@@ -46,7 +44,6 @@ describe('/likes and dislikes  feature', () => {
         password: 'ASqw12345'
       })
       .end((error, res) => {
-        if (error) done(error);
         adminToken = `Bearer ${res.body.token}`;
         expect(res.status).to.be.equal(200);
         expect(res.body).to.have.deep.property('message');
@@ -60,7 +57,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/clap/fakeslug')
       .set('x-access-token', `21${usertoken}`)
       .end((error, res) => {
-        if (error) done(error);
         expect(res.status).to.be.equal(401);
         expect(res.body).to.have.deep.property('message');
         done();
@@ -73,7 +69,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/clap/fakeslug')
       .set('x-access-token', `${adminToken}`)
       .end((error, res) => {
-        if (error) done(error);
         expect(res.status).to.be.equal(401);
         expect(res.body).to.have.deep.property('message');
         expect(res.body.message).to.deep.equal('You can not clap to your own post');
@@ -86,7 +81,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/dislike/fakeslug')
       .set('x-access-token', `${adminToken}`)
       .end((error, res) => {
-        if (error) done(error);
         expect(res.status).to.be.equal(401);
         expect(res.body).to.have.deep.property('message');
         expect(res.body.message).to.deep.equal('You can not dislike to your own post');
@@ -99,7 +93,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/unlike/fakeslug')
       .set('Authorization', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(401);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status');
@@ -113,7 +106,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/clap/fakeslug')
       .set('x-access-token', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
@@ -131,7 +123,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/clap/fakeslug')
       .set('x-access-token', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
@@ -149,7 +140,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/unlike/fakeslug')
       .set('Authorization', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
@@ -167,7 +157,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/dislike/fakeslug')
       .set('Authorization', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
@@ -184,7 +173,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/dislike/fakeslug')
       .set('Authorization', mikeToken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
@@ -201,7 +189,6 @@ describe('/likes and dislikes  feature', () => {
       .get('/api/v1/likes/dislikes/fakeslug')
       .set('Authorization', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'data', 'status');
@@ -216,7 +203,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/dislike/fakeslug')
       .set('Authorization', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
@@ -235,7 +221,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/unlike/fakesl')
       .set('Authorization', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(404);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status');
@@ -249,7 +234,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/clap/fakeslug')
       .set('x-access-token', mikeToken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
@@ -266,7 +250,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/clap/fakeslug')
       .set('x-access-token', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
@@ -283,7 +266,6 @@ describe('/likes and dislikes  feature', () => {
       .put('/api/v1/likes/clap/fakeslug')
       .set('x-access-token', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'status', 'data');
@@ -300,7 +282,6 @@ describe('/likes and dislikes  feature', () => {
       .get('/api/v1/likes/claps/fakeslug')
       .set('Authorization', usertoken)
       .end((error, res) => {
-        if (error) done(error);
         expect(res).have.status(200);
         expect(res).to.be.an('object');
         expect(res.body).to.have.keys('message', 'data', 'status');
