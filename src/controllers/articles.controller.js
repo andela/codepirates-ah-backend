@@ -2,11 +2,11 @@ import 'dotenv/config';
 import slug from 'slug';
 import _ from 'lodash';
 import uniqid from 'uniqid';
-import cloudinary from 'cloudinary';
 import models from '../models';
 import Userservice from '../services/user.service';
 import articleService from '../services/article.service';
 import Helper from '../helpers/helper';
+import cloudinaryHelper from '../helpers/cloudinaryHelper';
 
 
 const db = models.Article;
@@ -28,23 +28,15 @@ class Articles {
   static async createArticles(req, res) {
     const userId = req.auth.id;
     const findUser = await Userservice.getOneUser(userId);
-    let images = req.files;
-    images = await Promise.all(
-      images.map(async (file) => {
-        const { secure_url } = await cloudinary.v2.uploader.upload(file.path);
-        return secure_url;
-      })
-    );
+    const images = await cloudinaryHelper(req.files);
 
     if (findUser) {
       const { title } = req.body;
-      const tags = req.body.taglist.split(' ');
       const article = {
         slug: `${slug(title)}-${uniqid()}`,
         title,
         description: req.body.description,
         body: req.body.body,
-        taglist: tags,
         authorId: req.auth.id,
         images
       };
@@ -56,7 +48,6 @@ class Articles {
           title: createdArticle.title,
           description: createdArticle.description,
           body: createdArticle.body,
-          taglist: createdArticle.taglist,
           flagged: createdArticle.flagged,
           favorited: createdArticle.favorited,
           favoritedcount: createdArticle.favoritedcount,

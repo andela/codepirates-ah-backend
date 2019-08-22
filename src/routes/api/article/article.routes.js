@@ -4,12 +4,9 @@ import articleController from '../../../controllers/articles.controller';
 import imageUpload from '../../../middlewares/multer';
 import validate from '../../../middlewares/validators/general.validation';
 import { schema } from '../../../middlewares/validators/schemas';
-import fakeCloud from '../../../middlewares/fakecloud';
 import confirmEmailAuth from '../../../middlewares/emailVarification.middleware';
 
 const router = express.Router();
-
-router.post('/fake', auth, fakeCloud, validate(schema.articleSchema), articleController.createArticles);
 
 
 router.post('/articles', [auth, confirmEmailAuth], imageUpload.array('images', 10), validate(schema.articleSchema), articleController.createArticles);
