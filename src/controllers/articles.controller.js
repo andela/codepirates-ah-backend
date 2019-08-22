@@ -69,7 +69,25 @@ class Articles {
    * @memberof Articles
    */
   static async getAllArticles(req, res) {
-    const articles = await articleService.getAllArticles();
+    const counter = await db.count();
+    let page = parseInt(req.query.page, 10);
+    if (isNaN(page) || page < 1) {
+      page = 1;
+    }
+    let limit = parseInt(req.query.limit, 10);
+    if (isNaN(limit)) {
+      limit = 10;
+    } else if (limit > 50) {
+      limit = 50;
+    } else if (limit < 1) {
+      limit = 1;
+    }
+    let offset = (page - 1) * limit;
+    if (offset >= counter) {
+      offset = 0;
+    }
+
+    const articles = await articleService.getAllArticles(offset, limit);
     if (!articles) {
       return res.status(200).json({ status: 200, message: 'There is no article.' });
     }
@@ -84,6 +102,7 @@ class Articles {
     return res.status(200).json({
       status: 200,
       message: 'List of all articles',
+      allArticle: counter,
       data: allArticles
     });
   }

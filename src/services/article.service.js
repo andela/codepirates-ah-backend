@@ -28,12 +28,20 @@ class articleService {
    *
    *
    * @static
+   *  @param {*} offset
+   *  @param {*} limit
    * @returns {object} data
    * @memberof articleService
    */
-  static async getAllArticles() {
+  static async getAllArticles(offset, limit) {
     try {
-      return await db.findAll();
+      return await db.findAll({
+        order: [
+          ['createdAt', 'DESC']
+        ],
+        offset,
+        limit,
+      });
     } catch (error) {
       throw error;
     }

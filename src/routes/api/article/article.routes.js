@@ -9,9 +9,9 @@ import confirmEmailAuth from '../../../middlewares/emailVarification.middleware'
 const router = express.Router();
 
 
-router.post('/articles', [auth, confirmEmailAuth], imageUpload.array('images', 10), validate(schema.articleSchema), articleController.createArticles);
-router.get('/articles', [auth, confirmEmailAuth], articleController.getAllArticles);
-router.get('/articles/:slug', [auth, confirmEmailAuth], articleController.getOneArticle);
-router.delete('articles/:slug', [auth, confirmEmailAuth], articleController.deleteArticle);
-router.patch('articles/:slug', [auth, confirmEmailAuth], imageUpload.array('images', 10), articleController.UpdateArticle);
+router.post('/', [auth, confirmEmailAuth], imageUpload.array('images', 10), validate(schema.articleSchema), articleController.createArticles);
+router.get('/', articleController.getAllArticles);
+router.get('/:slug', articleController.getOneArticle);
+router.delete('/:slug', [auth, confirmEmailAuth], articleController.deleteArticle);
+router.patch('/:slug', [auth, confirmEmailAuth], imageUpload.array('images', 10), articleController.UpdateArticle);
 export default router;
