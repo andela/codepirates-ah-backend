@@ -51,6 +51,7 @@ class UserController {
       const payload = {
         id: theUser.id,
         email: theUser.email,
+        username: theUser.username,
         role: theUser.role,
         verified: theUser.verified
       };

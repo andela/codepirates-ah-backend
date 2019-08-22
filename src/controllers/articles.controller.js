@@ -7,7 +7,9 @@ import models from '../models';
 import Userservice from '../services/user.service';
 import articleService from '../services/article.service';
 import Helper from '../helpers/helper';
+import NotificationServices from '../services/notification.service';
 
+const { notifyViaEmailAndPush } = NotificationServices;
 
 const db = models.Article;
 /**
@@ -49,6 +51,7 @@ class Articles {
         images
       };
       const createdArticle = await articleService.addArticle(article);
+      await notifyViaEmailAndPush(req, res, createdArticle.slug);
       return res.status(201).json({
         status: 201,
         article: {

@@ -1,7 +1,10 @@
-import Sequelize from 'sequelize';
 import commentsService from '../services/comments.service';
 import UserService from '../services/user.service';
 import models from '../models';
+import NotificationServices from '../services/notification.service';
+
+const { notifyUsersWhoFavorited } = NotificationServices;
+
 const CommentsDb = models.Comment;
 const database = models.Article;
 /**
@@ -35,6 +38,7 @@ class Comments {
         parentCommentId: req.body.parentCommentId,
       };
       const createdComment = await commentsService.addComment(comment);
+      notifyUsersWhoFavorited(req, res, getArticle.id, req.params.slug);
       return res.status(201).send({
         status: 201,
         message: 'Comment successfully created',

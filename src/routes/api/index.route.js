@@ -10,6 +10,7 @@ import profile from './profile/profile.route';
 import likes from './likes/likes.routes';
 import rate from './rate/rate.route';
 import Comments from './comment/comments.route';
+import notifications from './notifications/notification.route';
 
 const router = express.Router();
 router.use('/images', express.static(path.join(__dirname, 'images')));
@@ -21,6 +22,8 @@ router.use('/likes', likes);
 router.use('/users', user);
 router.use('/', article);
 router.use('/rate', rate);
+router.use('/notifications', notifications);
+
 router.use('/api-docs', swaggerui.serve, swaggerui.setup(swaggerSpecification));
 
 
