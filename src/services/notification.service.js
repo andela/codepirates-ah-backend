@@ -42,14 +42,12 @@ class NotificationServices {
           subscribed: item.followerDetails.subscribed
         }))
         .filter(eachUser => eachUser.subscribed === true);
-
       const myFollowersWithInAppSub = myFollowers
         .map(item => ({
           inAppNotification: item.followerDetails.inAppNotification,
           id: item.followerDetails.id
         }))
         .filter(eachUser => eachUser.inAppNotification === true);
-
       const message = `${followedUser.username} just published an article`;
       const location = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}`;
       const url = `${location}/api/v1/articles/${slug}`;

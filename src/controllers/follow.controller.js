@@ -34,7 +34,9 @@ class FollowController {
           const emailTemplate = newFollowerTemplate(followerUser.username, url);
           const message = `Hi ${followedUser.username}, ${followerUser.username} started following you on Authors Haven`;
 
-          sendEmail(followedUser.email, `${message}`, emailTemplate);
+          if (!process.env.NODE_ENV === 'test') {
+            sendEmail(followedUser.email, `${message}`, emailTemplate);
+          }
           return res.status(200).json({ status: '200', message: `You are now following ${followedUser.username}` });
         }
 

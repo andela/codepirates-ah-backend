@@ -20,7 +20,7 @@ router.use(oauth);
 router.use('/profile', profile);
 router.use('/likes', likes);
 router.use('/users', user);
-router.use('/', article);
+router.use('/articles', article);
 router.use('/rate', rate);
 router.use('/notifications', notifications);
 

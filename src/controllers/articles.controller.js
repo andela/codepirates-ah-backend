@@ -2,12 +2,12 @@ import 'dotenv/config';
 import slug from 'slug';
 import _ from 'lodash';
 import uniqid from 'uniqid';
-import cloudinary from 'cloudinary';
 import models from '../models';
 import Userservice from '../services/user.service';
 import articleService from '../services/article.service';
 import Helper from '../helpers/helper';
 import NotificationServices from '../services/notification.service';
+import cloudinaryHelper from '../helpers/cloudinaryHelper';
 
 const { notifyViaEmailAndPush } = NotificationServices;
 
@@ -30,23 +30,15 @@ class Articles {
   static async createArticles(req, res) {
     const userId = req.auth.id;
     const findUser = await Userservice.getOneUser(userId);
-    let images = req.files;
-    images = await Promise.all(
-      images.map(async (file) => {
-        const { secure_url } = await cloudinary.v2.uploader.upload(file.path);
-        return secure_url;
-      })
-    );
+    const images = await cloudinaryHelper(req.files);
 
     if (findUser) {
       const { title } = req.body;
-      const tags = req.body.taglist.split(' ');
       const article = {
         slug: `${slug(title)}-${uniqid()}`,
         title,
         description: req.body.description,
         body: req.body.body,
-        taglist: tags,
         authorId: req.auth.id,
         images
       };
@@ -59,7 +51,6 @@ class Articles {
           title: createdArticle.title,
           description: createdArticle.description,
           body: createdArticle.body,
-          taglist: createdArticle.taglist,
           flagged: createdArticle.flagged,
           favorited: createdArticle.favorited,
           favoritedcount: createdArticle.favoritedcount,
@@ -81,7 +72,25 @@ class Articles {
    * @memberof Articles
    */
   static async getAllArticles(req, res) {
-    const articles = await articleService.getAllArticles();
+    const counter = await db.count();
+    let page = parseInt(req.query.page, 10);
+    if (isNaN(page) || page < 1) {
+      page = 1;
+    }
+    let limit = parseInt(req.query.limit, 10);
+    if (isNaN(limit)) {
+      limit = 10;
+    } else if (limit > 50) {
+      limit = 50;
+    } else if (limit < 1) {
+      limit = 1;
+    }
+    let offset = (page - 1) * limit;
+    if (offset >= counter) {
+      offset = 0;
+    }
+
+    const articles = await articleService.getAllArticles(offset, limit);
     if (!articles) {
       return res.status(200).json({ status: 200, message: 'There is no article.' });
     }
@@ -96,6 +105,7 @@ class Articles {
     return res.status(200).json({
       status: 200,
       message: 'List of all articles',
+      allArticle: counter,
       data: allArticles
     });
   }

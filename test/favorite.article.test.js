@@ -21,7 +21,7 @@ describe('test for favoriting and unfavoriting an article', () => {
   });
   it('test for favoriting an article', (done) => {
     chai.request(server)
-      .post('/api/v1/1/favorite')
+      .post('/api/v1/articles/1/favorite')
       .send({})
       .set('Authorization', usertoken)
       .end((error, res) => {
@@ -34,7 +34,7 @@ describe('test for favoriting and unfavoriting an article', () => {
   });
   it('test for unfavoriting an article', (done) => {
     chai.request(server)
-      .post('/api/v1/1/favorite')
+      .post('/api/v1/articles/1/favorite')
       .send({})
       .set('Authorization', usertoken)
       .end((error, res) => {
@@ -47,7 +47,7 @@ describe('test for favoriting and unfavoriting an article', () => {
   });
   it('test for a wrong articleId', (done) => {
     chai.request(server)
-      .post('/api/v1/1xx/favorite')
+      .post('/api/v1/articles/1xx/favorite')
       .send({})
       .set('Authorization', usertoken)
       .end((error, res) => {
@@ -60,7 +60,7 @@ describe('test for favoriting and unfavoriting an article', () => {
   });
   it('Article to be favorited not found', (done) => {
     chai.request(server)
-      .post('/api/v1/999/favorite')
+      .post('/api/v1/articles/999/favorite')
       .send({})
       .set('Authorization', usertoken)
       .end((error, res) => {

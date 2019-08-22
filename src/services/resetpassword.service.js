@@ -31,8 +31,7 @@ const sendEmail = (email, username, url) => {
         </div>
     </div>`,
   };
-  sgMail.send(msg);
-  return true;
+  return process.env.NODE_ENV === 'test' ? true : sgMail.send(msg);
 };
 
 export default sendEmail;
