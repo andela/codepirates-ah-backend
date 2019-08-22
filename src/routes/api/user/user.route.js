@@ -8,8 +8,12 @@ import verifyEmail from '../../../controllers/verify-controller';
 import confirmEmaiAuth from '../../../middlewares/emailVarification.middleware';
 import followController from '../../../controllers/follow.controller';
 import resetPasswordValidation from '../../../middlewares/validators/resetpassword.validation';
+import BookMarkController from '../../../controllers/bookmarks.controller';
+import auth from '../../../middlewares/auth';
+
 
 const router = express.Router();
+const { createBookMark, getUserBookMarks } = BookMarkController;
 
 router.get('/verify', verifyEmail);
 router.get('/allusers', [validateToken, admin, confirmEmaiAuth], UserController.getAllUsers);
@@ -28,5 +32,9 @@ router.get('/profiles/followers', validateToken, followController.listOfFollower
 // reset password route handlers
 router.post('/reset', UserController.requestPasswordReset);
 router.patch('/reset/:token', resetPasswordValidation, UserController.handlePasswordReset);
+
+// bookmarks routes
+router.post('/bookmarks/:articleId', [validateToken], createBookMark);
+router.get('/:userId/bookmarks', getUserBookMarks);
 
 export default router;
