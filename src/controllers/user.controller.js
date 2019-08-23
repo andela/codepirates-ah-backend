@@ -1,3 +1,4 @@
+import nodemailer from 'nodemailer';
 import UserService from '../services/user.service';
 import Helper from '../helpers/helper';
 import sendEmail from '../helpers/verification-email';
@@ -188,7 +189,7 @@ class UserController {
       const verifyUrl = `${process.env.BACKEND_URL}/api/${
         process.env.API_VERSION
       }/users/verify?token=${token}`;
-      sendEmail(payload.email, newUser.username, verifyUrl);
+      await sendEmail(payload.email, newUser.username, verifyUrl);
       return res.status(201).json({
         status: 201,
         message:
@@ -197,7 +198,10 @@ class UserController {
         token
       });
     } catch (error) {
-      const { errors } = error;
+      // const { errors } = error;
+
+      const { response: { body: { errors } } } = error;
+      console.log(error);
       return res.status(404).send({
         status: 404,
         message: errors[0].message
