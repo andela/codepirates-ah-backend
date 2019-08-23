@@ -1,4 +1,3 @@
-import nodemailer from 'nodemailer';
 import UserService from '../services/user.service';
 import Helper from '../helpers/helper';
 import sendEmail from '../helpers/verification-email';
