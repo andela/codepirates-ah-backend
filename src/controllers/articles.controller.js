@@ -11,6 +11,7 @@ import cloudinaryHelper from '../helpers/cloudinaryHelper';
 import OpenUrlHelper from '../helpers/share.article.helper';
 import Util from '../helpers/util';
 
+const { notifyViaEmailAndPush } = NotificationServices;
 
 const { notifyViaEmailAndPush } = NotificationServices;
 const util = new Util();
