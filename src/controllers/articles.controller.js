@@ -87,7 +87,8 @@ class Articles {
       offset = 0;
     }
 
-    const articles = await articleService.getAllArticles(offset, limit);
+    const { searchQueries } = req;
+    const articles = await articleService.getAllArticles(offset, limit, searchQueries);
     if (!articles) {
       return res.status(200).json({ status: 200, message: 'There is no article.' });
     }

@@ -30,12 +30,14 @@ class articleService {
    * @static
    *  @param {*} offset
    *  @param {*} limit
+   *  @param {*} searchQueries
    * @returns {object} data
    * @memberof articleService
    */
-  static async getAllArticles(offset, limit) {
+  static async getAllArticles(offset, limit, searchQueries) {
     try {
       return await db.findAll({
+        where: searchQueries,
         order: [
           ['createdAt', 'DESC']
         ],
