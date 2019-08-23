@@ -15,6 +15,8 @@ export default {
         username: 'admin',
         role: 'admin',
         verified: true,
+        subscribed: false,
+        inAppNotification: false,
         createdAt: new Date(),
         updatedAt: new Date()
       },

@@ -13,6 +13,8 @@ export default {
       username: 'username',
       role: 'normal',
       verified: true,
+      subscribed: false,
+      inAppNotification: false,
       createdAt: new Date(),
       updatedAt: new Date()
     },

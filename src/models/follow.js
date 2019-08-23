@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
     Follow.belongsTo(user, {
       foreignKey: 'followerId',
       onDelete: 'CASCADE',
-      as: 'authorDetails'
+      as: 'followerDetails'
     });
     Follow.belongsTo(user, {
       foreignKey: 'followedUserId',
       onDelete: 'CASCADE',
-      as: 'followerDetails'
+      as: 'authorDetails'
     });
   };
   return Follow;

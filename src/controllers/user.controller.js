@@ -51,6 +51,7 @@ class UserController {
       const payload = {
         id: theUser.id,
         email: theUser.email,
+        username: theUser.username,
         role: theUser.role,
         verified: theUser.verified
       };
@@ -187,7 +188,7 @@ class UserController {
       const verifyUrl = `${process.env.BACKEND_URL}/api/${
         process.env.API_VERSION
       }/users/verify?token=${token}`;
-      sendEmail(payload.email, newUser.username, verifyUrl);
+      await sendEmail(payload.email, newUser.username, verifyUrl);
       return res.status(201).json({
         status: 201,
         message:
@@ -196,7 +197,7 @@ class UserController {
         token
       });
     } catch (error) {
-      const { errors } = error;
+      const { response: { body: { errors } } } = error;
       return res.status(404).send({
         status: 404,
         message: errors[0].message
