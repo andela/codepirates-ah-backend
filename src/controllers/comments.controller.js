@@ -38,7 +38,7 @@ class Comments {
         parentCommentId: req.body.parentCommentId,
       };
       const createdComment = await commentsService.addComment(comment);
-      notifyUsersWhoFavorited(req, res, getArticle.id, req.params.slug);
+      await notifyUsersWhoFavorited(req, res, getArticle.id, req.params.slug);
       return res.status(201).send({
         status: 201,
         message: 'Comment successfully created',

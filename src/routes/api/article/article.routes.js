@@ -11,7 +11,7 @@ import { checkQuery } from '../../../middlewares/query.check';
 
 const router = express.Router();
 
-router.post('/:articleId/favorite', [auth, validateId], FavoritesController.createOrRemoveFavorite);
+router.post('/:articleId/favorite', [auth, confirmEmailAuth, validateId], FavoritesController.createOrRemoveFavorite);
 router.post('/', [auth, confirmEmailAuth], imageUpload.array('images', 10), validate(schema.articleSchema), articleController.createArticles);
 router.get('/', checkQuery, articleController.getAllArticles);
 router.get('/:slug', articleController.getOneArticle);

@@ -198,10 +198,7 @@ class UserController {
         token
       });
     } catch (error) {
-      // const { errors } = error;
-
       const { response: { body: { errors } } } = error;
-      console.log(error);
       return res.status(404).send({
         status: 404,
         message: errors[0].message

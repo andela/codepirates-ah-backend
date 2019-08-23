@@ -56,7 +56,7 @@ class NotificationServices {
       if (myFollowersWithEmailSub.length !== 0) {
         const myFollowersEmail = myFollowersWithEmailSub.map(each => each.email);
         const emailTemplate = newArticleTemplate(followedUser.username, url);
-        sendEmail(myFollowersEmail, `${message}`, emailTemplate);
+        await sendEmail(myFollowersEmail, `${message}`, emailTemplate);
       }
 
       if (myFollowersWithInAppSub.length !== 0) {
@@ -103,7 +103,7 @@ class NotificationServices {
         const location = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}`;
         const url = `${location}/api/v1/articles/${slug}`;
         const emailTemplate = newCommentOnFavoritedArticlesTemplate(req.auth.username, url);
-        sendEmail(emailAddresses, 'Hi there', emailTemplate);
+        await sendEmail(emailAddresses, 'Hi there', emailTemplate);
       }
 
       // An array of usersID currently subcribed to In-App notification
