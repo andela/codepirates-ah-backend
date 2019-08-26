@@ -1,188 +1,146 @@
-import env from 'dotenv';
-import jwt from 'jsonwebtoken';
-
-import models from '../models';
-import auth from '../middlewares/auth';
+/* eslint-disable require-jsdoc */
 import Util from '../helpers/util';
 import result from '../helpers/bookmarks';
+import TagService from '../services/data.service';
+import models from '../models';
 
-
+const {
+  checkItem, ensureBookMark, getUserBookMarks, getUserBookMark,
+  addToCollection, findCollection, renameCollection, updateItem
+} = TagService;
 const util = new Util();
 
 const notFound = (msg) => {
-    util.setError(404, `${msg} not found`);
-    return util;
+  util.setError(404, `${msg} not found`);
+  return util;
 };
-
-const addArticles = (additions) => {
-    result.addArticleTags(additions);
-    return result;
-};
-
-const {
-    Article, BookMark, user
-} = models;
 
 class BookMarkController {
-    static async createBookMark(req, res) {
-        const name = req.body.name || `Bookmark-${new Date()}`;
-        const { articleId } = req.params;
-        let userId;
-        let token = req.headers['x-access-token'] || req.headers.authorization;
-        if (token.startsWith('Bearer ')) {
-            token = token.slice(7, token.length);
-        }
-        if (token) {
-            jwt.verify(token, process.env.SECRET_KEY, (err, decode) => {
-                if (err) {
-                    return res.status(401).json({
-                        message: 'Token is not valid'
-                    });
-                }
-                req.token = token;
-                userId = decode.id;
-                console.log(userId);
-            });
-            BookMark.findOrCreate({
-                where: { userId, articleId, name }
-            }).then((bookmark) => {
-                if (bookmark[1]) {
-                    return res.status(201).json({
-                        message: `bookmark ${name} created`, data: bookmark[0]
-                    });
-                }
-                res.status(200).json({
-                    message: `bookmark ${name} exists`, data: bookmark[0]
-                });
-            })
-        }
+  static async createBookMark(req, res) {
+    const { userId } = await result(req, res);
+    const article = await checkItem(req.body.articleId, 'Article');
+    const name = req.body.name || `${article.title}-${new Date()}`;
+    const bookmark = await ensureBookMark(req.body.articleId, name, userId);
+    return res.status(201).json({
+      message: `bookmark '${name}' created`, data: bookmark[0]
+    });
+  }
+
+  static async editBookMark(req, res) {
+    const { oldName } = req.body || req.data.name;
+    const { name } = req.body || req.data.newName;
+    const updated = updateItem(oldName, name, 'BookMark');
+    return res.status(200).json({
+      message: `bookmark ${oldName} updated to ${name}`,
+      data: updated[1]
+    });
+  }
+
+  static async createCollection(req, res) {
+    const { userId } = await result(req, res);
+    const { name, articleId, collection } = req.body;
+    const added = await addToCollection(articleId, collection, name, userId);
+    if (added[1]) {
+      return res.status(201).json({
+        message: `bookmark '${name}' added to collection '${collection}'`
+      });
     }
+    res.status(200).json({
+      message: `bookmark '${name}' already in collection '${collection}'`
+    });
+  }
 
-    static async editBookMark(req, res) {
-        const { name } = req.params;
-        const newName = req.body.name;
-        BookMark.update({ name: newName }, {
-            where: { name },
-            returning: true,
-        }).then(updated => res.status(200).json({
-            message: `tag ${name} updated to ${newName}`, data: updated[1]
-        }))
+  static async getCollection(req, res) {
+    const { userId } = await result(req, res);
+    const collection = await findCollection(req.params.collection, userId, [models.Article]);
+    if (collection.length) {
+      return res.status(200).json({ collection });
     }
+    notFound(`collection ${collection}`).send(res);
+  }
 
-    // static async editArticleTag(req, res) {
-    //     const newTag = await Tag.findOrCreate({
-    //         where: { name: req.body.name }
-    //     });
-    //     ArticleTag.update(
-    //         { tagId: newTag[0].id, articleId: req.params.articleId },
-    //         {
-    //             where: {
-    //                 tagId: req.params.tagId, articleId: req.params.articleId
-    //             },
-    //             returning: true,
-    //             raw: true
-    //         }
-    //     ).then((updated) => {
-    //         if (updated[0] !== 0) {
-    //             return res.status(200).json({ message: 'update successful', data: updated[1][0] });
-    //         }
-    //         notFound(`Target tag for this article`).send(res);
-    //     })
-    // }
-
-    // static async getTags(req, res) {
-    //     Tag.findAll({ include: ['articles'] })
-    //         .then((tags) => {
-    //             res.status(200).json({ tags });
-    //         })
-    // }
-
-    // static getTag(req, res) {
-    //     Tag.findOne({
-    //         where: { name: req.params.name },
-    //         include: ['articles']
-    //     }).then((tag) => {
-    //         if (tag) {
-    //             return res.status(200).json({
-    //                 tag: {
-    //                     id: tag.id, name: tag.name, articleCount: tag.articles.length
-    //                 }
-    //             });
-    //         }
-    //     })
-    // }
-
-    // static async getTagArticles(req, res) {
-    //     Tag.findAll({
-    //         where: { name: req.params.name },
-    //         include: ['articles'],
-    //     }).then((articles) => {
-    //         if (articles[0].articles.length === 0) {
-    //             return notFound(`articles about ${req.params.name}`).send(res);
-    //         }
-    //         res.status(200).json({
-    //             articles: articles.map(element => element.articles)
-    //         });
-    //     })
-    // }
-
-    static async getUserBookMarks(req, res) {
-        const name = req.body.name || `Bookmark-${new Date()}`;
-        const { articleId } = req.params;
-        let userId;
-        let token = req.headers['x-access-token'] || req.headers.authorization;
-        if (token.startsWith('Bearer ')) {
-            token = token.slice(7, token.length);
-        }
-        if (token) {
-            jwt.verify(token, process.env.SECRET_KEY, (err, decode) => {
-                if (err) {
-                    return res.status(401).json({
-                        message: 'Token is not valid'
-                    });
-                }
-                req.token = token;
-                userId = decode.id;
-                console.log(userId);
-            });
-            user.findOne({
-                where: { userId },
-                include: ['articles']
-            }).then((user) => {
-                if (user.articles.length === 0) {
-                    return res.status(200).json({ message: 'you have no bookmarks' });
-                }
-                res.status(200).json({ articles: user.articles.map(article => article.name) });
-            })
-        }
+  static async getCollections(req, res) {
+    const { userId } = await result(req, res);
+    const all = await getUserBookMarks(userId, [models.Article]);
+    const collections = all.filter(x => x.collection);
+    if (collections.length) {
+      // reduce/map collections to collection: bookmark-count object array
+      return res.status(200).json({ collections });
     }
-    // static async deleteArticleTag(req, res) {
-    //     ArticleTag.destroy({
-    //         where: { articleId: req.params.articleId, tagId: req.params.tagId }
-    //     }).then((deleted) => {
-    //         if (deleted) {
-    //             return res.status(200).json({
-    //                 message: `tag with Id ${req.params.tagId} removed from article`
-    //             });
-    //         }
-    //     })
-    // }
+    notFound('collections').send(res);
+  }
 
-    // static async deleteTagArticles(req, res) {
-    //     Tag.findOne({
-    //         where: { name: req.params.name },
-    //         include: ['articles']
-    //     }).then((tag) => {
-    //         if (tag.articles.length === 0) {
-    //             return res.status(404).json({
-    //                 message: `no articles about ${req.params.name}`
-    //             });
-    //         }
-    //         res.status(200).json({
-    //             message: `all articles about ${req.params.name} deleted`
-    //         });
-    //     })
-    // }
+  static async updateCollection(req, res) {
+    const { userId } = await result(req, res);
+    const { oldCollection, collection } = req.body;
+    const updated = await renameCollection(
+      collection, oldCollection, userId
+    );
+    if (updated) {
+      return res.status(200).json({
+        message: `collection '${oldCollection}' updated to ${collection}`,
+        data: updated
+      });
+    }
+    notFound('collection').send(res);
+  }
+
+  static async deleteCollection(req, res) {
+    // delete collection
+  }
+
+  static async deleteFromCollection(req, res) {
+    // remove bookmarks from collection
+  }
+
+  static async emptyCollection(req, res) {
+    // delete all bookmarks from collection
+  }
+
+  static async getUserBookMarks(req, res) {
+    const { userId } = await result(req, res);
+    const bookmarks = await getUserBookMarks(userId);
+    return res.status(200).json({
+      message: `${bookmarks.length} bookmarks found`,
+      data: bookmarks
+    });
+  }
+
+  static async getUserBookMark(req, res) {
+    const { userId } = await result(req, res);
+    const bookmark = await getUserBookMark(userId, req.body.name, req.params.articleId);
+    return res.status(200).json({
+      message: `bookmark '${bookmark.name}' found`,
+      data: bookmark
+    });
+  }
+
+  static async deleteUserBookMark(req, res) {
+    const { userId } = await result(req, res);
+    const bookmark = await getUserBookMark(userId, req.body.name, req.params.articleId);
+    bookmark.destroy();
+    return res.status(200).json({
+      message: `bookmark '${req.body.name}' deleted`
+    });
+  }
+
+  static async deleteUserBookMarks(req, res) {
+    const { userId } = await result(req, res);
+    const reader = await checkItem(userId, 'user', ['articles']);
+    const deleted = await reader.removeArticles(reader.articles);
+    res.status(200).json({ message: `${deleted} bookmarks deleted` });
+  }
+
+  static async copyBookmark(req, res) {
+    const {
+      articleId, name, newName, userId
+    } = req.data;
+    const copy = await ensureBookMark(articleId, newName, userId);
+    res.status(201).json({
+      message: `copy of bookmark ${name} created as ${newName}`,
+      data: copy
+    });
+  }
 }
 
 export default BookMarkController;

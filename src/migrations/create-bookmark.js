@@ -15,8 +15,10 @@ module.exports = {
                 type: Sequelize.INTEGER
             },
             name: {
-                type: Sequelize.STRING,
-                defaultValue: `Bookmark-${new Date()}`
+                type: Sequelize.STRING
+            },
+            collection: {
+                type: Sequelize.STRING
             },
             createdAt: {
                 allowNull: false,

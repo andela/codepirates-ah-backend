@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
     const BookMark = sequelize.define('BookMark', {
         articleId: DataTypes.INTEGER,
         userId: DataTypes.INTEGER,
-        name: { type: DataTypes.STRING, defaultValue: `Bookmark-${new Date()}` },
+        name: DataTypes.STRING,
+        collection: DataTypes.STRING
     }, {});
     BookMark.associate = function (models) {
         BookMark.belongsTo(models.Article, { foreignKey: 'articleId' })
