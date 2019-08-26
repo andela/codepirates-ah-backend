@@ -8,8 +8,16 @@ import confirmEmailAuth from '../../../middlewares/emailVarification.middleware'
 import validateId from '../../../middlewares/validators/articleId.validation';
 import FavoritesController from '../../../controllers/favorited.articles.controller';
 import { checkQuery } from '../../../middlewares/query.check';
+import tagController from '../../../controllers/tag';
+import TagWare from '../../../middlewares/tag.middleware';
 
 const router = express.Router();
+const {
+  checkArticle, checkTagName, tagLength, tagLimit
+} = TagWare;
+const {
+  createArticleTag, getArticleTags, editArticleTag, deleteArticleTag
+} = tagController;
 
 router.post('/:articleId/favorite', [auth, confirmEmailAuth, validateId], FavoritesController.createOrRemoveFavorite);
 router.post('/', [auth, confirmEmailAuth], imageUpload.array('images', 10), validate(schema.articleSchema), articleController.createArticles);
@@ -17,5 +25,10 @@ router.get('/', checkQuery, articleController.getAllArticles);
 router.get('/:slug', articleController.getOneArticle);
 router.delete('/:slug', [auth, confirmEmailAuth], articleController.deleteArticle);
 router.patch('/:slug', [auth, confirmEmailAuth], imageUpload.array('images', 10), articleController.UpdateArticle);
+
+router.post('/:articleId/tags', [auth, confirmEmailAuth], checkArticle, tagLimit, tagLength, createArticleTag);
+router.get('/:articleId/tags', checkArticle, getArticleTags);
+router.patch('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, editArticleTag);
+router.delete('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, deleteArticleTag);
 
 export default router;
