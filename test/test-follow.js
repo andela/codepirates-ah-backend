@@ -1,36 +1,34 @@
+import sinon from 'sinon';
 import { chai, server, expect } from './test-setup';
+import followController from '../src/controllers/follow.controller';
+import EmailHelper from '../src/helpers/verification-email';
+import Helper from '../src/helpers/helper';
 
 let usertoken;
 describe('test for following and unfollowing a user', () => {
-  it('should sign in the follower', (done) => {
-    chai
-      .request(server)
-      .post('/api/v1/users/login')
-      .send({
-        email: 'user@gmail.com',
-        password: 'ASqw12345'
-      })
-      .set('Accept', 'Application/JSON')
-      .end((error, res) => {
-        usertoken = `Bearer ${res.body.token}`;
-        expect(res.status).to.be.equal(200);
-        expect(res.body).to.have.property('token');
-        done();
-      });
+  usertoken = Helper.generateToken({
+    id: 3,
+    email: 'user@gmail.com',
+    username: 'username',
+    verified: true
   });
 
-  it('test for following a user', (done) => {
-    chai.request(server)
-      .post('/api/v1/users/profiles/2/follow')
-      .send({})
-      .set('Authorization', usertoken)
-      .end((error, res) => {
-        expect(res.status).to.equal(200);
-        expect(res.body).to.be.an('object');
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.contain('You are now following');
-        done();
-      });
+  it('test for following a user', async () => {
+    const req = {
+      params: { userId: 5 },
+      auth: {
+        email: 'user@gmail.com'
+      }
+    };
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    sinon.stub(EmailHelper, 'sendEmail').returns(true);
+    await followController.follow(req, res);
+    expect(res.status).to.have.been.calledWith(200);
   });
   it('test for getting all users you follow', (done) => {
     chai.request(server)
@@ -59,7 +57,7 @@ describe('test for following and unfollowing a user', () => {
   });
   it('test for unfollowing a user', (done) => {
     chai.request(server)
-      .post('/api/v1/users/profiles/2/follow')
+      .post('/api/v1/users/profiles/5/follow')
       .send({})
       .set('Authorization', usertoken)
       .end((error, res) => {

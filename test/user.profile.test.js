@@ -1,39 +1,28 @@
 import { chai, server, expect } from './test-setup';
+import Helper from '../src/helpers/helper';
 
 let usertoken;
 
-describe('/Create Profile feature', () => {
-  it('should login', (done) => {
-    chai
-      .request(server)
-      .post('/api/v1/users/login')
-      .send({
-        email: 'user@gmail.com',
-        password: 'ASqw12345'
-      })
-      .end((error, res) => {
-        usertoken = `Bearer ${res.body.token}`;
-        expect(res.status).to.be.equal(200);
-        expect(res.body).to.have.deep.property('message');
-        done();
-      });
+describe('/Create Profile feature', async () => {
+  usertoken = await Helper.generateToken({
+    id: 6,
+    email: 'userfour@gmail.com',
+    username: 'userfour',
+    verified: true
   });
 
   it('should not update the profile when the username updated is not a string', (done) => {
     chai
       .request(server)
       .put('/api/v1/profile')
-      .set('Authorization', usertoken)
+      .set('x-access-token', usertoken)
       .send({
         bio: 'j is demonstrating this Bio',
         username: 123454
       })
       .end((error, res) => {
-        expect(res).to.be.an('object');
         expect(res.status).to.equal(400);
-        expect(res.body)
-          .to.have.property('message')
-          .to.be.a('string');
+        expect(res.body).to.have.deep.property('message');
         done();
       });
   });
