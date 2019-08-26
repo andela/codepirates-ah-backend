@@ -31,7 +31,7 @@ const sendEmail = (email, username, url) => {
         </div>
     </div>`,
   };
-  return process.env.NODE_ENV === 'test' ? true : sgMail.send(msg);
+  return sgMail.send(msg);
 };
-
-export default sendEmail;
+const sendPasswordResetEmailHelper = { sendEmail };
+export default sendPasswordResetEmailHelper;
