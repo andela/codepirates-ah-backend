@@ -1,7 +1,7 @@
 import { chai, expect, server } from './test-setup';
 
 let token;
-describe.only('Test article tags', () => {
+describe('Test article tags', () => {
   before((done) => {
     chai.request(server)
       .post('/api/v1/users/login')
