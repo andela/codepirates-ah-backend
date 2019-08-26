@@ -12,11 +12,22 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
+    commentRevisions:{
+      type: DataTypes.STRING,
+      allowNull: true,
+      references: {
+        model: 'Comment',
+        key: 'id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+
+    },
     parentCommentId: {
       type: DataTypes.INTEGER,
       allowNull: true
     },
-    body: DataTypes.STRING
+    body: DataTypes.STRING,
   }, {});
   Comment.associate = function(models) {
     // associations can be defined here
