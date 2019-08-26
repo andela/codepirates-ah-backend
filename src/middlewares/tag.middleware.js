@@ -37,7 +37,6 @@ class TagWare {
     if (!tag) {
       return notFound(`tag ${req.params.name}`).send(res);
     }
-    console.log(req.params);
     next();
   }
 
