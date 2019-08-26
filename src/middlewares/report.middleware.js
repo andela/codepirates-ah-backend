@@ -25,7 +25,7 @@ export default async (req, res, next) => {
     }
 
     const Report = await models.report.findOne({ where: { ArticleSlug, userId } });
-    if (!Report) {
+    if (Report) {
       util.setError(403, 'You arleady Reported this article.');
       return util.send(res);
     }

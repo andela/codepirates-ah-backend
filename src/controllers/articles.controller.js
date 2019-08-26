@@ -5,13 +5,9 @@ import uniqid from 'uniqid';
 import models from '../models';
 import Userservice from '../services/user.service';
 import articleService from '../services/article.service';
-import reportService from '../services/report.service';
 import Helper from '../helpers/helper';
 import NotificationServices from '../services/notification.service';
 import cloudinaryHelper from '../helpers/cloudinaryHelper';
-import Util from '../helpers/util';
-
-const util = new Util();
 
 const { notifyViaEmailAndPush } = NotificationServices;
 
@@ -212,35 +208,6 @@ class Articles {
       status: 200,
       updatedArticle
     });
-  }
-
-  /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {Object} updated article details
-   * @memberof Articles
-   */
-  static async reportArticle(req, res) {
-    try {
-      const report = {
-        reason: req.body.reason,
-        userId: req.auth.id,
-        articxleSlug: req.params.Article
-      };
-      const reportArticle = await reportService.report(report);
-      const newReport = {
-        reason: reportArticle[1].reason,
-        ArticleSlug: reportArticle[1].ArticleSlug,
-      };
-      util.setSuccess(200, 'Successfully claped', newReport);
-      return util.send(res);
-    } catch (error) {
-      util.setError(500, 'server error contact admin');
-      return util.send(res);
-    }
   }
 }
 
