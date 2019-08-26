@@ -18,13 +18,12 @@ export default async (req, res, next) => {
       return util.send(res);
     }
     const userId = user.id;
-
     if (userId === post.authorId) {
       util.setError(403, 'Sorry you can not report your article.');
       return util.send(res);
     }
 
-    const Report = await models.report.findOne({ where: { ArticleSlug, userId } });
+    const Report = await models.reporting.findOne({ where: { articleSlug: ArticleSlug, userId } });
     if (Report) {
       util.setError(403, 'You arleady Reported this article.');
       return util.send(res);

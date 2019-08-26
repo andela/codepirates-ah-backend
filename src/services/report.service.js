@@ -1,6 +1,6 @@
 import models from '../models';
 
-const db = models.report;
+const db = models.reporting;
 
 /**
  *
@@ -39,7 +39,7 @@ class ReportService {
         attributes: {
           exclude: ['id', 'updatedAt']
         },
-        include: [{ model: users, username }],
+        // include: [{ model: users, username }],
         order: [
           ['createdAt', 'DESC']
         ],
@@ -57,18 +57,46 @@ class ReportService {
    * @static
    *  @param {*} offset
    *  @param {*} limit
-   *  @param {*} articlesslug
+   *  @param {*} articleSlug
    * @returns {object} data
    * @memberof articleService
    */
-  static async getAllReportForOneArticle(offset, limit, articlesslug) {
+  static async getAllReportForOneArticle(offset, limit, articleSlug) {
     try {
       return await db.findAll({
-        where: articlesslug,
+        where: { articleSlug },
         attributes: {
           exclude: ['id', 'updatedAt']
         },
-        include: [{ model: users, username }],
+        // include: [{ model: users, username }],
+        order: [
+          ['createdAt', 'DESC']
+        ],
+        offset,
+        limit,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   *  @param {*} offset
+   *  @param {*} limit
+   *  @param {*} userId
+   * @returns {object} data
+   * @memberof articleService
+   */
+  static async getMyReport(offset, limit, userId) {
+    try {
+      return await db.findAll({
+        where: { userId },
+        attributes: {
+          exclude: ['id', 'updatedAt', 'userId']
+        },
         order: [
           ['createdAt', 'DESC']
         ],

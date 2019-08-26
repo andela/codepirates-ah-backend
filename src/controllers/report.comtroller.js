@@ -6,7 +6,7 @@ import Util from '../helpers/util';
 
 const util = new Util();
 
-const db = models.Report;
+const db = models.reporting;
 /**
  *
  *
@@ -31,10 +31,29 @@ class Report {
       util.setError(200, 'No reports found');
       return util.send(res);
     }
-    const data = {
-      AllReports: Object.values(reports)[1],
-    };
-    util.setSuccess(200, 'Reports retrieved successfully', data);
+    util.setSuccess(200, 'Reports retrieved successfully', reports);
+    return util.send(res);
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} Reports
+   * @memberof Report
+   */
+  static async getMyReport(req, res) {
+    const counter = await db.count({ where: { userId: req.auth.id } });
+    const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
+
+    const reports = await reportService.getMyReport(offset, limit, req.auth.id);
+    if (!reports) {
+      util.setError(200, 'No reports found');
+      return util.send(res);
+    }
+    util.setSuccess(200, 'Your reports retrieved successfully', reports);
     return util.send(res);
   }
 
@@ -48,18 +67,15 @@ class Report {
    * @memberof Report
    */
   static async getReportsForArticle(req, res) {
-    const counter = await db.count({ where: { articleSlug: req.params.req.params.Article } });
+    const counter = await db.count({ where: { articleSlug: req.params.Article } });
     const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
     const articleSlug = req.params.Article;
     const reports = await reportService.getAllReportForOneArticle(offset, limit, articleSlug);
     if (!reports) {
-      util.setError(200, 'This article is not Reported');
+      util.setError(200, 'This article is not yet Reported');
       return util.send(res);
     }
-    const data = {
-      AllReports: Object.values(reports)[1],
-    };
-    util.setSuccess(200, 'Reports retrieved successfully', data);
+    util.setSuccess(200, 'Reports retrieved successfully', reports);
     return util.send(res);
   }
 
@@ -113,13 +129,13 @@ class Report {
     try {
       const report = {
         reason: req.body.reason,
-        userId: req.body.userId,
+        userId: req.auth.id,
         articleSlug: req.params.Article
       };
       const reportArticle = await reportService.report(report);
       const newReport = {
-        reason: reportArticle[1].reason,
-        ArticleSlug: reportArticle[1].ArticleSlug,
+        reason: reportArticle.reason,
+        ArticleSlug: reportArticle.articleSlug,
       };
       util.setSuccess(200, 'Article Successfully reported', newReport);
       return util.send(res);
