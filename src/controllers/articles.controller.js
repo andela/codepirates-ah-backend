@@ -30,7 +30,7 @@ class Articles {
   static async createArticles(req, res) {
     const userId = req.auth.id;
     const findUser = await Userservice.getOneUser(userId);
-    const images = await cloudinaryHelper(req.files);
+    const images = await cloudinaryHelper.generateCloudinaryUrl(req.files);
 
     if (findUser) {
       const { title } = req.body;

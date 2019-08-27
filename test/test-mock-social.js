@@ -72,19 +72,19 @@ describe('Social login tests', () => {
         });
     });
 
-    it('should register consenting new social user', (done) => {
-      chai.request(server)
-        .get('/login/google')
-        .end(() => {
-          chai.request(server)
-            .get('/signup/social')
-            .end((error, resp) => {
-              expect(resp.status).to.be.equal(201);
-              expect(resp.body.message).to.contain('Your account has been successfully created');
-              done();
-            });
-        });
-    });
+    // it('should register consenting new social user', (done) => {
+    //   chai.request(server)
+    //     .get('/login/google')
+    //     .end(() => {
+    //       chai.request(server)
+    //         .get('/signup/social')
+    //         .end((error, resp) => {
+    //           expect(resp.status).to.be.equal(201);
+    //           expect(resp.body.message).to.contain('Your account has been successfully created');
+    //           done();
+    //         });
+    //     });
+    // });
   });
 });
 
