@@ -24,14 +24,17 @@ class Report {
    */
   static async getAllReport(req, res) {
     const counter = await db.count();
-    const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
-
-    const reports = await reportService.getAllReport(offset, limit);
-    if (!reports) {
+    if (counter === 0) {
       util.setError(200, 'No reports found');
       return util.send(res);
     }
-    util.setSuccess(200, 'Reports retrieved successfully', reports);
+    const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
+    const reports = await reportService.getAllReport(offset, limit);
+    const response = {
+      count: counter,
+      reports,
+    };
+    util.setSuccess(200, 'Reports retrieved successfully', response);
     return util.send(res);
   }
 
@@ -45,16 +48,25 @@ class Report {
    * @memberof Report
    */
   static async getMyReport(req, res) {
-    const counter = await db.count({ where: { userId: req.auth.id } });
-    const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
+    try {
+      const counter = await db.count({ where: { userId: req.auth.id } });
+      if (counter === 0) {
+        util.setError(200, 'No reports found');
+        return util.send(res);
+      }
+      const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
 
-    const reports = await reportService.getMyReport(offset, limit, req.auth.id);
-    if (!reports) {
-      util.setError(200, 'No reports found');
+      const reports = await reportService.getMyReport(offset, limit, req.auth.id);
+      const response = {
+        count: counter,
+        yourReport: reports,
+      };
+      util.setSuccess(200, 'Your reports retrieved successfully', response);
+      return util.send(res);
+    } catch (error) {
+      util.setError(500, 'server error contact admin');
       return util.send(res);
     }
-    util.setSuccess(200, 'Your reports retrieved successfully', reports);
-    return util.send(res);
   }
 
   /**
@@ -67,16 +79,25 @@ class Report {
    * @memberof Report
    */
   static async getReportsForArticle(req, res) {
-    const counter = await db.count({ where: { articleSlug: req.params.Article } });
-    const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
-    const articleSlug = req.params.Article;
-    const reports = await reportService.getAllReportForOneArticle(offset, limit, articleSlug);
-    if (!reports) {
-      util.setError(200, 'This article is not yet Reported');
+    try {
+      const counter = await db.count({ where: { articleSlug: req.params.Article } });
+      if (counter === 0) {
+        util.setError(200, 'This article is not yet Reported');
+        return util.send(res);
+      }
+      const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
+      const articleSlug = req.params.Article;
+      const reports = await reportService.getAllReportForOneArticle(offset, limit, articleSlug);
+      const response = {
+        count: counter,
+        reports,
+      };
+      util.setSuccess(200, 'Reports retrieved successfully', response);
+      return util.send(res);
+    } catch (error) {
+      util.setError(500, 'server error contact admin');
       return util.send(res);
     }
-    util.setSuccess(200, 'Reports retrieved successfully', reports);
-    return util.send(res);
   }
 
   /**
@@ -135,7 +156,8 @@ class Report {
       const reportArticle = await reportService.report(report);
       const newReport = {
         reason: reportArticle.reason,
-        ArticleSlug: reportArticle.articleSlug,
+        articleSlug: reportArticle.articleSlug,
+        id: reportArticle.id
       };
       util.setSuccess(200, 'Article Successfully reported', newReport);
       return util.send(res);

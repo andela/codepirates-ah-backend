@@ -37,7 +37,7 @@ class ReportService {
     try {
       return await db.findAll({
         attributes: {
-          exclude: ['id', 'updatedAt']
+          exclude: ['updatedAt']
         },
         // include: [{ model: users, username }],
         order: [
@@ -66,7 +66,7 @@ class ReportService {
       return await db.findAll({
         where: { articleSlug },
         attributes: {
-          exclude: ['id', 'updatedAt']
+          exclude: ['updatedAt']
         },
         // include: [{ model: users, username }],
         order: [
@@ -95,7 +95,7 @@ class ReportService {
       return await db.findAll({
         where: { userId },
         attributes: {
-          exclude: ['id', 'updatedAt', 'userId']
+          exclude: ['updatedAt', 'userId']
         },
         order: [
           ['createdAt', 'DESC']

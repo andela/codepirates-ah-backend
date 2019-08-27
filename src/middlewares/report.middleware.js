@@ -13,10 +13,6 @@ export default async (req, res, next) => {
       return util.send(res);
     }
     const user = await models.user.findOne({ where: { email: req.auth.email } });
-    if (!user) {
-      util.setError(404, 'you are anonimous');
-      return util.send(res);
-    }
     const userId = user.id;
     if (userId === post.authorId) {
       util.setError(403, 'Sorry you can not report your article.');
