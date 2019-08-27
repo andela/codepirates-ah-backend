@@ -1,13 +1,14 @@
 /* eslint-disable require-jsdoc */
 import Util from '../helpers/util';
-import result from '../helpers/bookmarks';
-import TagService from '../services/data.service';
+import dbService from '../services/data.service';
 import models from '../models';
 
 const {
-  checkItem, ensureBookMark, getUserBookMarks, getUserBookMark,
-  addToCollection, findCollection, renameCollection, updateItem
-} = TagService;
+  checkItem, ensureBookMark, getUserBookMarks, addToCollection,
+  findCollection, renameCollection, updateItem, deleteCollection,
+  unCollect, getBookMarkName
+} = dbService;
+
 const util = new Util();
 
 const notFound = (msg) => {
@@ -17,18 +18,17 @@ const notFound = (msg) => {
 
 class BookMarkController {
   static async createBookMark(req, res) {
-    const { userId } = await result(req, res);
     const article = await checkItem(req.body.articleId, 'Article');
     const name = req.body.name || `${article.title}-${new Date()}`;
-    const bookmark = await ensureBookMark(req.body.articleId, name, userId);
+    const bookmark = await ensureBookMark(req.body.articleId, name, req.auth.id);
     return res.status(201).json({
       message: `bookmark '${name}' created`, data: bookmark[0]
     });
   }
 
   static async editBookMark(req, res) {
-    const { oldName } = req.body || req.data.name;
-    const { name } = req.body || req.data.newName;
+    const oldName = req.params.name || req.data.name;
+    const name = req.body.name || req.data.newName;
     const updated = updateItem(oldName, name, 'BookMark');
     return res.status(200).json({
       message: `bookmark ${oldName} updated to ${name}`,
@@ -37,9 +37,8 @@ class BookMarkController {
   }
 
   static async createCollection(req, res) {
-    const { userId } = await result(req, res);
     const { name, articleId, collection } = req.body;
-    const added = await addToCollection(articleId, collection, name, userId);
+    const added = await addToCollection(articleId, collection, name, req.auth.id);
     if (added[1]) {
       return res.status(201).json({
         message: `bookmark '${name}' added to collection '${collection}'`
@@ -51,17 +50,12 @@ class BookMarkController {
   }
 
   static async getCollection(req, res) {
-    const { userId } = await result(req, res);
-    const collection = await findCollection(req.params.collection, userId, [models.Article]);
-    if (collection.length) {
-      return res.status(200).json({ collection });
-    }
-    notFound(`collection ${collection}`).send(res);
+    const collection = await findCollection(req.params.collection, req.auth.id, [models.Article]);
+    return res.status(200).json({ collection });
   }
 
   static async getCollections(req, res) {
-    const { userId } = await result(req, res);
-    const all = await getUserBookMarks(userId, [models.Article]);
+    const all = await getUserBookMarks(req.auth.id, [models.Article]);
     const collections = all.filter(x => x.collection);
     if (collections.length) {
       // reduce/map collections to collection: bookmark-count object array
@@ -71,35 +65,34 @@ class BookMarkController {
   }
 
   static async updateCollection(req, res) {
-    const { userId } = await result(req, res);
-    const { oldCollection, collection } = req.body;
+    const { collection } = req.params;
     const updated = await renameCollection(
-      collection, oldCollection, userId
+      req.body.collection, collection, req.auth.id
     );
-    if (updated) {
-      return res.status(200).json({
-        message: `collection '${oldCollection}' updated to ${collection}`,
-        data: updated
-      });
-    }
-    notFound('collection').send(res);
+    return res.status(200).json({
+      message: `collection '${collection}' updated to ${collection}`,
+      data: updated
+    });
   }
 
+  // delete collection and content
   static async deleteCollection(req, res) {
-    // delete collection
+    const { collection } = req.params;
+    await deleteCollection(collection);
+    return res.status(200).json({ message: `collection '${collection}' deleted` });
   }
 
-  static async deleteFromCollection(req, res) {
-    // remove bookmarks from collection
-  }
-
-  static async emptyCollection(req, res) {
-    // delete all bookmarks from collection
+  // delete from collection
+  static async unCollect(req, res) {
+    const { collection, name } = req.params;
+    await unCollect(collection, name, req.auth.id);
+    return res.status(200).json({
+      message: `bookmark ${name} deleted from collection ${collection}`
+    });
   }
 
   static async getUserBookMarks(req, res) {
-    const { userId } = await result(req, res);
-    const bookmarks = await getUserBookMarks(userId);
+    const bookmarks = await getUserBookMarks(req.auth.id);
     return res.status(200).json({
       message: `${bookmarks.length} bookmarks found`,
       data: bookmarks
@@ -107,8 +100,7 @@ class BookMarkController {
   }
 
   static async getUserBookMark(req, res) {
-    const { userId } = await result(req, res);
-    const bookmark = await getUserBookMark(userId, req.body.name, req.params.articleId);
+    const bookmark = await getBookMarkName(req.auth.id, req.params.name);
     return res.status(200).json({
       message: `bookmark '${bookmark.name}' found`,
       data: bookmark
@@ -116,17 +108,15 @@ class BookMarkController {
   }
 
   static async deleteUserBookMark(req, res) {
-    const { userId } = await result(req, res);
-    const bookmark = await getUserBookMark(userId, req.body.name, req.params.articleId);
+    const bookmark = await getBookMarkName(req.auth.id, req.params.name);
     bookmark.destroy();
     return res.status(200).json({
-      message: `bookmark '${req.body.name}' deleted`
+      message: `bookmark '${req.params.name}' deleted`
     });
   }
 
   static async deleteUserBookMarks(req, res) {
-    const { userId } = await result(req, res);
-    const reader = await checkItem(userId, 'user', ['articles']);
+    const reader = await checkItem(req.auth.id, 'user', ['articles']);
     const deleted = await reader.removeArticles(reader.articles);
     res.status(200).json({ message: `${deleted} bookmarks deleted` });
   }

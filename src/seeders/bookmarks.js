@@ -10,13 +10,13 @@ export default {
     {
       articleId: 2,
       userId: 1,
-      name: '',
+      name: ' ',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       articleId: 2,
-      userId: 2,
+      userId: 1,
       name: 'Survival skills',
       createdAt: new Date(),
       updatedAt: new Date()
@@ -24,7 +24,7 @@ export default {
     {
       articleId: 3,
       userId: 1,
-      name: '',
+      name: 'kuku',
       createdAt: new Date(),
       updatedAt: new Date()
     }

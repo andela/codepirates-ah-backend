@@ -1,11 +1,12 @@
 /* eslint-disable require-jsdoc */
 import Util from '../helpers/util';
-import result from '../helpers/bookmarks';
-import TagService from '../services/data.service';
+import dbService from '../services/data.service';
 
 const {
-  getUserBookMarks, getUserBookMark, checkExisting, checkName
-} = TagService;
+  getUserBookMarks, getUserBookMark, checkExisting,
+  checkName, checkCollection, getBookMarkName, checkItem
+} = dbService;
+
 const util = new Util();
 
 const notFound = (msg) => {
@@ -16,34 +17,47 @@ const notFound = (msg) => {
 let data;
 class BookMarkWare {
   static async checkBookmark(req, res, next) {
-    const { userId } = await result(req, res);
     const articleId = req.params.articleId || req.body.articleId;
-    const name = req.body.oldName ? req.body.oldName : req.body.name;
-    const bookmark = await getUserBookMark(userId, name, articleId);
+    const name = req.body.oldName ? req.body.oldName : req.params.name || req.body.name;
+    const bookmark = await getUserBookMark(req.auth.id, name, articleId);
+
     if (!bookmark) {
       return notFound(`bookmark ${name} with article ID ${articleId}`).send(res);
     }
-    if (req.method === 'PATCH' && req.body.oldName === req.body.name) {
+    if (req.method === 'PATCH' && req.body.name === req.params.name) {
       return res.status(400).json({ message: 'update aborted, old and new name the same' });
     }
     next();
   }
 
   static async checkUserBookMarks(req, res, next) {
-    const { userId } = await result(req, res);
-    const bookmarks = await getUserBookMarks(userId);
+    const bookmarks = await getUserBookMarks(req.auth.id);
     if (!bookmarks.length) {
       return notFound('user bookmarks').send(res);
     }
     next();
   }
 
+  static async checkCollection(req, res, next) {
+    const oldCollection = req.body.oldCollection || req.params.collection;
+    const found = await checkCollection(
+      oldCollection, req.auth.id
+    );
+    if (!found) {
+      return notFound(`collection '${oldCollection}'`).send(res);
+    }
+    next();
+  }
+
   static async checkDuplicate(req, res, next) {
-    const { userId } = await result(req, res);
     const { articleId, name } = req.body;
-    const existing = await checkExisting(userId, articleId);
+    const existing = await checkExisting(req.auth.id, articleId);
     const existingName = await checkName(name, 'BookMark');
-    const bookmark = await getUserBookMark(userId, name, articleId);
+    const bookmark = await getUserBookMark(req.auth.id, name, articleId);
+    const article = await checkItem(articleId, 'Article');
+    if (!article) {
+      return notFound(`article with id ${articleId}`).send(res);
+    }
     if (bookmark) {
       return res.status(200).json({
         message: `bookmark '${name}' exists`, data: bookmark
@@ -62,7 +76,7 @@ class BookMarkWare {
       });
     }
     if (existingName) {
-      res.status(200).json({
+      res.status(409).json({
         message: `another bookmark with name ${name}`,
         data: existingName
       });
@@ -72,6 +86,18 @@ class BookMarkWare {
 
   static async createCopy(req, res, next) {
     req.data = data;
+    next();
+  }
+
+  static async checkBookmarkName(req, res, next) {
+    const { name } = req.params;
+    const bookmark = await getBookMarkName(req.auth.id, name);
+    if (!bookmark) {
+      return notFound(`bookmark '${name}'`).send(res);
+    }
+    if (req.body.name === name) {
+      return res.status(400).json({ message: 'update aborted, old and new name the same' });
+    }
     next();
   }
 }

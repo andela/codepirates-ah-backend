@@ -12,28 +12,31 @@ import BookMarkController from '../../../controllers/bookmarks.controller';
 import BookMarkWare from '../../../middlewares/bookmarks';
 
 const {
-  checkBookmark, checkUserBookMarks, checkDuplicate, createCopy
+  checkBookmark, checkUserBookMarks, checkDuplicate, createCopy,
+  checkCollection, checkBookmarkName
 } = BookMarkWare;
 const router = express.Router();
 const {
   createBookMark, getUserBookMarks, editBookMark, deleteUserBookMark,
   deleteUserBookMarks, getUserBookMark, copyBookmark, getCollections,
-  getCollection, createCollection, updateCollection
+  getCollection, createCollection, updateCollection, deleteCollection,
+  unCollect
 } = BookMarkController;
 
 // bookmarks routes
-router.post('/copy', createCopy, copyBookmark);
-router.patch('/update', createCopy, editBookMark);
+router.post('/bookmarks/copy', createCopy, copyBookmark);
+router.patch('/bookmarks/update', createCopy, editBookMark);
 router.get('/bookmarks', [validateToken, confirmEmaiAuth], checkUserBookMarks, getUserBookMarks);
 router.get('/bookmarks/collections', [validateToken, confirmEmaiAuth], getCollections);
-router.get('/bookmarks/:articleId', [validateToken, confirmEmaiAuth], checkBookmark, getUserBookMark);
-router.get('/bookmarks/collections/:collection', [validateToken, confirmEmaiAuth], checkBookmark, getCollection);
+router.get('/bookmarks/:name', [validateToken, confirmEmaiAuth], checkBookmarkName, getUserBookMark);
+router.get('/bookmarks/collections/:collection', [validateToken, confirmEmaiAuth], checkCollection, getCollection);
 router.post('/bookmarks', [validateToken, confirmEmaiAuth], checkDuplicate, createBookMark);
 router.post('/bookmarks/collections', [validateToken, confirmEmaiAuth], checkBookmark, createCollection);
-router.patch('/bookmarks/collections', [validateToken, confirmEmaiAuth], updateCollection);
-router.patch('/bookmarks', [validateToken, confirmEmaiAuth], checkBookmark, editBookMark);
-router.delete('/bookmarks/collections', [validateToken, confirmEmaiAuth], deleteUserBookMark);
-router.delete('/bookmarks/:articleId', [validateToken, confirmEmaiAuth], checkBookmark, deleteUserBookMark);
+router.patch('/bookmarks/collections/:collection', [validateToken, confirmEmaiAuth], checkCollection, updateCollection);
+router.patch('/bookmarks/:name', [validateToken, confirmEmaiAuth], checkBookmark, editBookMark);
+router.delete('/bookmarks/collections/:collection', [validateToken, confirmEmaiAuth], checkCollection, deleteCollection);
+router.delete('/bookmarks/collections/:collection/:name', [validateToken, confirmEmaiAuth], checkBookmarkName, unCollect);
+router.delete('/bookmarks/:name', [validateToken, confirmEmaiAuth], checkBookmarkName, deleteUserBookMark);
 router.delete('/bookmarks', [validateToken, confirmEmaiAuth], checkUserBookMarks, deleteUserBookMarks);
 
 

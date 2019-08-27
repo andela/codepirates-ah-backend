@@ -2,28 +2,15 @@
 import models from '../models';
 
 const {
-  Tag, Article, ArticleTag, BookMark, user
+  Article, BookMark, user
 } = models;
 
 const Models = {
-  Article, Tag, user, BookMark
+  Article, user, BookMark
 };
 
 
-class TagService {
-  static async getCollection(model, name, include = null) {
-    return Models[model].findAll({
-      where: { name },
-      include
-    });
-  }
-
-  static async getAll(model, include = null) {
-    return Models[model].findAll({
-      include
-    });
-  }
-
+class dbService {
   static async checkItem(id, model, include = null) {
     return Models[model].findOne({
       where: { id },
@@ -38,34 +25,9 @@ class TagService {
     });
   }
 
-  static async ensureItem(name, model) {
-    return Models[model].findOrCreate({
-      where: { name }
-    });
-  }
-
   static async updateItem(name, newName, model) {
     return Models[model].update({ name: newName },
       { where: { name }, returning: true });
-  }
-
-  static async updateArticleTag(tagId, newName, articleId) {
-    return ArticleTag.update({ tagId: newName, articleId },
-      { where: { tagId, articleId }, returning: true });
-  }
-
-  static async checkArticleTags(article) {
-    return article.getTags();
-  }
-
-  static async checkTagName(name) {
-    return Tag.findOne({
-      where: { name }
-    });
-  }
-
-  static async tagLimit() {
-    return this.checkArticle.getTags();
   }
 
   static async ensureBookMark(articleId, name, userId) {
@@ -94,6 +56,13 @@ class TagService {
     });
   }
 
+  static async getBookMarkName(userId, name) {
+    return BookMark.findOne({
+      where: { userId, name },
+      include: [models.Article]
+    });
+  }
+
   static async checkExisting(userId, articleId) {
     return BookMark.findOne({
       where: { userId, articleId }
@@ -113,12 +82,29 @@ class TagService {
       { where: { collection: old, userId } });
   }
 
+  static async checkCollection(collection, userId) {
+    return BookMark.findOne({
+      where: { collection, userId }
+    });
+  }
+
   static async findCollection(collection, userId, include = null) {
     return BookMark.findAll({
       where: { collection, userId },
       include
     });
   }
+
+  static async deleteCollection(collection) {
+    return BookMark.destroy({ where: { collection } });
+  }
+
+  static async unCollect(collection, name, userId) {
+    return BookMark.update({ collection: '' },
+      {
+        where: { collection, name, userId }
+      });
+  }
 }
 
-export default TagService;
+export default dbService;
