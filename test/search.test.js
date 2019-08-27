@@ -1,12 +1,12 @@
-import { chai, server, expect } from './test-setup';
-import Helper from '../src/helpers/helper';
+// import { chai, server, expect } from './test-setup';
+// import Helper from '../src/helpers/helper';
 
-const usertoken = Helper.generateToken({
-  id: 2,
-  email: 'user@gmail.com',
-  username: 'user',
-  verified: false
-});
+// const usertoken = Helper.generateToken({
+//   id: 2,
+//   email: 'user@gmail.com',
+//   username: 'user',
+//   verified: false
+// });
 
 describe('search article query builder', () => {
   it('List of all articles', (done) => {
