@@ -117,7 +117,7 @@ describe('/Report an article', () => {
       .set('Authorization', admintoken)
       .end((error, res) => {
         expect(res).to.be.an('object');
-        expect(res.status).to.equal(200);
+        expect(res.status).to.equal(404);
         expect(res.body).to.have.keys('message', 'status');
         expect(res.body.message).to.deep.equal('No reports found');
         done();
@@ -131,7 +131,7 @@ describe('/Report an article', () => {
       .set('Authorization', admintoken)
       .end((error, res) => {
         expect(res).to.be.an('object');
-        expect(res.status).to.equal(200);
+        expect(res.status).to.equal(404);
         expect(res.body).to.have.keys('message', 'status');
         expect(res.body.message).to.deep.equal('No reports found');
         done();
@@ -256,7 +256,7 @@ describe('/Report an article', () => {
       .set('Authorization', admintoken)
       .end((error, res) => {
         expect(res).to.be.an('object');
-        expect(res.status).to.equal(200);
+        expect(res.status).to.equal(404);
         expect(res.body).to.have.keys('message', 'status');
         expect(res.body.message).to.deep.equal('That report does not exist!');
         done();
@@ -295,7 +295,7 @@ describe('/Report an article', () => {
       .set('Authorization', admintoken)
       .end((error, res) => {
         expect(res).to.be.an('object');
-        expect(res.status).to.equal(200);
+        expect(res.status).to.equal(404);
         expect(res.body).to.have.keys('message', 'status');
         expect(res.body.message).to.deep.equal('This article is not yet Reported');
         done();

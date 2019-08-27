@@ -7,6 +7,10 @@ export default async (req, res, next) => {
   try {
     const user = await models.user.findOne({ where: { email: req.auth.email } });
     const userId = user.id;
+    if (!user) {
+      util.setError(404, 'you are anonimous');
+      return util.send(res);
+    }
     const ArticleSlug = req.params.Article;
     const post = await models.Article.findOne({ where: { slug: ArticleSlug } });
 

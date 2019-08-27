@@ -24,7 +24,7 @@ class Report {
   static async getAllReport(req, res) {
     const counter = await db.count();
     if (counter === 0) {
-      util.setError(200, 'No reports found');
+      util.setError(404, 'No reports found');
       return util.send(res);
     }
     if (req.offset >= counter) {
@@ -53,7 +53,7 @@ class Report {
     try {
       const counter = await db.count({ where: { userId: req.auth.id } });
       if (counter === 0) {
-        util.setError(200, 'No reports found');
+        util.setError(404, 'No reports found');
         return util.send(res);
       }
       if (req.offset >= counter) {
@@ -86,7 +86,7 @@ class Report {
     try {
       const counter = await db.count({ where: { articleSlug: req.params.Article } });
       if (counter === 0) {
-        util.setError(200, 'This article is not yet Reported');
+        util.setError(404, 'This article is not yet Reported');
         return util.send(res);
       }
       if (req.offset >= counter) {
@@ -122,16 +122,12 @@ class Report {
         where: { id: req.params.reportId }
       });
       if (!findReport) {
-        return res.status(200).json({
-          status: 200,
-          message: 'That report does not exist!'
-        });
+        util.setError(404, 'That report does not exist!');
+        return util.send(res);
       }
       if (req.auth.id !== findReport.userId && req.auth.role !== 'admin') {
-        return res.status(403).json({
-          status: 403,
-          message: 'Sorry you have no access to delete this Report.'
-        });
+        util.setError(403, 'Sorry you have no access to delete this Report.');
+        return util.send(res);
       }
       await db.destroy({
         where: { id: req.params.reportId }
