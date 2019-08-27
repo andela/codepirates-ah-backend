@@ -1,7 +1,7 @@
 import UserService from '../services/user.service';
 import Helper from '../helpers/helper';
-import sendEmail from '../helpers/verification-email';
-import resetSendMail from '../services/resetpassword.service';
+import EmailHelper from '../helpers/verification-email';
+import sendPasswordResetEmailHelper from '../services/resetpassword.service';
 
 /**
  *
@@ -124,7 +124,7 @@ class UserController {
       const token = await Helper.generateToken(payload);
       const verifyUrl = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}/users/verify?
       token=${token}`;
-      const verify = sendEmail(payload.email, username, verifyUrl);
+      const verify = EmailHelper.sendEmail(payload.email, username, verifyUrl);
 
       return verify
         ? res.status(201).json({
@@ -188,7 +188,7 @@ class UserController {
       const verifyUrl = `${process.env.BACKEND_URL}/api/${
         process.env.API_VERSION
       }/users/verify?token=${token}`;
-      await sendEmail(payload.email, newUser.username, verifyUrl);
+      await EmailHelper.sendEmail(payload.email, newUser.username, verifyUrl);
       return res.status(201).json({
         status: 201,
         message:
@@ -386,7 +386,6 @@ class UserController {
   static async requestPasswordReset(req, res) {
     // check if email provided exists in db
     const { email } = req.body;
-
     if (!email) {
       return res.status(400).send({
         status: 400,
@@ -408,13 +407,11 @@ class UserController {
       };
 
       const token = await Helper.generateToken(payload, (60 * 60));
-
       // create password reset link
       const resetUrl = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}/users/reset/${token}`;
 
       // send email to user email address
-      const emailSent = resetSendMail(user.email, user.username, resetUrl);
-
+      const emailSent = await sendPasswordResetEmailHelper.sendEmail(user.email, user.username, resetUrl);
       if (!emailSent) { return res.status(500).send({ status: 500, message: 'Failed to send email. Please contact site administrator for support' }); }
 
       return res.status(200).send({

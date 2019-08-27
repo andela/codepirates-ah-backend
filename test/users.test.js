@@ -1,10 +1,14 @@
+import sinon from 'sinon';
 import { chai, server, expect } from './test-setup';
+import UserController from '../src/controllers/user.controller';
+import sendPasswordResetEmailHelper from '../src/services/resetpassword.service';
+import Helper from '../src/helpers/helper';
 
 let adminToken;
 let usertoken;
 
 describe('Users', () => {
-  it("should return welcome to author's heaven", (done) => {
+  it("should return welcome to author's heaven message", (done) => {
     chai
       .request(server)
       .get('/')
@@ -24,41 +28,43 @@ describe('Users', () => {
         done();
       });
   });
-  it('should sign up', (done) => {
-    chai
-      .request(server)
-      .post('/api/v1/users/signup')
-      .send({
+  it('should sign up', async () => {
+    const req = {
+      body: {
         firstname: 'nshuti',
         lastname: 'jonath',
         email: 'maurice@gmmail.com',
         username: 'maurice',
         password: 'ASqw12345'
-      })
-      .set('Accept', 'Application/JSON')
-      .end((error, res) => {
-        usertoken = `Bearer ${res.body.token}`;
-        expect(res.status).to.be.equal(201);
-        expect(res.body).to.have.deep.property('message');
-        done();
-      });
+      }
+    };
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await UserController.signup(req, res);
+    expect(res.status).to.have.been.calledWith(201);
   });
-  it('should sign up second user', (done) => {
-    chai
-      .request(server)
-      .post('/api/v1/users/signup')
-      .send({
+  it('should sign up second user', async () => {
+    const req = {
+      body: {
         firstname: 'nshuti',
         lastname: 'jonath',
-        email: 'eliee@gmmail.com',
+        email: 'minega25@gmail.com',
         username: 'mauricee',
-        password: 'ASqw12ee'
-      })
-      .end((error, res) => {
-        expect(res.status).to.be.equal(201);
-        expect(res.body).to.have.deep.property('message');
-        done();
-      });
+        password: 'ASqw12e'
+      }
+    };
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await UserController.signup(req, res);
+    expect(res.status).to.have.been.calledWith(201);
   });
   it('should throw error when user exists', (done) => {
     chai
@@ -80,7 +86,7 @@ describe('Users', () => {
         done();
       });
   });
-  it('should sign in the user', (done) => {
+  it('should sign in the admin user', (done) => {
     chai
       .request(server)
       .post('/api/v1/users/login')
@@ -93,6 +99,23 @@ describe('Users', () => {
         adminToken = `Bearer ${res.body.token}`;
         expect(res.status).to.be.equal(200);
         expect(res.body).to.have.deep.property('message', 'welcome back admin');
+        expect(res.body).to.have.property('token');
+        done();
+      });
+  });
+  it('should sign in a normal user', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/users/login')
+      .send({
+        email: 'userthree@gmail.com',
+        password: 'ASqw12345'
+      })
+      .set('Accept', 'Application/JSON')
+      .end((error, res) => {
+        usertoken = `Bearer ${res.body.token}`;
+        expect(res.status).to.be.equal(200);
+        expect(res.body).to.have.deep.property('message', 'welcome back userthree');
         expect(res.body).to.have.property('token');
         done();
       });
@@ -198,6 +221,90 @@ describe('Users', () => {
       });
   });
 
+  it('should return send email having reset password link', async () => {
+    const req = {
+      body: {
+        email: 'userfour@gmail.com'
+      }
+    };
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    sinon.stub(sendPasswordResetEmailHelper, 'sendEmail').returns(true);
+    await UserController.requestPasswordReset(req, res);
+    expect(res.status).to.have.been.calledWith(200);
+  });
+  it('should return send email having reset password link', (done) => {
+    chai
+      .request(server)
+      .post('/api/v1/users/reset')
+      .send({
+        email: 'unexistingemail@gmail.com'
+      })
+      .end((error, res) => {
+        expect(res.status).to.be.equal(400);
+        expect(res.body).to.have.deep.property('message');
+        done();
+      });
+  });
+  it('should return error if no password provided', (done) => {
+    const token = Helper.generateToken({
+      email: 'userfour@gmail.com',
+      role: 'normal',
+    });
+    chai
+      .request(server)
+      .patch(`/api/v1/users/reset/${token}`)
+      .set('Accept', 'Application/JSON')
+      .send({
+        password: '',
+        confirmPassword: '',
+      })
+      .end((error, res) => {
+        expect(res.status).to.be.equal(400);
+        expect(res.body).to.have.deep.property('message');
+        done();
+      });
+  });
+  it('should return error if a weak password provided', (done) => {
+    const token = Helper.generateToken({
+      email: 'userfour@gmail.com',
+      role: 'normal',
+    });
+    chai
+      .request(server)
+      .patch(`/api/v1/users/reset/${token}`)
+      .send({
+        password: 'sss',
+        confirmPassword: 'sss',
+      })
+      .end((error, res) => {
+        expect(res.status).to.be.equal(400);
+        expect(res.body).to.have.deep.property('message');
+        done();
+      });
+  });
+  it('should return error if a password do not match', (done) => {
+    const token = Helper.generateToken({
+      email: 'userfour@gmail.com',
+      role: 'normal',
+    });
+    chai
+      .request(server)
+      .patch(`/api/v1/users/reset/${token}`)
+      .send({
+        password: 'ssssd',
+        confirmPassword: 'sss',
+      })
+      .end((error, res) => {
+        expect(res.status).to.be.equal(400);
+        expect(res.body).to.have.deep.property('message', 'Passwords provided do not match');
+        done();
+      });
+  });
   describe('/Signout feature', () => {
     it('should logout a user', (done) => {
       chai
@@ -243,99 +350,6 @@ describe('Users', () => {
           expect(res.body).to.have.deep.property('message');
           done();
         });
-    });
-  });
-  describe('Reset password feature', () => {
-    describe('/reset endpoint', () => {
-      it('should return send email having reset password link', (done) => {
-        chai
-          .request(server)
-          .post('/api/v1/users/reset')
-          .send({
-            email: 'habineza@gmail.com'
-          })
-          .end((error, res) => {
-            expect(res.status).to.be.equal(200);
-            expect(res.body).to.have.deep.property('message', 'Check your email address to reset your password');
-            done();
-          });
-      });
-      it('should return send email having reset password link', (done) => {
-        chai
-          .request(server)
-          .post('/api/v1/users/reset')
-          .send({
-            email: 'unexistingemail@gmail.com'
-          })
-          .end((error, res) => {
-            expect(res.status).to.be.equal(400);
-            expect(res.body).to.have.deep.property('message');
-            done();
-          });
-      });
-
-      describe('/reset endpoint', () => {
-        it('should return send email having reset password link', (done) => {
-          const token = usertoken.slice(7, usertoken.length);
-          chai
-            .request(server)
-            .patch(`/api/v1/users/reset/${token}`)
-            .send({
-              password: '@234Aqwert',
-              confirmPassword: '@234Aqwert',
-            })
-            .end((error, res) => {
-              expect(res.status).to.be.equal(200);
-              expect(res.body).to.have.deep.property('message');
-              done();
-            });
-        });
-        it('should return error if no password provided', (done) => {
-          const token = usertoken.slice(7, usertoken.length);
-          chai
-            .request(server)
-            .patch(`/api/v1/users/reset/${token}`)
-            .send({
-              password: '',
-              confirmPassword: '',
-            })
-            .end((error, res) => {
-              expect(res.status).to.be.equal(400);
-              expect(res.body).to.have.deep.property('message');
-              done();
-            });
-        });
-        it('should return error if a weak password provided', (done) => {
-          const token = usertoken.slice(7, usertoken.length);
-          chai
-            .request(server)
-            .patch(`/api/v1/users/reset/${token}`)
-            .send({
-              password: 'sss',
-              confirmPassword: 'sss',
-            })
-            .end((error, res) => {
-              expect(res.status).to.be.equal(400);
-              expect(res.body).to.have.deep.property('message');
-              done();
-            });
-        });
-        it('should return error if a password do not match', (done) => {
-          const token = usertoken.slice(7, usertoken.length);
-          chai
-            .request(server)
-            .patch(`/api/v1/users/reset/${token}`)
-            .send({
-              password: 'ssssd',
-              confirmPassword: 'sss',
-            })
-            .end((error, res) => {
-              expect(res.status).to.be.equal(400);
-              expect(res.body).to.have.deep.property('message');
-              done();
-            });
-        });
-      });
     });
   });
 });
