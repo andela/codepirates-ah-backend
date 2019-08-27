@@ -39,7 +39,6 @@ class ReportService {
         attributes: {
           exclude: ['updatedAt']
         },
-        // include: [{ model: users, username }],
         order: [
           ['createdAt', 'DESC']
         ],

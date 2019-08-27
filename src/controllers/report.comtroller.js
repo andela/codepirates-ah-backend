@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import models from '../models';
 import reportService from '../services/report.service';
-import paginate from '../helpers/pagination.helper';
 import Util from '../helpers/util';
 
 const util = new Util();
@@ -28,7 +27,10 @@ class Report {
       util.setError(200, 'No reports found');
       return util.send(res);
     }
-    const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
+    if (req.offset >= counter) {
+      req.offset = 0;
+    }
+    const { offset, limit } = req;
     const reports = await reportService.getAllReport(offset, limit);
     const response = {
       count: counter,
@@ -54,9 +56,11 @@ class Report {
         util.setError(200, 'No reports found');
         return util.send(res);
       }
-      const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
-
-      const reports = await reportService.getMyReport(offset, limit, req.auth.id);
+      if (req.offset >= counter) {
+        req.offset = 0;
+      }
+      const { offset, limit } = req;
+      const reports = await reportService.getMyReport(offset, limit, req.auth.id,);
       const response = {
         count: counter,
         yourReport: reports,
@@ -85,7 +89,10 @@ class Report {
         util.setError(200, 'This article is not yet Reported');
         return util.send(res);
       }
-      const { offset, limit } = paginate(req.param.page, req.param.limit, counter);
+      if (req.offset >= counter) {
+        req.offset = 0;
+      }
+      const { offset, limit } = req;
       const articleSlug = req.params.Article;
       const reports = await reportService.getAllReportForOneArticle(offset, limit, articleSlug);
       const response = {
