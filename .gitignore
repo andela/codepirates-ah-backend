@@ -97,5 +97,8 @@ typings/
 #ignore DS_Store
 .DS_Store
 
+# ignore package-lock
+package-lock.json
+
 # End of https://www.gitignore.io/api/node
 
