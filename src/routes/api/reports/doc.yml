@@ -1,0 +1,159 @@
+
+/reports/{articleSlug}:
+  post:
+    summary: report an article 
+    description: >
+      report article which is not yours
+    tags:
+      - Report
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: reason
+        in: body
+        description: reason for reporting article
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#definitions/Report'
+      400:
+        $ref: '#responses/BadRequest'
+  get:
+    summary: get reports for a certain article
+    description: >
+      admin can get  report made for a specific article
+    tags:
+      - Report
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Reports for an article retrieved successfully
+        schema:
+          $ref: '#definitions/Report'
+      400:
+        $ref: '#responses/BadRequest'
+/reports/all:
+   get:
+    summary: get all reports 
+    description: >
+      admin can get  all reports including pagination for it 
+    tags:
+      - Report
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Reports retrieved successfully
+        schema:
+          $ref: '#definitions/Report'
+      400:
+        $ref: '#responses/BadRequest'
+/reports:
+  get:
+    summary: get your reports
+    description: >
+      get all the reports you have made  
+    tags:
+      - Report
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Your reports retrieved successfully
+        schema:
+          $ref: '#definitions/Report'
+      400:
+        $ref: '#responses/BadRequest'
+/reports/{reportid}:
+  delete:
+    summary: delete your report 
+    description: >
+      user can delete his/her report or admin can  
+    tags:
+      - Report
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Report successfully deleted
+        schema:
+          $ref: '#definitions/Report'
+      400:
+        $ref: '#responses/BadRequest'
+tags:
+- name: Report
+  description: Operations related to Report
+responses:
+  success:
+    description: Success
+    schema:
+      $ref: '#/definitions/Report'
+  BadRequest:
+    description: Bad request
+    schema:
+      $ref: '#/definitions/Error'
+  Notfound:
+    description: Not found
+    schema:
+      $ref: '#/definitions/Error'
+definitions:
+  Report:
+    type: object
+    properties:
+      status:
+        type: string
+        description: username
+      message:
+        type: string
+        description: description of data retrieved
+      data:
+        type: object
+        description: data retrieved
+      required:
+      - body
+      - image
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+        description: status code
+      message:
+        type: string
+        description: description of error
