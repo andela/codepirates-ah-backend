@@ -9,6 +9,7 @@ import articleService from '../services/article.service';
 import Helper from '../helpers/helper';
 import NotificationServices from '../services/notification.service';
 import cloudinaryHelper from '../helpers/cloudinaryHelper';
+import OpenUrlHelper from '../helpers/share.article.helper';
 
 const { notifyViaEmailAndPush } = NotificationServices;
 
@@ -207,11 +208,11 @@ class Articles {
    * @memberof Articles
    */
   static async shareArticle(req, res) {
-    const articleSlug = await db.findOne({
+    const article = await db.findOne({
       where: { slug: req.params.slug }
     });
 
-    if (!articleSlug) {
+    if (!article) {
       return res.status(404).json({
         status: 404,
         message: 'Article is not found.'
@@ -221,26 +222,23 @@ class Articles {
     const url = `${location}/articles/${req.params.slug}`;
     switch (req.params.channel) {
       case 'facebook':
-        if (process.env.NODE_ENV !== 'test') open(`https:www.facebook.com/sharer/sharer.php?u=${url}`);
-        res.status(200).json({
+        await OpenUrlHelper.openUrl(`https:www.facebook.com/sharer/sharer.php?u=${url}`);
+        return res.status(200).json({
           status: 200,
           message: `Article shared to ${req.params.channel}`,
         });
-        break;
       case 'twitter':
-        if (process.env.NODE_ENV !== 'test') { open(`https://twitter.com/intent/tweet?url=${url}`); }
-        res.status(200).json({
+        await OpenUrlHelper.openUrl(`https://twitter.com/intent/tweet?url=${url}`);
+        return res.status(200).json({
           status: 200,
           message: `Article shared to ${req.params.channel}`,
         });
-        break;
       case 'mail':
-        if (process.env.NODE_ENV !== 'test') open(`mailto:?subject=${slug}&body=${url}`);
-        res.status(200).json({
+        await OpenUrlHelper.openUrl(`mailto:?subject=${article.title}&body=${url}`);
+        return res.status(200).json({
           status: 200,
           message: `Article shared to ${req.params.channel}`,
         });
-        break;
       default:
         break;
     }

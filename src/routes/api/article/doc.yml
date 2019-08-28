@@ -127,6 +127,30 @@
         $ref: "#/responses/BadRequest"
       404:
         $ref: "#/responses/Notfound"
+/articles/{slug}/share/{channel}:
+  post:
+    description: >
+      Share an article on mail and social media channels
+    parameters:
+      - name: slug
+        in: path
+        description: Slug for article
+        type: string
+        required: true
+      - name: channel
+        in: path
+        description: Channel to share to
+        type: string
+        required: true
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Article successfully shared
 /articles:
   post:
     summary: Create an article
@@ -436,8 +460,6 @@ definitions:
               description: Tag with name has been removed
       400:
         $ref: "#/responses/BadRequest"
-      404:
-        $ref: "#/responses/Notfound"
 /articles/{slug}/highlight:
   post:
     produces:
@@ -532,8 +554,6 @@ definitions:
         description: you are ready to share
       404:
         description: Sorry, you can not share
-     
-
-     
-
-     
+          $ref: '#/responses/Notfound'
+ 
+        
