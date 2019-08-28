@@ -10,6 +10,8 @@ import FavoritesController from '../../../controllers/favorited.articles.control
 import { checkQuery } from '../../../middlewares/query.check';
 import tagController from '../../../controllers/tag';
 import TagWare from '../../../middlewares/tag.middleware';
+import highlight from '../../../controllers/highlight.controller';
+import share from '../../../middlewares/shareHighlight.middleware';
 
 const router = express.Router();
 const {
@@ -25,6 +27,15 @@ router.get('/', checkQuery, articleController.getAllArticles);
 router.get('/:slug', articleController.getOneArticle);
 router.delete('/:slug', [auth, confirmEmailAuth], articleController.deleteArticle);
 router.patch('/:slug', [auth, confirmEmailAuth], imageUpload.array('images', 10), articleController.UpdateArticle);
+
+
+// Highlight
+router.post('/:slug/highlight', [auth], highlight.bodyHighlightedText);
+router.delete('/highlight/:id', auth, highlight.deleteHighlightComment);
+router.get('/:articleId/highlight', auth, highlight.getHighlights);
+router.get('/:id/highlight/share/:channel', [auth, share], highlight.shareHightlight);
+
+// tags
 
 router.post('/:articleId/tags', [auth, confirmEmailAuth], checkArticle, tagLimit, tagLength, createArticleTag);
 router.get('/:articleId/tags', checkArticle, getArticleTags);

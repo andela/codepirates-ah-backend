@@ -27,7 +27,13 @@ module.exports = (sequelize, DataTypes) => {
       through: 'BookMarks',
       foreignKey: 'articleId',
       as: 'readers'
-    })
+    });
+    Article.hasMany(models.Highlight, {
+      as: 'articleHighlight',
+      foreignKey: 'articleId',
+      targetKey: 'id',
+      onDelete: 'CASCADE'
+    });
   };
   return Article;
 };

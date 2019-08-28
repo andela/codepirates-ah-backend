@@ -24,8 +24,8 @@ describe('Articles', () => {
       .end((err, res) => {
         expect(res.status).to.be.deep.equal(400);
         expect(res.body).to.have.deep.property('status');
+        done();
       });
-    done();
   });
   it('create an article', async () => {
     const req = {
@@ -49,24 +49,24 @@ describe('Articles', () => {
     await articleController.createArticles(req, res);
     expect(res.status).to.have.been.calledWith(201);
   });
-  // it('List of all articles', (done) => {
-  //   chai
-  //     .request(server)
-  //     .get('/api/v1/articles')
-  //     .end((err, res) => {
-  //       expect(res.status).to.be.deep.equal(200);
-  //       expect(res.body).to.have.deep.property('message', 'List of all articles');
-  //     });
-  //   done();
-  // });
-  // it('view single article', (done) => {
-  //   chai
-  //     .request(server)
-  //     .get('/api/v1/articles/fakeslug')
-  //     .end((err, res) => {
-  //       expect(res.status).to.be.deep.equal(200);
-  //       expect(res.body).to.have.deep.property('message', 'Article successfully retrieved');
-  //     });
-  //   done();
-  // });
+  it('List of all articles', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/articles')
+      .end((err, res) => {
+        expect(res.status).to.be.deep.equal(200);
+        expect(res.body).to.have.deep.property('message', 'List of all articles');
+        done();
+      });
+  });
+  it('view single article', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/articles/fakeslug')
+      .end((err, res) => {
+        expect(res.status).to.be.deep.equal(200);
+        expect(res.body).to.have.deep.property('message', 'Article successfully retrieved');
+        done();
+      });
+  });
 });

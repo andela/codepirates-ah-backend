@@ -1,6 +1,8 @@
 import models from '../models';
 
 const db = models.Article;
+const highlightDb = models.Highlight;
+
 
 /**
  *
@@ -62,6 +64,60 @@ class articleService {
     try {
       const results = await db.update(fieldToupdate, { where: { slug }, returning: true });
       return results;
+    } catch (error) {
+      throw error;
+    }
+  }
+  // highlighting part
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} slug
+   * @returns {object } article
+   * @memberof articleService
+   */
+  static async getOneArticle(slug) {
+    try {
+      const findOne = await db.findOne({ where: { slug } });
+      return findOne;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} highlight
+   * @returns {object} highlight object
+   * @memberof articleService
+   */
+  static async addHighlight(highlight) {
+    try {
+      const createHighlight = await highlightDb.create(highlight);
+      return createHighlight;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} id
+   * @param {*} startIndex
+   * @param {*} endIndex
+   * @returns {object} highlight
+   * @memberof articleService
+   */
+  static async findHighlight(id) {
+    try {
+      const findOneHighlight = await highlightDb.findOne({ where: { id }, include: [{ model: models.Article, as: 'highlight', attributes: ['id', 'slug'] }] });
+      return findOneHighlight;
     } catch (error) {
       throw error;
     }
