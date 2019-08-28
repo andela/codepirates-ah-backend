@@ -1,3 +1,4 @@
+import open from 'open';
 import 'dotenv/config';
 import slug from 'slug';
 import _ from 'lodash';
@@ -194,6 +195,55 @@ class Articles {
       status: 200,
       updatedArticle
     });
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} share article over email and social media channelds
+   * @memberof Articles
+   */
+  static async shareArticle(req, res) {
+    const articleSlug = await db.findOne({
+      where: { slug: req.params.slug }
+    });
+
+    if (!articleSlug) {
+      return res.status(404).json({
+        status: 404,
+        message: 'Article is not found.'
+      });
+    }
+    const location = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}`;
+    const url = `${location}/articles/${req.params.slug}`;
+    switch (req.params.channel) {
+      case 'facebook':
+        if (process.env.NODE_ENV !== 'test') open(`https:www.facebook.com/sharer/sharer.php?u=${url}`);
+        res.status(200).json({
+          status: 200,
+          message: `Article shared to ${req.params.channel}`,
+        });
+        break;
+      case 'twitter':
+        if (process.env.NODE_ENV !== 'test') { open(`https://twitter.com/intent/tweet?url=${url}`); }
+        res.status(200).json({
+          status: 200,
+          message: `Article shared to ${req.params.channel}`,
+        });
+        break;
+      case 'mail':
+        if (process.env.NODE_ENV !== 'test') open(`mailto:?subject=${slug}&body=${url}`);
+        res.status(200).json({
+          status: 200,
+          message: `Article shared to ${req.params.channel}`,
+        });
+        break;
+      default:
+        break;
+    }
   }
 }
 

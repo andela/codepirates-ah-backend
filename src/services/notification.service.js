@@ -50,7 +50,7 @@ class NotificationServices {
         .filter(eachUser => eachUser.inAppNotification === true);
       const message = `${followedUser.username} just published an article`;
       const location = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}`;
-      const url = `${location}/api/v1/articles/${slug}`;
+      const url = `${location}/articles/${slug}`;
 
 
       if (myFollowersWithEmailSub.length !== 0) {
@@ -101,7 +101,7 @@ class NotificationServices {
       if (usersWhoFavoritedWithEmailSub.length !== 0) {
         const emailAddresses = usersWhoFavoritedWithEmailSub.map(each => each.email);
         const location = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}`;
-        const url = `${location}/api/v1/articles/${slug}`;
+        const url = `${location}/articles/${slug}`;
         const emailTemplate = newCommentOnFavoritedArticlesTemplate(req.auth.username, url);
         await sendEmail(emailAddresses, 'Hi there', emailTemplate);
       }

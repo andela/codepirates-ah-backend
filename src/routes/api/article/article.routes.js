@@ -27,6 +27,7 @@ router.get('/', checkQuery, articleController.getAllArticles);
 router.get('/:slug', articleController.getOneArticle);
 router.delete('/:slug', [auth, confirmEmailAuth], articleController.deleteArticle);
 router.patch('/:slug', [auth, confirmEmailAuth], imageUpload.array('images', 10), articleController.UpdateArticle);
+router.post('/:slug/share/:channel', [auth, confirmEmailAuth], articleController.shareArticle);
 
 
 // Highlight
