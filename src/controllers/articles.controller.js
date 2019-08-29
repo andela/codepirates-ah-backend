@@ -121,10 +121,9 @@ class Articles {
     const readTime = Helper.calculateReadTime(article.body);
     article.readtime = readTime;
     if (req.auth) {
-      const { description } = article;
       const readerId = req.auth.id;
       const item = 'article';
-      await statsService.createStat({ description, item, readerId }, 'Stats');
+      await statsService.createStat({ slug: req.params.slug, item, readerId }, 'Stats');
     }
     return res.status(200).json({
       status: 200,
