@@ -1,4 +1,3 @@
-import open from 'open';
 import 'dotenv/config';
 import slug from 'slug';
 import _ from 'lodash';
@@ -10,8 +9,11 @@ import Helper from '../helpers/helper';
 import NotificationServices from '../services/notification.service';
 import cloudinaryHelper from '../helpers/cloudinaryHelper';
 import OpenUrlHelper from '../helpers/share.article.helper';
+import Util from '../helpers/util';
+
 
 const { notifyViaEmailAndPush } = NotificationServices;
+const util = new Util();
 
 const db = models.Article;
 /**
@@ -213,32 +215,24 @@ class Articles {
     });
 
     if (!article) {
-      return res.status(404).json({
-        status: 404,
-        message: 'Article is not found.'
-      });
+      util.setError(404, 'Article is not found.');
+      return util.send(res);
     }
     const location = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}`;
     const url = `${location}/articles/${req.params.slug}`;
     switch (req.params.channel) {
       case 'facebook':
         await OpenUrlHelper.openUrl(`https:www.facebook.com/sharer/sharer.php?u=${url}`);
-        return res.status(200).json({
-          status: 200,
-          message: `Article shared to ${req.params.channel}`,
-        });
+        util.setError(200, `Article shared to ${req.params.channel}`);
+        return util.send(res);
       case 'twitter':
         await OpenUrlHelper.openUrl(`https://twitter.com/intent/tweet?url=${url}`);
-        return res.status(200).json({
-          status: 200,
-          message: `Article shared to ${req.params.channel}`,
-        });
+        util.setError(200, `Article shared to ${req.params.channel}`);
+        return util.send(res);
       case 'mail':
         await OpenUrlHelper.openUrl(`mailto:?subject=${article.title}&body=${url}`);
-        return res.status(200).json({
-          status: 200,
-          message: `Article shared to ${req.params.channel}`,
-        });
+        util.setError(200, `Article shared to ${req.params.channel}`);
+        return util.send(res);
       default:
         break;
     }
