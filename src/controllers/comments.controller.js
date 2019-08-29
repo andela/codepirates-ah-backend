@@ -2,9 +2,13 @@ import commentsService from '../services/comments.service';
 import UserService from '../services/user.service';
 import models from '../models';
 import NotificationServices from '../services/notification.service';
+<<<<<<< HEAD
 import Util from '../helpers/util';
 
 const util = new Util();
+=======
+import StatsService from '../services/db.service';
+>>>>>>> 167313420 a user should be able to view their reading stats
 
 const { notifyUsersWhoFavorited } = NotificationServices;
 

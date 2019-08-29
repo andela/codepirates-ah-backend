@@ -12,6 +12,7 @@ import tagController from '../../../controllers/tag';
 import TagWare from '../../../middlewares/tag.middleware';
 import highlight from '../../../controllers/highlight.controller';
 import share from '../../../middlewares/shareHighlight.middleware';
+import StatsWare from '../../../middlewares/stats';
 
 const router = express.Router();
 const {
@@ -24,7 +25,7 @@ const {
 router.post('/:articleId/favorite', [auth, confirmEmailAuth, validateId], FavoritesController.createOrRemoveFavorite);
 router.post('/', [auth, confirmEmailAuth], imageUpload.array('images', 10), validate(schema.articleSchema), articleController.createArticles);
 router.get('/', checkQuery, articleController.getAllArticles);
-router.get('/:slug', articleController.getOneArticle);
+router.get('/:slug', StatsWare.saveStat, articleController.getOneArticle);
 router.delete('/:slug', [auth, confirmEmailAuth], articleController.deleteArticle);
 router.patch('/:slug', [auth, confirmEmailAuth], imageUpload.array('images', 10), articleController.UpdateArticle);
 

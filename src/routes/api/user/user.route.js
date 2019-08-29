@@ -10,6 +10,8 @@ import followController from '../../../controllers/follow.controller';
 import resetPasswordValidation from '../../../middlewares/validators/resetpassword.validation';
 import BookMarkController from '../../../controllers/bookmarks.controller';
 import BookMarkWare from '../../../middlewares/bookmarks';
+import statsController from '../../../controllers/stats.controller';
+import statsWare from '../../../middlewares/stats';
 
 const {
   checkBookmark, checkUserBookMarks, checkDuplicate, createCopy,
@@ -39,6 +41,11 @@ router.delete('/bookmarks/collections/:collection/:name', [validateToken, confir
 router.delete('/bookmarks/:name', [validateToken, confirmEmaiAuth], checkBookmarkName, deleteUserBookMark);
 router.delete('/bookmarks', [validateToken, confirmEmaiAuth], checkUserBookMarks, deleteUserBookMarks);
 
+const { getStats } = statsController;
+const { saveStat, checkStats } = statsWare;
+
+// stats route
+router.get('/stats', saveStat, checkStats, getStats);
 
 router.get('/verify', verifyEmail);
 router.get('/allusers', [validateToken, admin, confirmEmaiAuth], UserController.getAllUsers);

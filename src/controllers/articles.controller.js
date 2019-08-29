@@ -8,6 +8,7 @@ import articleService from '../services/article.service';
 import Helper from '../helpers/helper';
 import NotificationServices from '../services/notification.service';
 import cloudinaryHelper from '../helpers/cloudinaryHelper';
+import statsService from '../services/db.service';
 
 const { notifyViaEmailAndPush } = NotificationServices;
 
@@ -119,6 +120,12 @@ class Articles {
     const article = _.pick(findArticle, ['slug', 'title', 'description', 'body', 'taglist', 'favorited', 'favoritedcount', 'flagged', 'images', 'views']);
     const readTime = Helper.calculateReadTime(article.body);
     article.readtime = readTime;
+    if (req.auth) {
+      const { description } = article;
+      const readerId = req.auth.id;
+      const item = 'article';
+      await statsService.createStat({ description, item, readerId }, 'Stats');
+    }
     return res.status(200).json({
       status: 200,
       message: 'Article successfully retrieved',
