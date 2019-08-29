@@ -7,7 +7,6 @@ export default async (req, res, next) => {
   try {
     const ArticleSlug = req.params.articleSlug;
     const post = await models.Article.findOne({ where: { slug: ArticleSlug } });
-
     if (!post) {
       util.setError(404, 'post not found');
       return util.send(res);

@@ -104,7 +104,7 @@ class rateController {
         where: { articleSlug }
       });
       if (count === 0) {
-        util.setError(404, `Rating for article with slug ${articleSlug} not found`);
+        util.setError(404, `Article with slug ${articleSlug} not yet Rated`);
         return util.send(res);
       }
       const rating = await RateService.getArticleRatingStatistic(articleSlug);
