@@ -17,7 +17,6 @@ describe('test for sharing an article', () => {
       json() { }
     };
     sinon.stub(res, 'status').returnsThis();
-    sinon.stub(OpenUrlHelper, 'openUrl').returns(true);
     await Article.shareArticle(req, res);
     expect(res.status).to.have.been.calledWith(200);
   });
