@@ -17,12 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   user.associate = ({
-<<<<<<< HEAD
-    Follow, Article, Highlight
-=======
-    Follow, Article, Stats
->>>>>>> 167313420 a user should be able to view their reading stats
-
+    Follow, Article, Highlight, Stats
   }) => {
     user.hasMany(Follow, {
       foreignKey: 'followerId',
@@ -32,18 +27,16 @@ module.exports = (sequelize, DataTypes) => {
       as: 'author',
       foreignKey: 'authorId'
     });
-<<<<<<< HEAD
     user.hasMany(Highlight, {
       as: 'highlighter',
       foreignKey: 'userId',
       targetKey: 'id',
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
-=======
+    });
     user.hasMany(Stats, {
       as: 'reader',
       foreignKey: 'readerId'
->>>>>>> 167313420 a user should be able to view their reading stats
     })
     user.belongsToMany(Article, {
       through: 'BookMarks',

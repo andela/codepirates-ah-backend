@@ -2,13 +2,10 @@ import commentsService from '../services/comments.service';
 import UserService from '../services/user.service';
 import models from '../models';
 import NotificationServices from '../services/notification.service';
-<<<<<<< HEAD
 import Util from '../helpers/util';
+import StatsService from '../services/db.service';
 
 const util = new Util();
-=======
-import StatsService from '../services/db.service';
->>>>>>> 167313420 a user should be able to view their reading stats
 
 const { notifyUsersWhoFavorited } = NotificationServices;
 
@@ -111,6 +108,9 @@ class Comments {
       await util.setError(200, 'No comments found');
       return util.send(res);
     }
+    const readerId = req.auth.id;
+    const item = 'comment';
+    await StatsService.createStat({ readerId, item, slug: 'all comments' }, 'Stats');
     await util.setSuccess(200, 'All comments successfully retrieved', comments);
     return util.send(res);
   }
