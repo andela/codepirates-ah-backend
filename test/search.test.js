@@ -28,7 +28,6 @@ describe('search article query builder', () => {
       .set('Content-Type', 'application/json')
       .set('Authorization', usertoken)
       .end((err, res) => {
-        if (err) done(err);
         expect(res.status).to.be.deep.equal(200);
         expect(res.body).to.have.deep.property('message', 'List of all articles');
         done();
@@ -41,7 +40,6 @@ describe('search article query builder', () => {
       .set('Content-Type', 'application/json')
       .set('Authorization', usertoken)
       .end((err, res) => {
-        if (err) done(err);
         expect(res.status).to.be.deep.equal(400);
         expect(res.body).to.have.deep.property('error');
         done();

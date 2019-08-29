@@ -8,8 +8,12 @@ import articleService from '../services/article.service';
 import Helper from '../helpers/helper';
 import NotificationServices from '../services/notification.service';
 import cloudinaryHelper from '../helpers/cloudinaryHelper';
+import OpenUrlHelper from '../helpers/share.article.helper';
+import Util from '../helpers/util';
+
 
 const { notifyViaEmailAndPush } = NotificationServices;
+const util = new Util();
 
 const db = models.Article;
 /**
@@ -194,6 +198,44 @@ class Articles {
       status: 200,
       updatedArticle
     });
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} share article over email and social media channelds
+   * @memberof Articles
+   */
+  static async shareArticle(req, res) {
+    const article = await db.findOne({
+      where: { slug: req.params.slug }
+    });
+
+    if (!article) {
+      util.setError(404, 'Article is not found.');
+      return util.send(res);
+    }
+    const location = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}`;
+    const url = `${location}/articles/${req.params.slug}`;
+    switch (req.params.channel) {
+      case 'facebook':
+        await OpenUrlHelper.openUrl(`https:www.facebook.com/sharer/sharer.php?u=${url}`);
+        util.setError(200, `Article shared to ${req.params.channel}`);
+        return util.send(res);
+      case 'twitter':
+        await OpenUrlHelper.openUrl(`https://twitter.com/intent/tweet?url=${url}`);
+        util.setError(200, `Article shared to ${req.params.channel}`);
+        return util.send(res);
+      case 'mail':
+        await OpenUrlHelper.openUrl(`mailto:?subject=${article.title}&body=${url}`);
+        util.setError(200, `Article shared to ${req.params.channel}`);
+        return util.send(res);
+      default:
+        break;
+    }
   }
 }
 
