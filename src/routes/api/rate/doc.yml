@@ -1,0 +1,137 @@
+
+/rate/{articleSlug}:
+  get:
+    summary: Gets a rating
+    description: >
+      Get a rating about a specific article
+    tags:
+      - Rate
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: articleSlug
+        in: path
+        description: Slug for article being rated
+        type: string
+        required: true
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#definitions/Rate'
+  patch:
+    summary: Updates a rating
+    description: >
+      updates a rating about a specific article
+    tags:
+      - Rate
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: articleSlug
+        in: path
+        description: Slug for article being rated
+        type: string
+        required: true
+      - name: rate
+        in: body
+        description: article rating
+        schema:
+          type: object
+          required:
+            - rate
+          properties:
+            rate:
+              type: integer
+    responses:
+      200:
+        description: Rate successfully create
+        schema:
+          $ref: '#definitions/Rate'
+      400:
+        description: input Validation error
+  post:
+    summary: creates a rating
+    tags:
+      - Rate
+    description: >
+      creates a rating about a specific article
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: articleSlug
+        in: path
+        description: Slug for article being rated
+        type: string
+        required: true
+      - name: rate
+        in: body
+        description: article rating
+        schema:
+          type: object
+          required:
+            - rate
+          properties:
+            rate:
+              type: integer
+    responses:
+      200:
+        description: Rate successfully create
+        schema:
+          $ref: '#definitions/Rate'
+      400:
+        $ref: '#/responses/400'
+      404:
+        $ref: '#/responses/404' 
+tags:
+- name: Rate
+  description: Operations about rating
+responses:
+  200:
+    description: Success
+    schema:
+      $ref: '#/definitions/Rate'
+  400:
+    description: Bad request
+    schema:
+      $ref: '#/definitions/Error'
+  404:
+    description: Not found
+    schema:
+      $ref: '#/definitions/Error'
+definitions:
+  Rate:
+    type: object
+    properties:
+      rate:
+        type: integer
+        description: Rate of an article
+    required:
+      - rate
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+        description: status code
+      message:
+        type: string
+        description: description of error

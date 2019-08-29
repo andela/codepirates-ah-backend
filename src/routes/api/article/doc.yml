@@ -1,0 +1,560 @@
+/articles/{slug}:
+  get:
+    summary: Gets a a particular article
+    description: >
+      Get a information about a specific article
+    tags:
+      - Article
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: slug
+        in: path
+        description: Slug for article
+        type: string
+        required: true
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: "#definitions/Article"
+  patch:
+    summary: Updates an article
+    description: >
+      updates a specific article
+    tags:
+      - Article
+    produces:
+      - application/json
+    consumes:
+      - multipart/form-data
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: slug
+        in: formData
+        type: string
+        description: slug
+      - name: title
+        in: formData
+        type: string
+        description: title
+        required:
+          - title
+      - name: description
+        in: formData
+        type: string
+        description: description
+        required:
+          - description
+      - name: body
+        in: formData
+        type: string
+        description: body
+        required:
+          - body
+      - name: tagList
+        in: formData
+        type: string
+        description: tagList
+      - name: favorited
+        in: formData
+        type: string
+        description: favorited
+      - name: favoritesCount
+        in: formData
+        type: string
+        description: favoritesCount
+      - name: image
+        in: formData
+        type: file
+        description: image
+      - name: author
+        type: object
+        properties:
+          username:
+            type: string
+          bio:
+            type: string
+          image:
+            type: string
+          following:
+            type: boolean
+        description: Article's author details
+    responses:
+      200:
+        description: Article successfully updated
+        schema:
+          $ref: "#definitions/Article"
+      400:
+        $ref: "#responses/BadRequest"
+  delete:
+    summary: delete a specific article
+    tags:
+      - Article
+    description: >
+      deletes a particular article
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: slug
+        in: path
+        description: Slug for article being deleted
+        type: string
+        required: true
+    responses:
+      200:
+        description: Article successfully deleted
+        schema:
+          $ref: "#definitions/Article"
+      400:
+        $ref: "#/responses/BadRequest"
+      404:
+        $ref: "#/responses/Notfound"
+/articles/{slug}/share/{channel}:
+  post:
+    description: >
+      Share an article on mail and social media channels
+    parameters:
+      - name: slug
+        in: path
+        description: Slug for article
+        type: string
+        required: true
+      - name: channel
+        in: path
+        description: Channel to share to
+        type: string
+        required: true
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Article successfully shared
+        $ref: "#/responses/Notfound"
+/articles:
+  post:
+    summary: Create an article
+    description: >
+      Creates a specific article
+    tags:
+      - Article
+    produces:
+      - application/json
+    consumes:
+      - multipart/form-data
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: slug
+        in: formData
+        type: string
+        description: slug
+      - name: title
+        in: formData
+        type: string
+        description: title
+        required:
+          - title
+      - name: description
+        in: formData
+        type: string
+        description: description
+        required:
+          - description
+      - name: body
+        in: formData
+        type: string
+        description: body
+        required:
+          - body
+      - name: tagList
+        in: formData
+        type: string
+        description: tagList
+      - name: favorited
+        in: formData
+        type: string
+        description: favorited
+      - name: favoritesCount
+        in: formData
+        type: string
+        description: favoritesCount
+      - name: image
+        in: formData
+        type: file
+        description: image
+      - name: author
+        type: object
+        properties:
+          username:
+            type: string
+          bio:
+            type: string
+          image:
+            type: string
+          following:
+            type: boolean
+        description: Article's author details
+    responses:
+      200:
+        description: Article successfully created
+        schema:
+          $ref: "#definitions/Article"
+      400:
+        $ref: "#responses/BadRequest"
+      404:
+        $ref: "#/responses/Notfound"
+    get:
+      summary: Gets all articles
+      description: >
+        Get a information about a all articles
+      tags:
+        - Article
+      produces:
+        - application/json
+      parameters:
+        - name: x-access-token
+          in: header
+          schema:
+            type: string
+          required:
+            - authorization
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#definitions/Article"
+        404:
+          $ref: "#/responses/Notfound"
+tags:
+  - name: Article
+    description: Operations related to Article
+responses:
+  success:
+    description: Success
+    schema:
+      $ref: "#/definitions/Article"
+  BadRequest:
+    description: Bad request
+    schema:
+      $ref: "#/definitions/Error"
+  Notfound:
+    description: Not found
+    schema:
+      $ref: "#/definitions/Error"
+definitions:
+  Article:
+    type: object
+    properties:
+      slug:
+        type: string
+        description: article slug
+      title:
+        type: string
+        description: article title
+      description:
+        type: string
+        description: article description
+      body:
+        type: string
+        description: article body
+      taglist:
+        type: array
+        items:
+          type: string
+        description: article tags
+      favorited:
+        type: boolean
+        description: is article favorited
+      favoritesCount:
+        type: integer
+        description: article tags
+      readtime:
+        type: string
+        description: article read time
+      author:
+        type: object
+        properties:
+          username:
+            type: string
+          bio:
+            type: string
+          image:
+            type: string
+          following:
+            type: boolean
+        description: Article's author details
+    required:
+      - slug
+      - title
+      - description
+      - body
+      - tagList
+      - favorited
+      - favoritesCount
+      - author
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+        description: status code
+      message:
+        type: string
+        description: description of error
+/articles/{articleId}/tags:
+  post:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: articleId
+        in: path
+        description: article id
+        type: integer
+        required: true
+      - name: tagname
+        in: body
+        description: tag name
+        schema:
+          type: object
+          required:
+            - tagname
+          properties:
+            tag:
+              type: string
+    responses:
+      200:
+        description: Article tagged as tag name
+        schema:
+          $ref: "#/responses/Article"
+      400:
+        $ref: "#/responses/BadRequest"
+      404:
+        $ref: "#/responses/Notfound"
+  get:
+    produces:
+      - application/json
+    parameters:
+      - name: articleId
+        in: path
+        description: article id
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Article tagged as tag name
+        schema:
+          $ref: "#/responses/Article"
+      400:
+        $ref: "#/responses/BadRequest"
+      404:
+        $ref: "#/responses/Notfound"
+/articles/{articleId}/{name}:
+  patch:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: articleId
+        in: path
+        description: article id
+        type: integer
+        required: true
+      - name: name
+        in: path
+        description: name of tag
+        type: string
+        required: true
+      - name: tagname
+        in: body
+        description: tag name
+        schema:
+          type: object
+          required:
+            - tagname
+          properties:
+            tag:
+              type: string
+    responses:
+      200:
+        description: Article tagged as tag name
+        schema:
+          $ref: "#/responses/Article"
+      400:
+        $ref: "#/responses/BadRequest"
+      404:
+        $ref: "#/responses/Notfound"
+  delete:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: articleId
+        in: path
+        description: article id
+        type: integer
+        required: true
+      - name: name
+        in: path
+        description: name of tag
+        type: string
+        required: true
+      - name: tagname
+        in: body
+        description: tag name
+        schema:
+          type: object
+          required:
+            - tagname
+          properties:
+            tag:
+              type: string
+    responses:
+      200:
+        description: Article tagged as tag name
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Tag with name has been removed
+      400:
+        $ref: "#/responses/BadRequest"
+/articles/{slug}/highlight:
+  post:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: slug
+        in: path
+        description: article slug
+        type: string
+        required: true
+      - name: startIndex
+        in: query
+        description: start index
+        required: true
+      - name: endIndex
+        in: query
+        description: end index
+        required: true
+      - name: comment
+        in: body
+        description: comment of a highlight
+    responses:
+      200:
+        description: Success highligt and comment
+      404:
+        description: Sorry, that article does not exists
+/articles/highlight/{id}:
+  delete:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        required:
+          - authorization
+      - name: id
+        in: path
+        description: highlight comment id
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Successfully deleted the comment
+      404:
+        description: Sorry, you can no delete the comment of empty highlight
+/articles/{articleId}/highlight:
+  get:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        required:
+          - authorization
+      - name: articleId
+        in: path
+        description: Id of the highlight article
+        type: integer
+        required: true
+    responses:
+      200:
+        description: List of all highlights
+      404:
+        description: Sorry, you can get the hightlights
+/articles/{id}/highlight/share/{channel}:
+  get:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        required:
+          - authorization
+      - name: id
+        in: path
+        description: Id of the highlight
+        type: integer
+        required: true
+      - name: channel
+        in: path
+        description: channel to share to
+        type: string
+        required: true
+    responses:
+      200:
+        description: you are ready to share
+      404:
+        description: Sorry, you can not share
+        $ref: '#/responses/Notfound'
+ 
+        

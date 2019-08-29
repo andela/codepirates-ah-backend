@@ -1,0 +1,491 @@
+/users/login:
+  post:
+    tags:
+      - User
+    description: Creates a user
+    produces:
+      - application/json
+    parameters:
+      - name: user
+        description: User object
+        in: body
+        required: true
+        type: string
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+              format: password
+    responses:
+      200:
+        description: User successfully created
+        schema:
+          $ref: '#/definitions/User'
+/users/signup:
+  post:
+    tags:
+      - User
+    description: Creates a user
+    produces:
+      - application/json
+    parameters:
+      - in: body
+        name: user
+        description: create an account.
+        schema:
+          type: object
+          required:
+            - username
+            - firstname
+            - lastname
+            - email
+            - password
+        properties:
+          username:
+            type: string
+          firstname:
+            type: string
+          lastname:
+            type: string
+          email:
+            type: string
+          password:
+            type: string
+            format: password
+    responses:
+      201:
+        description: Your account has been successfully created.
+        schema:
+          $ref: '#/definitions/User'
+/users/signout:
+  post:
+    tags:
+      - User
+    description: Logs out a user
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: User logged out successfully
+/users/reset:
+  post:
+    tags:
+      - User
+    description: request for a password reset
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: 'reset password'
+        in: body
+        description: password reset
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+          required:
+            - email
+    responses:
+      200:
+        description: Check your email address to reset your password
+      400:
+        description: Validation error
+/users/reset/:token:
+  patch:
+    tags:
+      - User
+    description: handle password reset logic
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - in: body
+        name: user
+        description: request for password reset
+        schema:
+          type: object
+        properties:
+          password:
+            type: string
+          confirmPassword:
+            type: string
+        required:
+          - password
+          - confirmPassword
+    responses:
+      200:
+        description: Successfully reset your password
+      400:
+        description: Validation error
+/users/profiles/{userId}/follow:
+  post:
+    tags:
+      - User
+    description: follow user
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - in: path
+        name: userId
+        schema:
+          type: integer
+          required: true
+    responses:
+      200:
+        description: You are now following
+      400:
+        description: userId must be a non negative integer
+/users/profiles/following:
+  get:
+    tags:
+      - User
+    description: get all users that i follow
+    produces:
+      - application/json
+    responses:
+      200:
+        description: You currently do not follow anyone
+/users/profiles/followers:
+  get:
+    tags:
+      - User
+    description: get all users that i follow
+    produces:
+      - application/json
+    responses:
+      200:
+        description: You currently do not have any followers
+      400:
+        $ref: #/responses/400
+      404:
+        $ref: #/responses/404
+/users/bookmarks:
+  post:
+    tags:
+      - Bookmark
+    description: Creates a bookmark
+    produces:
+      - application/json
+    parameters:
+      - name: bookmark
+        description: article marked for later reading
+        in: body
+        required:
+          - authorization
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            articleId:
+              type: integer
+    responses:
+      201:
+        description: Bookmark created
+        schema:
+          $ref: #/definitions/successObject
+      200:
+        description: Bookmark exists
+        schema:
+          $ref: #/definitions/successObject
+      404:
+        description: target article not found
+        schema:
+          $ref: #/definitions/notfound
+      409:
+        description: another bookmark with the same name
+        schema:
+          $ref: #/definitions/successObject
+  get:
+    tags:
+      - Bookmark
+    description: get all userbookmarks
+    produces:
+      - application/json
+    required:
+      - authorization
+    responses:
+      200:
+        description: Bookmarks got
+        schema:
+          $ref: #/definitions/successBodyObject
+      404:
+        description: Bookmarks not found
+        schema:
+          $ref: #/definitions/notfound
+  delete:
+    tags:
+      - Bookmark
+    description: delete all userbookmarks
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Bookmarks deleted
+        schema:
+          $ref: #/definitions/successMessage
+      404:
+        description: Bookmarks not found
+        schema:
+          $ref: #/definitions/notfound
+/users/bookmarks/{name}:
+  patch:
+    tags:
+      - Bookmark
+    description: updates bookmark name
+    produces:
+      - application/json
+    parameters:
+      - name: update object
+        description: bookmark to be updated
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            articleId:
+              type: integer
+      - name: name
+        description: bookmark to be updated
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Bookmark exists
+        schemas:
+          - $ref: #/definitions/successObject
+      404:
+        description: target article not found
+        schema:
+          $ref: #/definitions/notfound
+      409:
+        description: another bookmark with the same name
+        schema:
+          $ref: #/definitions/successMessage
+  get:
+    tags:
+      - Bookmark
+    description: get specific userbookmark
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Bookmarks got
+        schema:
+          $ref: #/definitions/successBodyObject
+      404:
+        description: Bookmarks not found
+        schema:
+          $ref: #/definitions/notfound
+  delete:
+    tags:
+      - Bookmark
+    description: delete specific userbookmark
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Bookmark deleted
+        schema:
+          $ref: #/definitions/successMessage
+      404:
+        description: Bookmarks not found
+        schema:
+          $ref: #/definitions/notfound
+tags:
+  - name: User
+    description: Operations about user
+responses:
+  200:
+    description: Success
+    schema:
+      $ref: #/definitions/Rate
+  400:
+    description: Bad request
+    schema:
+      $ref: #/definitions/Error
+  404:
+    description: Not found
+    schema:
+      $ref: #/definitions/Error
+definitions:
+  User:
+    type: object
+    required:
+      - firstname
+      - lastname
+      - email
+      - username
+      - password
+    properties:
+      firstname:
+        type: string
+      lastname:
+        type: string
+      email:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+        format:
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+        description: status code
+      message:
+        type: string
+        description: description of error
+  Bookmark:
+    type: object
+    required:
+      - articleId
+      - userId
+    properties:
+      id:
+        type: integer
+        description: id of bookmark in database
+      name:
+        type: string
+        description: bookmark name
+      articleId:
+        type: integer
+        description: id of article being bookmarked
+      userId:
+        type: integer
+        description: id of user bookmarking this article
+      collection:
+        type: string
+        description: collection bookmark is in
+      createdAt:
+        type: date
+        description: time of bookmark creation
+      updatedAt:
+        type: date
+        description: time of bookmark modification
+      Article:
+        type: object
+        schema:
+          $ref: #/definitions/Article
+  notfound:
+    type: object
+    properties:
+      status:
+        type: string
+        description: status code
+      message:
+        type: string
+        description: description of error
+  successMessage:
+    type: object
+    properties:
+      message:
+        type: string
+        description: reason for response
+  successArray:
+    type: object
+    properties:
+      message:
+        type: string
+        description: reason for response
+      data:
+        type: array
+        properties:
+          bookmarks:
+            type: string
+            description: bookmark name
+  successBodyArray:
+    type: object
+    properties:
+      data:
+        type: array
+        properties:
+          bookmarks:
+            type: string
+            description: bookmark name
+  successObject:
+    type: object
+    properties:
+      message:
+        type: string
+        description: reason for response
+      data:
+        type: object
+        schema:
+          $ref: #/definitions/Bookmark
+  successBodyObject:
+    type: object
+    properties:
+      data:
+        type: object
+        schema:
+          $ref: #/definitions/Bookmark
+  Article:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of bookmarked article
+      slug:
+        type: string
+        description: unique tag for article
+      title:
+        type: string
+        description: title of article
+      description:
+        type: string
+        description: summary of article
+      body:
+        type: text
+        description: main content of article
+      favorited:
+        type: boolean
+        description: favouriting status of article
+      favoritedcount:
+        type: integer
+        description: number of favouriting readers
+      flagged:
+        type: boolean
+        description: flagging status of article
+      authorId:
+        type: integer
+        description: id of the article authoe
+      images:
+        type: array
+        properties:
+          url:
+            type: string
+            description: images urls associated with the article
