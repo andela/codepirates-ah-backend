@@ -10,6 +10,7 @@ module.exports = {
       },
       userId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
         references: {
@@ -28,6 +29,7 @@ module.exports = {
         }
       },
       reason: {
+        allowNull: false,
         type: Sequelize.ENUM,
         values: ['Rules Violation', 'Spam', 'Harassment'],
       },
