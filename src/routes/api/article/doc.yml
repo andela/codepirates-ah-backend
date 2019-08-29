@@ -555,6 +555,6 @@ definitions:
         description: you are ready to share
       404:
         description: Sorry, you can not share
-          $ref: '#/responses/Notfound'
+        $ref: '#/responses/Notfound'
  
         
