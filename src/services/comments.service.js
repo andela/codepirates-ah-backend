@@ -63,5 +63,24 @@ class commentsService {
       throw error;
     }
   }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} id
+   * @param {*} updateComments
+   * @returns {object} data
+   * @memberof commentsService
+   */
+  static async findOne(id) {
+    try {
+      return await database.findOne({
+        where: { id }
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 export default commentsService;

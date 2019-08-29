@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    commentRevisions:{
+    commentRevisions: {
       type: DataTypes.STRING,
       allowNull: true,
       references: {
@@ -28,11 +28,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     body: DataTypes.STRING,
+    likesCount: DataTypes.INTEGER,
+    likeInfo: DataTypes.TEXT
   }, {});
-  Comment.associate = function(models) {
+  Comment.associate = function (models) {
     // associations can be defined here
-    Comment.belongsTo(models.user,{
-      foreignKey:'id',as:'commentAuthor'
+    Comment.belongsTo(models.user, {
+      foreignKey: 'id', as: 'commentAuthor'
     });
   };
   return Comment;
