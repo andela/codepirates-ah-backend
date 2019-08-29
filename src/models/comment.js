@@ -28,6 +28,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     body: DataTypes.STRING,
+    likesCount: DataTypes.INTEGER,
+    likeInfo: DataTypes.TEXT
   }, {});
   Comment.associate = function (models) {
     // associations can be defined here
