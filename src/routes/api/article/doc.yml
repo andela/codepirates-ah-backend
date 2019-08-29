@@ -23,7 +23,7 @@
       200:
         description: OK
         schema:
-          $ref: '#definitions/Article'
+          $ref: "#definitions/Article"
   patch:
     summary: Updates an article
     description: >
@@ -95,9 +95,9 @@
       200:
         description: Article successfully updated
         schema:
-          $ref: '#definitions/Article'
+          $ref: "#definitions/Article"
       400:
-        $ref: '#responses/BadRequest'
+        $ref: "#responses/BadRequest"
   delete:
     summary: delete a specific article
     tags:
@@ -122,11 +122,11 @@
       200:
         description: Article successfully deleted
         schema:
-          $ref: '#definitions/Article'
+          $ref: "#definitions/Article"
       400:
-        $ref: '#/responses/BadRequest'
+        $ref: "#/responses/BadRequest"
       404:
-        $ref: '#/responses/Notfound'
+        $ref: "#/responses/Notfound"
 /articles:
   post:
     summary: Create an article
@@ -199,11 +199,11 @@
       200:
         description: Article successfully created
         schema:
-          $ref: '#definitions/Article'
+          $ref: "#definitions/Article"
       400:
-        $ref: '#responses/BadRequest'
+        $ref: "#responses/BadRequest"
       404:
-        $ref: '#/responses/Notfound'
+        $ref: "#/responses/Notfound"
     get:
       summary: Gets all articles
       description: >
@@ -223,9 +223,9 @@
         200:
           description: OK
           schema:
-            $ref: '#definitions/Article'
+            $ref: "#definitions/Article"
         404:
-          $ref: '#/responses/Notfound'
+          $ref: "#/responses/Notfound"
 tags:
   - name: Article
     description: Operations related to Article
@@ -233,15 +233,15 @@ responses:
   success:
     description: Success
     schema:
-      $ref: '#/definitions/Article'
+      $ref: "#/definitions/Article"
   BadRequest:
     description: Bad request
     schema:
-      $ref: '#/definitions/Error'
+      $ref: "#/definitions/Error"
   Notfound:
     description: Not found
     schema:
-      $ref: '#/definitions/Error'
+      $ref: "#/definitions/Error"
 definitions:
   Article:
     type: object
@@ -332,11 +332,11 @@ definitions:
       200:
         description: Article tagged as tag name
         schema:
-          $ref: '#/responses/Article'
+          $ref: "#/responses/Article"
       400:
-        $ref: '#/responses/BadRequest'
+        $ref: "#/responses/BadRequest"
       404:
-        $ref: '#/responses/Notfound'
+        $ref: "#/responses/Notfound"
   get:
     produces:
       - application/json
@@ -350,11 +350,11 @@ definitions:
       200:
         description: Article tagged as tag name
         schema:
-          $ref: '#/responses/Article'
+          $ref: "#/responses/Article"
       400:
-        $ref: '#/responses/BadRequest'
+        $ref: "#/responses/BadRequest"
       404:
-        $ref: '#/responses/Notfound'
+        $ref: "#/responses/Notfound"
 /articles/{articleId}/{name}:
   patch:
     produces:
@@ -390,11 +390,11 @@ definitions:
       200:
         description: Article tagged as tag name
         schema:
-          $ref: '#/responses/Article'
+          $ref: "#/responses/Article"
       400:
-        $ref: '#/responses/BadRequest'
+        $ref: "#/responses/BadRequest"
       404:
-        $ref: '#/responses/Notfound'
+        $ref: "#/responses/Notfound"
   delete:
     produces:
       - application/json
@@ -435,6 +435,105 @@ definitions:
               type: string
               description: Tag with name has been removed
       400:
-        $ref: '#/responses/BadRequest'
+        $ref: "#/responses/BadRequest"
       404:
-        $ref: '#/responses/Notfound'
+        $ref: "#/responses/Notfound"
+/articles/{slug}/highlight:
+  post:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+      - name: slug
+        in: path
+        description: article slug
+        type: string
+        required: true
+      - name: startIndex
+        in: query
+        description: start index
+        required: true
+      - name: endIndex
+        in: query
+        description: end index
+        required: true
+      - name: comment
+        in: body
+        description: comment of a highlight
+    responses:
+      200:
+        description: Success highligt and comment
+      404:
+        description: Sorry, that article does not exists
+/articles/highlight/{id}:
+  delete:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        required:
+          - authorization
+      - name: id
+        in: path
+        description: highlight comment id
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Successfully deleted the comment
+      404:
+        description: Sorry, you can no delete the comment of empty highlight
+/articles/{articleId}/highlight:
+  get:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        required:
+          - authorization
+      - name: articleId
+        in: path
+        description: Id of the highlight article
+        type: integer
+        required: true
+    responses:
+      200:
+        description: List of all highlights
+      404:
+        description: Sorry, you can get the hightlights
+/articles/{id}/highlight/share/{channel}:
+  get:
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        required:
+          - authorization
+      - name: id
+        in: path
+        description: Id of the highlight
+        type: integer
+        required: true
+      - name: channel
+        in: path
+        description: channel to share to
+        type: string
+        required: true
+    responses:
+      200:
+        description: you are ready to share
+      404:
+        description: Sorry, you can not share
+     
+
+     
+
+     
