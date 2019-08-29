@@ -32,7 +32,6 @@ module.exports = (sequelize, DataTypes) => {
       through: 'BookMarks',
       as: 'articles',
       foreignKey: 'userId',
-      onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     })
   };
