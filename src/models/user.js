@@ -28,6 +28,12 @@ module.exports = (sequelize, DataTypes) => {
       as: 'author',
       foreignKey: 'authorId'
     })
+    user.belongsToMany(Article, {
+      through: 'BookMarks',
+      as: 'articles',
+      foreignKey: 'userId',
+      onDelete: 'CASCADE'
+    })
   };
   return user;
 };
