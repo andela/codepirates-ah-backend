@@ -25,6 +25,9 @@ const {
   unCollect
 } = BookMarkController;
 
+const { getStats } = statsController;
+const { saveStat, checkStats } = statsWare;
+
 // bookmarks routes
 router.post('/bookmarks/copy', createCopy, copyBookmark);
 router.patch('/bookmarks/update', createCopy, editBookMark);
@@ -41,8 +44,6 @@ router.delete('/bookmarks/collections/:collection/:name', [validateToken, confir
 router.delete('/bookmarks/:name', [validateToken, confirmEmaiAuth], checkBookmarkName, deleteUserBookMark);
 router.delete('/bookmarks', [validateToken, confirmEmaiAuth], checkUserBookMarks, deleteUserBookMarks);
 
-const { getStats } = statsController;
-const { saveStat, checkStats } = statsWare;
 
 // stats route
 router.get('/stats', saveStat, checkStats, getStats);

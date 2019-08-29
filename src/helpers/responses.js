@@ -16,8 +16,3 @@ export const success = (msg, data = null) => {
   util.setSuccess(200, msg, data);
   return util;
 };
-
-export const created = (msg, data) => {
-  util.setSuccess(201, msg, data);
-  return util;
-};
