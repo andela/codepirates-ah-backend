@@ -12,6 +12,7 @@ import OpenUrlHelper from '../helpers/share.article.helper';
 import Util from '../helpers/util';
 
 const { notifyViaEmailAndPush } = NotificationServices;
+const util = new Util();
 
 const { notifyViaEmailAndPush } = NotificationServices;
 const util = new Util();
