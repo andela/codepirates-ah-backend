@@ -117,6 +117,79 @@
         $ref: '#responses/BadRequest'
       404:
         $ref: '#/responses/Notfound'
+/comments/like/{id}:
+  get:
+    summary: get all likes of a comment
+    description: >
+      gets a specific comment like
+    tags:
+      - Comment
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: Successfully retrieved comment likes
+        schema:
+          $ref: '#definitions/Comment'
+      400:
+        $ref: '#responses/BadRequest'
+      404:
+        $ref: '#/responses/Notfound'
+  put:
+    summary: unlike a specific comment
+    description: >
+      unlike a specific comment
+    tags:
+      - Comment
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: unlike a specific comment
+        schema:
+          $ref: '#definitions/Comment'
+      400:
+        $ref: '#responses/BadRequest'
+      404:
+        $ref: '#/responses/Notfound'
+  post:
+    summary: like a specific comment
+    description: >
+      like a specific comment
+    tags:
+      - Comment
+    produces:
+      - application/json
+    parameters:
+      - name: x-access-token
+        in: header
+        schema:
+          type: string
+        required:
+          - authorization
+    responses:
+      200:
+        description: like a specific comment
+        schema:
+          $ref: '#definitions/Comment'
+      400:
+        $ref: '#responses/BadRequest'
+      404:
+        $ref: '#/responses/Notfound'
 tags:
 - name: Comment
   description: Operations related to Comment
