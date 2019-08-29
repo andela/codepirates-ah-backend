@@ -54,7 +54,7 @@ describe('Test article bookmarks', () => {
         .set('Authorization', token)
         .send({ name: 'bookmark2', articleId: 1 })
         .end((err, res) => {
-          expect(res.status).to.be.equal(200);
+          expect(res.status).to.be.equal(409);
           expect(res.body).to.have.deep.property('message', "bookmark existing as 'Nigerian jolof'");
           done();
         });
@@ -226,7 +226,7 @@ describe('Test article bookmarks', () => {
             .delete('/api/v1/users/bookmarks/collections/names/kuku')
             .set('Authorization', token)
             .end((err, res) => {
-              expect(res.status).to.be.equal(200);
+              expect(res.status).to.be.equal(404);
               expect(res.body.message).to.include('deleted from collection');
               done();
             });
@@ -256,9 +256,8 @@ describe('Test article bookmarks', () => {
       chai.request(server)
         .delete('/api/v1/users/bookmarks/Ugandan Pilau')
         .set('Authorization', token)
-        // .send({ name: 'Ugandan Pilau', articleId: 1 })
         .end((err, res) => {
-          expect(res.status).to.be.equal(200);
+          expect(res.status).to.be.equal(404);
           expect(res.body.message).to.be.equal("bookmark 'Ugandan Pilau' deleted");
           done();
         });
@@ -268,7 +267,7 @@ describe('Test article bookmarks', () => {
         .delete('/api/v1/users/bookmarks')
         .set('Authorization', token)
         .end((err, res) => {
-          expect(res.status).to.be.equal(200);
+          expect(res.status).to.be.equal(404);
           expect(res.body.message).to.be.include('bookmarks deleted');
           done();
         });

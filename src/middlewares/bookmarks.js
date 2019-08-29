@@ -2,10 +2,7 @@
 import Util from '../helpers/util';
 import dbService from '../services/data.service';
 
-const {
-  getUserBookMarks, getUserBookMark, checkExisting,
-  checkName, checkCollection, getBookMarkName, checkItem
-} = dbService;
+const { checkItems, checkItem } = dbService;
 
 const util = new Util();
 
@@ -17,9 +14,10 @@ const notFound = (msg) => {
 let data;
 class BookMarkWare {
   static async checkBookmark(req, res, next) {
+    const userId = req.auth.id;
     const articleId = req.params.articleId || req.body.articleId;
     const name = req.body.oldName ? req.body.oldName : req.params.name || req.body.name;
-    const bookmark = await getUserBookMark(req.auth.id, name, articleId);
+    const bookmark = await checkItem({ userId, name, articleId });
 
     if (!bookmark) {
       return notFound(`bookmark ${name} with article ID ${articleId}`).send(res);
@@ -31,7 +29,7 @@ class BookMarkWare {
   }
 
   static async checkUserBookMarks(req, res, next) {
-    const bookmarks = await getUserBookMarks(req.auth.id);
+    const bookmarks = await checkItems({ userId: req.auth.id });
     if (!bookmarks.length) {
       return notFound('user bookmarks').send(res);
     }
@@ -40,8 +38,8 @@ class BookMarkWare {
 
   static async checkCollection(req, res, next) {
     const oldCollection = req.body.oldCollection || req.params.collection;
-    const found = await checkCollection(
-      oldCollection, req.auth.id
+    const found = await checkItem(
+      { collection: oldCollection, userId: req.auth.id }
     );
     if (!found) {
       return notFound(`collection '${oldCollection}'`).send(res);
@@ -51,10 +49,10 @@ class BookMarkWare {
 
   static async checkDuplicate(req, res, next) {
     const { articleId, name } = req.body;
-    const existing = await checkExisting(req.auth.id, articleId);
-    const existingName = await checkName(name, 'BookMark');
-    const bookmark = await getUserBookMark(req.auth.id, name, articleId);
-    const article = await checkItem(articleId, 'Article');
+    const existing = await checkItem({ userId: req.auth.id, articleId });
+    const existingName = await checkItem({ name });
+    const bookmark = await checkItem({ userId: req.auth.id, name, articleId });
+    const article = await checkItem({ id: articleId }, 'Article', []);
     if (!article) {
       return notFound(`article with id ${articleId}`).send(res);
     }
@@ -66,7 +64,7 @@ class BookMarkWare {
     if (existing && existing.name) {
       data = existing;
       data.newName = name;
-      return res.status(200).json({
+      return res.status(409).json({
         message: `bookmark existing as '${existing.name}'`,
         options: {
           1: `create copy with new name ${name} on /api/v1/users/copy`,
@@ -91,7 +89,7 @@ class BookMarkWare {
 
   static async checkBookmarkName(req, res, next) {
     const { name } = req.params;
-    const bookmark = await getBookMarkName(req.auth.id, name);
+    const bookmark = await checkItem({ userId: req.auth.id, name });
     if (!bookmark) {
       return notFound(`bookmark '${name}'`).send(res);
     }
