@@ -51,6 +51,39 @@ export default {
       createdAt: new Date(),
       updatedAt: new Date()
     },
+    {
+      firstname: 'userfive',
+      lastname: 'userfive',
+      email: 'userfive@gmail.com',
+      password: hashPassword,
+      username: 'userfive',
+      role: 'normal',
+      verified: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      firstname: 'usersix',
+      lastname: 'usersix',
+      email: 'usersix@gmail.com',
+      password: hashPassword,
+      username: 'usersix',
+      role: 'normal',
+      verified: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      firstname: 'userseven',
+      lastname: 'userseven',
+      email: 'userseven@gmail.com',
+      password: hashPassword,
+      username: 'userseven',
+      role: 'normal',
+      verified: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
   ]),
 
   down: queryInterface => queryInterface.bulkDelete('users', null, {})
