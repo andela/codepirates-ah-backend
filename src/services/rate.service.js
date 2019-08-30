@@ -1,5 +1,7 @@
-import database from '../models/index';
+import Sequelize from 'sequelize';
+import models from '../models';
 
+const db = models.Rate;
 /**
  *
  *
@@ -7,19 +9,21 @@ import database from '../models/index';
  */
 class RateService {
   /**
-                 *
-                 *
-                 * @static
-                 * @param {*} articleSlug
-                 * @param {*} userEmail
-                 * @returns
-                 * @memberof RateService
-                 * @returns {Object} return db result object
-                 */
-  static async findOne(articleSlug, userEmail) {
+  *
+  *
+  * @static
+  * @param {*} offset
+  * @param {*} limit
+  * @param {*} articleSlug
+  * @memberof RateService
+  *  @returns {Object} return db result object
+
+   */
+  static async getAll(offset, limit) {
     try {
-      return await database.Rate.findOne({
-        where: { articleSlug, userEmail }
+      return await db.findAll({
+        offset,
+        limit,
       });
     } catch (error) {
       throw error;
@@ -27,61 +31,86 @@ class RateService {
   }
 
   /**
-                 *
-                 *
-                 * @static
-                 * @returns
-                 * @memberof RateService
-                 * @returns {Object} return db result object
-                 */
-  static async getAllRatings() {
+  *
+  *
+  * @static
+  * @param {*} articleSlug
+  * @memberof RateService
+  *  @returns {Object} return db result object
+
+   */
+  static async getArticleRatingStatistic(articleSlug) {
     try {
-      return await database.Rate.findAll();
+      return await db.findAll({
+        where: { articleSlug },
+        returning: true,
+        plain: true,
+        attributes: [[Sequelize.fn('AVG', Sequelize.col('rate')), 'rating']],
+      });
     } catch (error) {
       throw error;
     }
   }
 
   /**
-                 *
-                 *
-                 * @static
-                 * @param {*} rate
-                 * @returns
-                 * @memberof RateService
-                 * @returns {Object} return db result object
-                 */
+  *
+  *
+  * @static
+  * @param {*} rate
+  * @returns
+  * @memberof RateService
+  * @returns {Object} return db result object
+  */
   static async create(rate) {
     try {
-      return await database.Rate.create(rate);
+      return await db.create(rate);
     } catch (error) {
       throw error;
     }
   }
 
   /**
-                 *
-                 *
-                 * @static
-                 * @param {*} articleSlug
-                 * @param {*} userEmail
-                 * @param {*} updateRate
-                 * @returns
-                 * @memberof RateService
-                 * @returns {Object} return db result object
-                 */
-  static async update(articleSlug, userEmail, updateRate) {
+  *
+  *
+  * @static
+  *  @param {*} articleSlug
+  * @param {*} limit
+  * @param {*} offset
+  * @returns
+  * @memberof RateService
+  * @returns {Object} return db result object
+  */
+  static async findArticlesRatings(articleSlug, limit, offset) {
     try {
-      const rateToUpdate = await database.Rate.findOne({
-        where: { articleSlug }
+      return await db.findAll({
+        where: { articleSlug },
+        offset,
+        limit,
       });
+    } catch (error) {
+      throw error;
+    }
+  }
 
-      if (rateToUpdate) {
-        await database.user.update(updateRate, { where: { articleSlug, userEmail } });
+  /**
+  *
+  *
+  * @static
+  *  @param {*} updateRate
+  * @returns
+  * @memberof RateService
+  * @returns {Object} return db result object
+  */
+  static async update(updateRate) {
+    const { articleSlug, userEmail, rate } = updateRate;
 
-        return updateRate;
-      }
-      return null;
+    try {
+      return await db.update(
+        {
+          rate: Number(rate)
+        },
+        { where: { articleSlug, userEmail }, returning: true, plain: true }
+      );
     } catch (error) {
       throw error;
     }

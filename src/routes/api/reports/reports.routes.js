@@ -14,9 +14,9 @@ const router = express.Router();
 // routes for reporting artiles
 router.post('/:Article', [auth, confirmEmailAuth, reportValidator, reportMiddleware], reportController.reportArticle);
 router.delete('/:reportId', [auth, confirmEmailAuth], reportController.deleteReport);
-router.get('/', [auth, confirmEmailAuth], reportController.getMyReport);
+router.get('/', [auth, confirmEmailAuth, checkQuery], reportController.getMyReport);
 router.get('/all', [auth, confirmEmailAuth, admin, checkQuery], reportController.getAllReport);
-router.get('/:Article', [auth, confirmEmailAuth, admin], reportController.getReportsForArticle);
+router.get('/:Article', [auth, confirmEmailAuth, admin, checkQuery], reportController.getReportsForArticle);
 
 
 export default router;

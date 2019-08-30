@@ -19,9 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     },
-    rate: DataTypes.ENUM({
-      values: [1, 2, 3, 4, 5]
-    })
+    rate: DataTypes.INTEGER,
   }, {});
   Rate.associate = function (models) {
     Rate.belongsTo(models.user, {
