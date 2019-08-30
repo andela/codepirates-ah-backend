@@ -238,7 +238,7 @@ class Comments {
     const userHasLikedBefore = likeInfo.search(username);
 
     if (userHasLikedBefore === -1) {
-      util.setError(200, { data: { likesCount, likeInfo } });
+      util.setSuccess(200, 'Likes successfully retrieved', { data: { likesCount, likeInfo } });
       return util.send(res);
     }
     const formattedLikeInfo = Helper.formatLikeInfo(likeInfo.replace(`${username}, `, ''));
