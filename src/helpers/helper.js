@@ -88,5 +88,35 @@ class Helper {
     const formatedReadTime = `${readTime} min read`;
     return formatedReadTime;
   }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} likeInfo
+   * @returns {string} formarted comment like information
+   * @memberof Helper
+   */
+  static formatLikeInfo(likeInfo) {
+    let formattedOutput = 'You';
+    const usernames = likeInfo.split(', ');
+
+    if (usernames.length === 2) {
+      formattedOutput += ' like this comment';
+      return formattedOutput;
+    }
+    for (let i = 1; i < (usernames.length - 1); i += 1) {
+      if (i === 5) break;
+      formattedOutput += `, ${usernames[i]} `;
+    }
+
+    if (usernames.length < 6) {
+      formattedOutput += ' like this comment';
+      return formattedOutput;
+    }
+
+    formattedOutput += `and ${(usernames.length - 6)} more people like this comment`;
+    return formattedOutput;
+  }
 }
 export default Helper;
