@@ -1,11 +1,4 @@
 [![Build Status](https://travis-ci.com/andela/codepirates-ah-backend.svg?branch=develop)](https://travis-ci.com/andela/codepirates-ah-backend)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> #167313398 Users should receive descriptive signup/Registration validation errors (#11)
-=======
->>>>>>> feature(email verification): Email should be verified before a registered user gets access to different routes [Finishes #167313397] (#13)
 [![Coverage Status](https://coveralls.io/repos/github/andela/codepirates-ah-backend/badge.svg?branch=develop)](https://coveralls.io/github/andela/codepirates-ah-backend?branch=develop)
 [![Reviewed by Hound CI](https://img.shields.io/badge/Reviewed%20by-Hound%20CI-blue.svg)](https://houndci.com)
 

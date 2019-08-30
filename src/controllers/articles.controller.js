@@ -10,13 +10,7 @@ import NotificationServices from '../services/notification.service';
 import cloudinaryHelper from '../helpers/cloudinaryHelper';
 import OpenUrlHelper from '../helpers/share.article.helper';
 import Util from '../helpers/util';
-<<<<<<< HEAD
-
-const { notifyViaEmailAndPush } = NotificationServices;
-const util = new Util();
-=======
 import statsService from '../services/db.service';
->>>>>>> #167313420 A user should be able to see their reading statistics (#49)
 
 const { notifyViaEmailAndPush } = NotificationServices;
 const util = new Util();

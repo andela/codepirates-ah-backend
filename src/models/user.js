@@ -44,12 +44,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       onDelete: 'CASCADE'
     })
-    user.belongsToMany(Article, {
-      through: 'BookMarks',
-      as: 'articles',
-      foreignKey: 'userId',
-      onDelete: 'CASCADE'
-    })
   };
   return user;
 };

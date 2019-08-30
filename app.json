@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "codepirates-ah-backend",
   "scripts": {},
   "env": {
@@ -53,58 +52,3 @@
   ],
   "stack": "heroku-18"
 }
-=======
-    "name": "codepirates-ah-backend",
-    "scripts": {},
-    "env": {
-      "ADMIN_EMAIL": {
-        "required": true
-      },
-      "ADMIN_PASSWORD": {
-        "required": true
-      },
-      "API_VERSION": {
-        "required": true
-      },
-      "DATABASE_URL": {
-        "required": true
-      },
-      "DB_HOST": {
-        "required": true
-      },
-      "DB_NAME": {
-        "required": true
-      },
-      "DB_PASSWORD": {
-        "required": true
-      },
-      "DB_PORT": {
-        "required": true
-      },
-      "DB_USER": {
-        "required": true
-      },
-      "SECRET": {
-        "required": true
-      },
-      "STATE": {
-        "required": true
-      },
-      "USER_PASSWORD": {
-        "required": true
-      }
-    },
-    "formation": {
-      "web": {
-        "quantity": 1
-      }
-    },
-    "addons": [],
-    "buildpacks": [
-      {
-        "url": "heroku/nodejs"
-      }
-    ],
-    "stack": "heroku-18"
-  }
->>>>>>> bg(heroku) rename Procfile file (#15)
