@@ -57,34 +57,10 @@ describe('Social login tests', () => {
         .end((err, res) => {
           if (err) { done(err); }
           expect(res.status).to.be.equal(200);
-          expect(res.body.message).to.contain('does not exist');
+          expect(res.body.message).to.contain('account created');
           done();
         });
     });
-    it('should include request for email in response to new twitter user', (done) => {
-      chai.request(server)
-        .get('/login/twitter')
-        .end((err, res) => {
-          if (err) { done(err); }
-          expect(res.status).to.be.equal(200);
-          expect(res.body.message).to.contain('send email');
-          done();
-        });
-    });
-
-    // it('should register consenting new social user', (done) => {
-    //   chai.request(server)
-    //     .get('/login/google')
-    //     .end(() => {
-    //       chai.request(server)
-    //         .get('/signup/social')
-    //         .end((error, resp) => {
-    //           expect(resp.status).to.be.equal(201);
-    //           expect(resp.body.message).to.contain('Your account has been successfully created');
-    //           done();
-    //         });
-    //     });
-    // });
   });
 });
 
