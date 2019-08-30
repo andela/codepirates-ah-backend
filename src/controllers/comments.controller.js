@@ -4,6 +4,7 @@ import models from '../models';
 import Helper from '../helpers/helper';
 import NotificationServices from '../services/notification.service';
 import Util from '../helpers/util';
+import StatsService from '../services/db.service';
 
 
 const util = new Util();
@@ -109,6 +110,9 @@ class Comments {
       await util.setError(200, 'No comments found');
       return util.send(res);
     }
+    const readerId = req.auth.id;
+    const item = 'comment';
+    await StatsService.createStat({ readerId, item, slug: 'all comments' }, 'Stats');
     await util.setSuccess(200, 'All comments successfully retrieved', comments);
     return util.send(res);
   }

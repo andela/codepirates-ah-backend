@@ -17,8 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   user.associate = ({
-    Follow, Article, Highlight
-
+    Follow, Article, Highlight, Stats
   }) => {
     user.hasMany(Follow, {
       foreignKey: 'followerId',
@@ -34,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
       targetKey: 'id',
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
+    });
+    user.hasMany(Stats, {
+      as: 'reader',
+      foreignKey: 'readerId'
     })
     user.belongsToMany(Article, {
       through: 'BookMarks',
