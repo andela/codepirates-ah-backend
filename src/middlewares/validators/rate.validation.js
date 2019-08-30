@@ -7,7 +7,8 @@ export default (req, res, next) => {
   const { rate } = req.body;
 
   const schema = {
-    rate: Joi.number().integer().min(1).max(5),
+    rate: Joi.number().integer().min(1).max(5)
+      .required(),
   };
   const { error } = Joi.validate({
     rate
