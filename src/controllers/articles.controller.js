@@ -229,15 +229,15 @@ class Articles {
     switch (req.params.channel) {
       case 'facebook':
         await OpenUrlHelper.openUrl(`https:www.facebook.com/sharer/sharer.php?u=${url}`);
-        util.setError(200, `Article shared to ${req.params.channel}`);
+        util.setSuccess(200, `Article shared to ${req.params.channel}`, url);
         return util.send(res);
       case 'twitter':
         await OpenUrlHelper.openUrl(`https://twitter.com/intent/tweet?url=${url}`);
-        util.setError(200, `Article shared to ${req.params.channel}`);
+        util.setSuccess(200, `Article shared to ${req.params.channel}`, url);
         return util.send(res);
       case 'mail':
         await OpenUrlHelper.openUrl(`mailto:?subject=${article.title}&body=${url}`);
-        util.setError(200, `Article shared to ${req.params.channel}`);
+        util.setSuccess(200, `Article shared to ${req.params.channel}`, url);
         return util.send(res);
       default:
         break;
