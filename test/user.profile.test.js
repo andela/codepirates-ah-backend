@@ -1,5 +1,8 @@
+import sinon from 'sinon';
 import { chai, server, expect } from './test-setup';
 import Helper from '../src/helpers/helper';
+import profileCtrl from '../src/controllers/profile.controller';
+
 
 let usertoken;
 
@@ -144,4 +147,20 @@ describe('/Create Profile feature', async () => {
         done();
       });
   });
+  // it.only('should throw when no profiles', async () => {
+  //   const req = [{
+  //     params: { username: 'admin' },
+  //     auth: {
+  //       email: 'userfour@gmail.com'
+  //     }
+  //   }];
+  //   const res = {
+  //     status() { },
+  //     send() { },
+  //     json() { }
+  //   };
+  //   sinon.stub(res, 'status').returnsThis();
+  //   await profileCtrl.getProfile(req, res);
+  //   expect(res.status).to.have.been.calledWith(400);
+  // });
 });
