@@ -190,7 +190,7 @@ describe('/Report an article', () => {
   it('user should see all his/her report ', (done) => {
     chai
       .request(server)
-      .get('/api/v1/reports')
+      .get('/api/v1/reports/?page=2&&limit=5')
       .set('Authorization', usertoken)
       .end((error, res) => {
         expect(res).to.be.an('object');
@@ -222,7 +222,7 @@ describe('/Report an article', () => {
   it('admin should see all reports ', (done) => {
     chai
       .request(server)
-      .get('/api/v1/reports/all')
+      .get('/api/v1/reports/all/?page=2&&limit=5')
       .set('Authorization', admintoken)
       .end((error, res) => {
         expect(res).to.be.an('object');
@@ -237,7 +237,7 @@ describe('/Report an article', () => {
   it('admin should see the report for a pecific Article ', (done) => {
     chai
       .request(server)
-      .get('/api/v1/reports/fakeslug2')
+      .get('/api/v1/reports/fakeslug2/?page=2&&limit=5')
       .set('Authorization', admintoken)
       .end((error, res) => {
         expect(res).to.be.an('object');

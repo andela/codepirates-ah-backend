@@ -38,7 +38,7 @@ describe('test for sharing an article', () => {
   });
   it('test for sharing an article via mail', async () => {
     const req = {
-      params: { slug: 'fakeslug', channel: 'twitter' },
+      params: { slug: 'fakeslug', channel: 'mail' },
       auth: {
         email: 'user@gmail.com'
       }

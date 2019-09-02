@@ -98,6 +98,9 @@ typings/
 #ignore DS_Store
 .DS_Store
 
+#ignore DS_Store
+.DS_Store
+
 # ignore package-lock
 package-lock.json
 

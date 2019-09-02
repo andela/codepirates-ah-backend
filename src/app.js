@@ -5,6 +5,7 @@ import routes from './routes/index';
 import './config/cloudinary.config';
 import { mock } from './middlewares/validators/socialLogin-mock';
 
+
 const app = express();
 
 if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {

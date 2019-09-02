@@ -11,14 +11,13 @@ module.exports = (sequelize, DataTypes) => {
     role: { type: DataTypes.STRING, defaultValue: 'normal' },
     verified: { type: DataTypes.BOOLEAN, defaultValue: false },
     role: { type: DataTypes.STRING, defaultValue: 'normal' },
-    subscribed: {defaultValue: false, type: DataTypes.BOOLEAN },
+    subscribed: { defaultValue: false, type: DataTypes.BOOLEAN },
     inAppNotification: { defaultValue: false, type: DataTypes.BOOLEAN },
     verified: { type: DataTypes.BOOLEAN, defaultValue: false },
   }, {});
 
   user.associate = ({
-    Follow, Article, Highlight
-
+    Follow, Article, Highlight, Stats
   }) => {
     user.hasMany(Follow, {
       foreignKey: 'followerId',
@@ -34,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
       targetKey: 'id',
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
+    });
+    user.hasMany(Stats, {
+      as: 'reader',
+      foreignKey: 'readerId'
     })
     user.belongsToMany(Article, {
       through: 'BookMarks',

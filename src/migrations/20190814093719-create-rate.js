@@ -27,9 +27,8 @@ module.exports = {
         onUpdate: 'CASCADE'
       },
       rate: {
-        type: Sequelize.ENUM({
-          values: [1, 2, 3, 4, 5]
-        })
+        allowNull: false,
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

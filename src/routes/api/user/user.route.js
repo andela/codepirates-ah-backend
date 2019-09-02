@@ -10,6 +10,8 @@ import followController from '../../../controllers/follow.controller';
 import resetPasswordValidation from '../../../middlewares/validators/resetpassword.validation';
 import BookMarkController from '../../../controllers/bookmarks.controller';
 import BookMarkWare from '../../../middlewares/bookmarks';
+import statsController from '../../../controllers/stats.controller';
+import statsWare from '../../../middlewares/stats';
 
 const {
   checkBookmark, checkUserBookMarks, checkDuplicate, createCopy,
@@ -22,6 +24,9 @@ const {
   getCollection, createCollection, updateCollection, deleteCollection,
   unCollect
 } = BookMarkController;
+
+const { getStats } = statsController;
+const { saveStat, checkStats } = statsWare;
 
 // bookmarks routes
 router.post('/bookmarks/copy', createCopy, copyBookmark);
@@ -40,6 +45,9 @@ router.delete('/bookmarks/:name', [validateToken, confirmEmaiAuth], checkBookmar
 router.delete('/bookmarks', [validateToken, confirmEmaiAuth], checkUserBookMarks, deleteUserBookMarks);
 
 
+// stats route
+router.get('/stats', saveStat, checkStats, getStats);
+
 router.get('/verify', verifyEmail);
 router.get('/allusers', [validateToken, admin, confirmEmaiAuth], UserController.getAllUsers);
 router.post('/signup', validateUser, UserController.signup);
@@ -53,6 +61,10 @@ router.post('/profiles/:userId/follow', [validateToken, validateUserId], followC
 router.get('/profiles/following', validateToken, followController.listOfFollowedUsers);
 router.get('/profiles/followers', validateToken, followController.listOfFollowers);
 
+
+// reset password route handlers
+router.post('/reset', UserController.requestPasswordReset);
+router.patch('/reset/:token', resetPasswordValidation, UserController.handlePasswordReset);
 
 // reset password route handlers
 router.post('/reset', UserController.requestPasswordReset);

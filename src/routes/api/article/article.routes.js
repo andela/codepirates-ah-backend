@@ -12,6 +12,7 @@ import tagController from '../../../controllers/tag';
 import TagWare from '../../../middlewares/tag.middleware';
 import highlight from '../../../controllers/highlight.controller';
 import share from '../../../middlewares/shareHighlight.middleware';
+import StatsWare from '../../../middlewares/stats';
 
 const router = express.Router();
 const {
@@ -24,10 +25,24 @@ const {
 router.post('/:articleId/favorite', [auth, confirmEmailAuth, validateId], FavoritesController.createOrRemoveFavorite);
 router.post('/', [auth, confirmEmailAuth], imageUpload.array('images', 10), validate(schema.articleSchema), articleController.createArticles);
 router.get('/', checkQuery, articleController.getAllArticles);
-router.get('/:slug', articleController.getOneArticle);
+router.get('/:slug', StatsWare.saveStat, articleController.getOneArticle);
 router.delete('/:slug', [auth, confirmEmailAuth], articleController.deleteArticle);
 router.patch('/:slug', [auth, confirmEmailAuth], imageUpload.array('images', 10), articleController.UpdateArticle);
 router.post('/:slug/share/:channel', [auth, confirmEmailAuth], articleController.shareArticle);
+
+
+// Highlight
+router.post('/:slug/highlight', [auth], highlight.bodyHighlightedText);
+router.delete('/highlight/:id', auth, highlight.deleteHighlightComment);
+router.get('/:articleId/highlight', auth, highlight.getHighlights);
+router.get('/:id/highlight/share/:channel', [auth, share], highlight.shareHightlight);
+
+// tags
+
+router.post('/:articleId/tags', [auth, confirmEmailAuth], checkArticle, tagLimit, tagLength, createArticleTag);
+router.get('/:articleId/tags', checkArticle, getArticleTags);
+router.patch('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, editArticleTag);
+router.delete('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, deleteArticleTag);
 
 
 // Highlight

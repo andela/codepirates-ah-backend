@@ -1,8 +1,11 @@
 import commentsService from '../services/comments.service';
 import UserService from '../services/user.service';
 import models from '../models';
+import Helper from '../helpers/helper';
 import NotificationServices from '../services/notification.service';
 import Util from '../helpers/util';
+import StatsService from '../services/db.service';
+
 
 const util = new Util();
 
@@ -107,6 +110,9 @@ class Comments {
       await util.setError(200, 'No comments found');
       return util.send(res);
     }
+    const readerId = req.auth.id;
+    const item = 'comment';
+    await StatsService.createStat({ readerId, item, slug: 'all comments' }, 'Stats');
     await util.setSuccess(200, 'All comments successfully retrieved', comments);
     return util.send(res);
   }
@@ -138,6 +144,105 @@ class Comments {
     const commentRevisions = getComment.dataValues.body;
     const updateComment = await commentsService.updateComment(req.params.id, { body, commentRevisions });
     await util.setSuccess(200, 'Update is successfully', updateComment);
+    return util.send(res);
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} return json object
+   * @memberof Comments
+   */
+  static async likeComment(req, res) {
+    const { id } = req.params;
+    const { username } = req.auth;
+    const comment = await commentsService.findOne(id);
+
+    if (!comment) {
+      util.setError(404, `Comment with id: ${id} does not exist.`);
+      return util.send(res);
+    }
+    let { likesCount, likeInfo } = comment;
+    const userHasLikedBefore = likeInfo.search(username);
+    if (userHasLikedBefore >= 0) {
+      util.setError(400, 'You liked this comment already');
+      return util.send(res);
+    }
+
+    likesCount += 1;
+    likeInfo = `${username}, ${likeInfo}`;
+    await commentsService.updateComment(id, { likesCount, likeInfo });
+
+    const formattedLikeInfo = Helper.formatLikeInfo(likeInfo);
+    util.setSuccess(201, { likesCount, formattedLikeInfo });
+    return util.send(res);
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} return json object
+   * @memberof Comments
+   */
+  static async updateLikeComment(req, res) {
+    const { id } = req.params;
+    const { username } = req.auth;
+    const comment = await commentsService.findOne(id);
+    if (!comment) {
+      util.setError(404, `Comment with id: ${id} does not exist.`);
+      return util.send(res);
+    }
+
+    let { likesCount, likeInfo } = comment;
+    const userHasLikedBefore = likeInfo.search(username);
+
+    if (userHasLikedBefore === -1) {
+      util.setError(400, 'You did not like this comment before');
+      return util.send(res);
+    }
+
+    likesCount -= 1;
+    likeInfo = likeInfo.replace(`${username}, `, '');
+    await commentsService.updateComment(id, { likesCount, likeInfo });
+
+    util.setSuccess(200, 'You unliked this comment successfully');
+    return util.send(res);
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} return json object
+   * @memberof Comments
+   */
+  static async getLikesComments(req, res) {
+    const { id } = req.params;
+    const { username } = req.auth;
+    const comment = await commentsService.findOne(id);
+
+    if (!comment) {
+      util.setError(404, `Comment with id: ${id} does not exist.`);
+      return util.send(res);
+    }
+    const { likesCount, likeInfo } = comment;
+
+    const userHasLikedBefore = likeInfo.search(username);
+
+    if (userHasLikedBefore === -1) {
+      util.setSuccess(200, 'Likes successfully retrieved', { data: { likesCount, likeInfo } });
+      return util.send(res);
+    }
+    const formattedLikeInfo = Helper.formatLikeInfo(likeInfo.replace(`${username}, `, ''));
+    util.setSuccess(200, { data: { likesCount, formattedLikeInfo } });
     return util.send(res);
   }
 }

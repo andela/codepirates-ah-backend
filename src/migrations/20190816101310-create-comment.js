@@ -23,10 +23,18 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-    parentCommentId: {
-      type: Sequelize.INTEGER,
-      allowNull: true
-    },
+      parentCommentId: {
+        type: Sequelize.INTEGER,
+        allowNull: true
+      },
+      likesCount: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+      },
+      likeInfo: {
+        type: Sequelize.TEXT,
+        defaultValue: ''
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -35,12 +43,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    }) .then(() => sequelize.query(`ALTER TABLE "Comments"
+    }).then(() => sequelize.query(`ALTER TABLE "Comments"
     ADD CONSTRAINT fk_parentReference FOREIGN KEY ("parentCommentId")
-    REFERENCES "Comments" (id) ON DELETE CASCADE`),(`ALTER TABLE "Comments"
+    REFERENCES "Comments" (id) ON DELETE CASCADE`), (`ALTER TABLE "Comments"
     ADD CONSTRAINT fk_parentReference FOREIGN KEY ("commentRevisions")
     REFERENCES "Comments" (id) ON DELETE CASCADE`));
-  
+
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('Comments');
