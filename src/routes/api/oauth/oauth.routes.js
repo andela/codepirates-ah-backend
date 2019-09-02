@@ -1,3 +1,4 @@
+
 import express from 'express';
 import Social from '../../../controllers/social';
 import passport from '../../../middlewares/passport';
@@ -7,9 +8,6 @@ const router = express.Router();
 
 // test route
 router.get('/auth/fake', fakeAuth, Social.login);
-
-// social signup consent route
-router.get('/signup/social', Social.signup);
 
 router.get('/login/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 router.get('/login/facebook/callback', passport.authenticate('facebook', { session: false }), Social.login);
