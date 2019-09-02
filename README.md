@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.com/andela/codepirates-ah-backend.svg?branch=develop)](https://travis-ci.com/andela/codepirates-ah-backend)
 [![Coverage Status](https://coveralls.io/repos/github/andela/codepirates-ah-backend/badge.svg?branch=develop)](https://coveralls.io/github/andela/codepirates-ah-backend?branch=develop)
 [![Reviewed by Hound CI](https://img.shields.io/badge/Reviewed%20by-Hound%20CI-blue.svg)](https://houndci.com)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a1f59061d27322fc6f1f/maintainability)](https://codeclimate.com/github/andela/codepirates-ah-backend/maintainability)
 
 Authors Haven - A Social platform for the creative at heart.
 
