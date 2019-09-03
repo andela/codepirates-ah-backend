@@ -58,8 +58,9 @@ router.put('/update/:email', [validateToken, confirmEmaiAuth], UserController.up
 router.post('/signup/admin', [validateToken, admin, confirmEmaiAuth], UserController.createAdmin);
 router.post('/signout', validateToken, UserController.signoutUser);
 router.post('/profiles/:userId/follow', [validateToken, validateUserId], followController.follow);
-router.get('/profiles/following', validateToken, followController.listOfFollowedUsers);
-router.get('/profiles/followers', validateToken, followController.listOfFollowers);
+// router.get('/profiles/following', validateToken, followController.listOfFollowedUsers);
+// router.get('/profiles/followers', validateToken, followController.listOfFollowers);
+router.get('/profiles/:followersOrFollowing', validateToken, followController.listOfFollowersOrFollowed);
 
 
 // reset password route handlers

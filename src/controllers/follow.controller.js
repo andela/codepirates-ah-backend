@@ -48,51 +48,97 @@ class FollowController {
     }
   }
 
-  /**
-   *
-   * @description Method to fetch all users who I follow
-   * @static
-   * @param {object} req client request
-   * @param {object} res server response
-   * @returns {Object} server response object
-   * @param  {Function} next passes control to the next middleware
-   * @memberof FollowController
-   */
-  static async listOfFollowedUsers(req, res, next) {
-    try {
-      const follower = await models.user.findOne({ where: { email: req.auth.email } });
-      const usersIfollow = await models.Follow.findAll({
-        where: { followerId: follower.id },
-        attributes: [],
-        include: [
-          {
-            model: models.user,
-            attributes: [
-              'firstname',
-              'lastname',
-              'username',
-              'email'
-            ],
-            as: 'authorDetails'
-          }
-        ]
-      });
-      if (usersIfollow.length === 0) {
-        return res.status(200).json({ status: 200, message: 'You currently do not follow anyone' });
-      }
-      const response = usersIfollow.map(item => (
-        {
-          username: item.authorDetails.username,
-          firstname: item.authorDetails.firstname,
-          lastname: item.authorDetails.lastname,
-          email: item.authorDetails.email
-        }
-      ));
-      return res.status(200).json({ following: response, count: response.length });
-    } catch (error) {
-      return next(error);
-    }
-  }
+  //   /**
+  //    *
+  //    * @description Method to fetch all users who I follow
+  //    * @static
+  //    * @param {object} req client request
+  //    * @param {object} res server response
+  //    * @returns {Object} server response object
+  //    * @param  {Function} next passes control to the next middleware
+  //    * @memberof FollowController
+  //    */
+  //   static async listOfFollowedUsers(req, res, next) {
+  //     try {
+  //       const follower = await models.user.findOne({ where: { email: req.auth.email } });
+  //       const usersIfollow = await models.Follow.findAll({
+  //         where: { followerId: follower.id },
+  //         attributes: [],
+  //         include: [
+  //           {
+  //             model: models.user,
+  //             attributes: [
+  //               'firstname',
+  //               'lastname',
+  //               'username',
+  //               'email'
+  //             ],
+  //             as: 'authorDetails'
+  //           }
+  //         ]
+  //       });
+  //       if (usersIfollow.length === 0) {
+  //         return res.status(200).json({ status: 200, message: 'You currently do not follow anyone' });
+  //       }
+  //       const response = usersIfollow.map(item => (
+  //         {
+  //           username: item.authorDetails.username,
+  //           firstname: item.authorDetails.firstname,
+  //           lastname: item.authorDetails.lastname,
+  //           email: item.authorDetails.email
+  //         }
+  //       ));
+  //       return res.status(200).json({ following: response, count: response.length });
+  //     } catch (error) {
+  //       return next(error);
+  //     }
+  //   }
+
+  //   /**
+  //  *
+  //  * @description Method to fetch all users who follow me
+  //  * @static
+  //  * @param {object} req client request
+  //  * @param {object} res server response
+  //  * @returns {Object} server response object
+  //  * @param {Function} next passes control to the next middleware
+  //  * @memberof FollowController
+  //  */
+  //   static async listOfFollowers(req, res, next) {
+  //     try {
+  //       const followedUser = await models.user.findOne({ where: { email: req.auth.email } });
+  //       const myFollowers = await models.Follow.findAll({
+  //         where: { followedUserId: followedUser.id },
+  //         attributes: [],
+  //         include: [
+  //           {
+  //             model: models.user,
+  //             attributes: [
+  //               'firstname',
+  //               'lastname',
+  //               'username',
+  //               'email'
+  //             ],
+  //             as: 'followerDetails'
+  //           }
+  //         ]
+  //       });
+  //       if (myFollowers.length === 0) {
+  //         return res.status(200).json({ status: 200, message: 'You currently do not have any followers' });
+  //       }
+  //       const response = myFollowers.map(item => (
+  //         {
+  //           email: item.followerDetails.email,
+  //           username: item.followerDetails.username,
+  //           bio: item.followerDetails.bio,
+  //           imageUrl: item.followerDetails.imageUrl
+  //         }
+  //       ));
+  //       return res.status(200).json({ followers: response, count: response.length });
+  //     } catch (error) {
+  //       return next(error);
+  //     }
+  //   }
 
   /**
  *
@@ -104,11 +150,28 @@ class FollowController {
  * @param {Function} next passes control to the next middleware
  * @memberof FollowController
  */
-  static async listOfFollowers(req, res, next) {
+  static async listOfFollowersOrFollowed(req, res, next) {
     try {
-      const followedUser = await models.user.findOne({ where: { email: req.auth.email } });
-      const myFollowers = await models.Follow.findAll({
-        where: { followedUserId: followedUser.id },
+      const { followersOrFollowing } = req.params;
+      const user = await models.user.findOne({ where: { email: req.auth.email } });
+      let columnAndValue, associationAs, message;
+      switch (followersOrFollowing) {
+        case 'followers':
+          associationAs = 'followerDetails';
+          message = 'You currently do not have any followers'; // message to be displayed if this user has no followers
+          columnAndValue = { followedUserId: user.id };
+          break;
+        case 'following':
+          associationAs = 'authorDetails';
+          message = 'You currently do not follow anyone'; // message to be displayed if this user follows no one
+          columnAndValue = { followerId: user.id };
+          break;
+        default:
+          return res.status(404).send({ status: 'error', message: 'Resource not found' });
+      }
+      // get followers or people you follow
+      const myPeople = await models.Follow.findAll({
+        where: columnAndValue,
         attributes: [],
         include: [
           {
@@ -119,21 +182,18 @@ class FollowController {
               'username',
               'email'
             ],
-            as: 'followerDetails'
+            as: associationAs
           }
         ]
       });
-      if (myFollowers.length === 0) {
-        return res.status(200).json({ status: 200, message: 'You currently do not have any followers' });
+      if (myPeople.length === 0) {
+        return res.status(200).json({ status: 200, message });
       }
-      const response = myFollowers.map(item => (
-        {
-          email: item.followerDetails.email,
-          username: item.followerDetails.username,
-          bio: item.followerDetails.bio,
-          imageUrl: item.followerDetails.imageUrl
-        }
-      ));
+      const response = ((followersOrFollowing === 'followers') ? myPeople.map(item => ({
+        email: item.authorDetails.email, username: item.authorDetails.username, bio: item.authorDetails.bio, imageUrl: item.authorDetails.imageUrl
+      })) : myPeople.map(item => ({
+        email: item.authorDetails.email, username: item.authorDetails.username, bio: item.authorDetails.bio, imageUrl: item.authorDetails.imageUrl
+      })));
       return res.status(200).json({ following: response, count: response.length });
     } catch (error) {
       return next(error);
