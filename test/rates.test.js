@@ -1,4 +1,6 @@
+import sinon from 'sinon';
 import { chai, server, expect } from './test-setup';
+import rateCtrl from '../src/controllers/rating.controller';
 
 let adminToken, usertwotoken, userToken;
 
@@ -251,5 +253,41 @@ describe('/POST rate article', () => {
         expect(res.body).to.have.deep.property('message', 'all rates retrieved successfully');
         done();
       });
+  });
+  it('should throw a server error with createOrUpdateRate function', async () => {
+    const req = [
+      { params: { articleSlug: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await rateCtrl.createOrUpdateRate(req, res);
+    expect(res.status).to.have.been.calledWith(500);
+  });
+  it('should throw a server error with getArticleRating function', async () => {
+    const req = [
+      { params: { articleSlug: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await rateCtrl.getArticleRating(req, res);
+    expect(res.status).to.have.been.calledWith(500);
   });
 });
