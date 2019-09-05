@@ -2,7 +2,7 @@ import express from 'express';
 import auth from '../../../middlewares/auth';
 import reportMiddleware from '../../../middlewares/report.middleware';
 import admin from '../../../middlewares/admin';
-import reportController from '../../../controllers/report.comtroller';
+import reportController from '../../../controllers/report.controller';
 import reportValidator from '../../../middlewares/validators/report.validator';
 import { checkQuery } from '../../../middlewares/query.check';
 import confirmEmailAuth from '../../../middlewares/emailVarification.middleware';

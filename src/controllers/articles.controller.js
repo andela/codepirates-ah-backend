@@ -24,11 +24,11 @@ const db = models.Article;
 class Articles {
   /**
    *
-   *
+   * @description Method to create a new Article
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {object} data
+   * @returns {object} server response object
    * @memberof Articles
    */
   static async createArticles(req, res) {
@@ -48,31 +48,30 @@ class Articles {
       };
       const createdArticle = await articleService.addArticle(article);
       await notifyViaEmailAndPush(req, res, createdArticle.slug);
-      return res.status(201).json({
-        status: 201,
-        article: {
-          slug: createdArticle.slug,
-          title: createdArticle.title,
-          description: createdArticle.description,
-          body: createdArticle.body,
-          flagged: createdArticle.flagged,
-          favorited: createdArticle.favorited,
-          favoritedcount: createdArticle.favoritedcount,
-          images: createdArticle.images,
-          createdAt: createdArticle.createdAt,
-          updatedAt: createdArticle.updatedAt
-        }
-      });
+      const response = {
+        slug: createdArticle.slug,
+        title: createdArticle.title,
+        description: createdArticle.description,
+        body: createdArticle.body,
+        flagged: createdArticle.flagged,
+        favorited: createdArticle.favorited,
+        favoritedcount: createdArticle.favoritedcount,
+        images: createdArticle.images,
+        createdAt: createdArticle.createdAt,
+        updatedAt: createdArticle.updatedAt
+      };
+      util.setSuccess(201, 'Article created successfully', response);
+      return util.send(res);
     }
   }
 
   /**
    *
-   *
+   * @description Method to get all articles
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {object} articles
+   * @returns {object} server response object
    * @memberof Articles
    */
   static async getAllArticles(req, res) {
@@ -83,7 +82,8 @@ class Articles {
     const { searchQueries, offset, limit } = req;
     const articles = await articleService.getAllArticles(offset, limit, searchQueries);
     if (!articles) {
-      return res.status(200).json({ status: 200, message: 'There is no article.' });
+      util.setError(404, 'That article does not exist!');
+      return util.send(res);
     }
     const allArticles = _.map(articles, _.partialRight(_.pick, ['slug', 'title', 'description', 'body', 'taglist', 'favorited', 'favoritedcount', 'flagged', 'images', 'views']));
 
@@ -92,22 +92,17 @@ class Articles {
       article.readtime = readTime;
       return true;
     });
-
-    return res.status(200).json({
-      status: 200,
-      message: 'List of all articles',
-      allArticle: counter,
-      data: allArticles
-    });
+    util.setSuccess(200, 'List of all articles', allArticles);
+    return util.send(res);
   }
 
   /**
    *
-   *
+   * @description Method to get a specific Article
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {object} article
+   * @returns {object} server response object
    * @memberof Articles
    */
   static async getOneArticle(req, res) {
@@ -115,10 +110,8 @@ class Articles {
       where: { slug: req.params.slug }
     });
     if (!findArticle) {
-      return res.status(200).json({
-        status: 200,
-        message: 'That article does not exist!'
-      });
+      util.setError(404, 'That article does not exist!');
+      return util.send(res);
     }
     const article = _.pick(findArticle, ['slug', 'title', 'description', 'body', 'taglist', 'favorited', 'favoritedcount', 'flagged', 'images', 'views']);
     const readTime = Helper.calculateReadTime(article.body);
@@ -129,20 +122,17 @@ class Articles {
       const item = 'article';
       await statsService.createStat({ description, item, readerId }, 'Stats');
     }
-    return res.status(200).json({
-      status: 200,
-      message: 'Article successfully retrieved',
-      data: article
-    });
+    util.setSuccess(200, 'Article successfully retrieved', article);
+    return util.send(res);
   }
 
   /**
    *
-   *
+   * @description Method to delete an Article
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {object} message
+   * @returns {object} server response object
    * @memberof Articles
    */
   static async deleteArticle(req, res) {
@@ -150,33 +140,27 @@ class Articles {
       where: { slug: req.params.slug }
     });
     if (!findArticle) {
-      return res.status(200).json({
-        status: 200,
-        message: 'That article does not exist!'
-      });
+      util.setError(404, 'That article does not exist!');
+      return util.send(res);
     }
     if (req.auth.id !== findArticle.authorId) {
-      return res.status(403).json({
-        status: 403,
-        message: 'Sorry you can not DELETE an article that does not belong to you.'
-      });
+      util.setError(403, 'Sorry you can not DELETE an article that does not belong to you.');
+      return util.send(res);
     }
     await db.destroy({
       where: { slug: req.params.slug }
     });
-    return res.status(200).json({
-      status: 200,
-      message: 'Article was deleted succussfully!'
-    });
+    util.setSuccess(200, 'Article was deleted succussfully!', null);
+    return util.send(res);
   }
 
   /**
    *
-   *
+   * @description Method to cupdate an Article
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {Object} updated article details
+   * @returns {Object} server response object
    * @memberof Articles
    */
   static async UpdateArticle(req, res) {
@@ -184,13 +168,12 @@ class Articles {
       where: { slug: req.params.slug }
     });
     if (!findArticle) {
-      return res.status(200).json({ status: 200, message: 'That article does not exist' });
+      util.setError(404, 'That article does not exist!');
+      return util.send(res);
     }
     if (req.auth.id !== findArticle.authorId) {
-      return res.status(403).json({
-        status: 403,
-        message: 'Sorry you can not UPDATE an article that does not belong to you.'
-      });
+      util.setError(403, 'Sorry you can not UPDATE an article that does not belong to you.');
+      return util.send(res);
     }
     const { title, body, description } = req.body;
     const updatedArticle = await articleService.updateArticle(req.params.slug, {
@@ -200,19 +183,17 @@ class Articles {
       description,
       taglist: req.body.taglist.split(' ')
     });
-    return res.status(200).json({
-      status: 200,
-      updatedArticle
-    });
+    util.setSuccess(200, 'Article successfully updated', updatedArticle);
+    return util.send(res);
   }
 
   /**
    *
-   *
+   * @description Method to share article over email and social media channels
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {Object} share article over email and social media channelds
+   * @returns {Object} server response object
    * @memberof Articles
    */
   static async shareArticle(req, res) {

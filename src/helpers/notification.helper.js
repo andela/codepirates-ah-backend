@@ -19,21 +19,9 @@ export default async (req, res, next, userColumn) => {
         returning: true
       }
     );
-
-    if (userColumn === 'subscribed') {
-      const { subscribed } = updatedUser[1][0].dataValues;
-      if (subscribed === newNotificationStatus) {
-        const message = subscribed === true ? 'You have successfully subscribed to our email notifications' : 'You will no longer receive email notifications from us';
-        return res.status(200).json({ message, statusCode: 200 });
-      }
-    }
-    if (userColumn === 'inAppNotification') {
-      const { inAppNotification } = updatedUser[1][0].dataValues;
-      if (inAppNotification === newNotificationStatus) {
-        const message = inAppNotification === true ? 'You have successfully subscribed to in app notifications' : 'You will no longer receive in-app notifications from us';
-        return res.status(200).json({ message, statusCode: 200 });
-      }
-    }
+    // eslint-disable-next-line no-nested-ternary
+    const message = (((userColumn === 'subscribed') && (updatedUser[1][0].dataValues.subscribed === newNotificationStatus)) ? (updatedUser[1][0].dataValues.subscribed === true) ? 'You have successfully subscribed to our email notifications' : 'You will no longer receive email notifications from us' : (updatedUser[1][0].dataValues.inAppNotification === true) ? 'You have successfully subscribed to in app notifications' : 'You will no longer receive in-app notifications from us');
+    return res.status(200).json({ message, statusCode: 200 });
   } catch (error) {
     return next(error);
   }

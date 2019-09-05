@@ -12,13 +12,12 @@ const util = new Util();
  */
 class rateController {
   /**
-     *
-     *
+     * @description Method for creating and updating rates
      * @static
-     * @param {*} req
-     * @param {*} res
+     * @param {object} req client request
+     * @param {object} res server response
      * @returns {Object} return rating information to user
-     * @memberof UserController
+     * @memberof rateController
      */
   static async createOrUpdateRate(req, res) {
     try {
@@ -49,7 +48,7 @@ class rateController {
 
   /**
    *
-   *
+   * @description Method for getting all ratings
    * @static
    * @param {*} req
    * @param {*} res
@@ -72,16 +71,13 @@ class rateController {
       util.setSuccess(200, 'all rates retrieved successfully', allRates);
       return util.send(res);
     } catch (error) {
-      return res.status(404).send({
-        status: 404,
-        message: error.message
-      });
+      util.setError(404, error.message);
+      return util.send(res);
     }
   }
 
   /**
-   *
-   *
+   * @description Method for an article single ratings
    * @static
    * @param {*} req
    * @param {*} res

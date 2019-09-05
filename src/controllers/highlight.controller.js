@@ -13,7 +13,7 @@ const util = new Util();
 class HighlightText {
   /**
    *
-   *
+   * @description controller method for highlighting text in the article
    * @static
    * @param {*} req
    * @param {*} res
@@ -58,13 +58,14 @@ class HighlightText {
       util.setSuccess(201, 'Success highligt and comment', results);
       return util.send(res);
     } catch (error) {
-      throw (error);
+      util.setError(400, error.message);
+      return util.send(res);
     }
   }
 
   /**
    *
-   *
+   * @description controller method for sharing the highlighted text
    * @static
    * @param {*} req
    * @param {*} res
@@ -76,13 +77,14 @@ class HighlightText {
       util.setSuccess(201, 'You are ready to share', true);
       return util.send(res);
     } catch (error) {
-      throw (error);
+      util.setError(400, error.message);
+      return util.send(res);
     }
   }
 
   /**
    *
-   *
+   * @description controller method for deleting the highlighted comment
    * @static
    * @param {*} req
    * @param {*} res
@@ -110,13 +112,14 @@ class HighlightText {
       util.setError(400, 'Sorry you can not delete this comment');
       return util.send(res);
     } catch (error) {
-      throw error;
+      util.setError(400, error.message);
+      return util.send(res);
     }
   }
 
   /**
    *
-   *
+   * @description controller method for getting all user highlights
    * @static
    * @param {*} req
    * @param {*} res

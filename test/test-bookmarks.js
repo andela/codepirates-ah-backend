@@ -226,7 +226,7 @@ describe('Test article bookmarks', () => {
             .delete('/api/v1/users/bookmarks/collections/names/kuku')
             .set('Authorization', token)
             .end((err, res) => {
-              expect(res.status).to.be.equal(404);
+              expect(res.status).to.be.equal(200);
               expect(res.body.message).to.include('deleted from collection');
               done();
             });
@@ -257,7 +257,7 @@ describe('Test article bookmarks', () => {
         .delete('/api/v1/users/bookmarks/Ugandan Pilau')
         .set('Authorization', token)
         .end((err, res) => {
-          expect(res.status).to.be.equal(404);
+          expect(res.status).to.be.equal(200);
           expect(res.body.message).to.be.equal("bookmark 'Ugandan Pilau' deleted");
           done();
         });
@@ -267,7 +267,7 @@ describe('Test article bookmarks', () => {
         .delete('/api/v1/users/bookmarks')
         .set('Authorization', token)
         .end((err, res) => {
-          expect(res.status).to.be.equal(404);
+          expect(res.status).to.be.equal(200);
           expect(res.body.message).to.be.include('bookmarks deleted');
           done();
         });

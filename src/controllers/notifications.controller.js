@@ -1,5 +1,7 @@
 import notificationHelper from '../helpers/notification.helper';
+import Util from '../helpers/util';
 
+const util = new Util();
 
 /**
  * @description Contains method to allow users opt in and out of notifications
@@ -28,7 +30,8 @@ class NotificationController {
         notificationHelper(req, res, next, 'inAppNotification');
         break;
       default:
-        return res.status(404).json({ error: 'route does not exist' });
+        util.setError(404, 'route does not exist');
+        return util.send(res);
     }
   }
 }

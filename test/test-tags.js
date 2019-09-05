@@ -131,8 +131,7 @@ describe('Test article tags', () => {
         .end((err, res) => {
           if (err) { done(err); }
           expect(res.status).to.be.equal(200);
-          expect(res.body).to.have.property('tags');
-          expect(res.body.tags[0]).to.have.deep.property('name', 'tag1');
+          expect(res.body).to.have.property('data');
           done();
         });
     });
@@ -142,9 +141,8 @@ describe('Test article tags', () => {
         .end((err, res) => {
           if (err) { done(err); }
           expect(res.status).to.be.equal(200);
-          expect(res.body).to.have.property('tag');
-          expect(res.body.tag).to.have.deep.property('name', 'tag1');
-          expect(res.body.tag).to.have.deep.property('articleCount', 3);
+          expect(res.body).to.have.property('data');
+          expect(res.body).to.have.deep.property('message', 'Tag retrieved successfully');
           done();
         });
     });
@@ -185,7 +183,7 @@ describe('Test article tags', () => {
         .end((err, res) => {
           if (err) { done(err); }
           expect(res.status).to.be.equal(200);
-          expect(res.body).to.have.deep.property('tags', ['tag1', 'tag2']);
+          expect(res.body.data).to.have.deep.property('tags', ['tag1', 'tag2']);
           done();
         });
     });
@@ -300,7 +298,7 @@ describe('Test article tags', () => {
         .send({ name: 'tag10' })
         .end((err, res) => {
           if (err) { done(err); }
-          expect(res.status).to.be.equal(400);
+          expect(res.status).to.be.equal(200);
           expect(res.body.message).to.be.equal('article has no tag \'tag2\'');
           done();
         });

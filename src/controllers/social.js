@@ -10,14 +10,14 @@ let data;
  */
 class Social {
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {Object} returns access token and user information
-   * @memberof Social
-   */
+ *
+ * @description Method to login
+ * @static
+ * @param {object} req client request
+ * @param {object} res server response
+ * @returns {Object} server response object
+ * @memberof Social
+ */
   static async login(req, res) {
     let user;
     let message;
@@ -58,4 +58,3 @@ class Social {
 }
 
 export default Social;
-

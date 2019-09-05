@@ -10,10 +10,11 @@ const util = new Util();
  */
 class Profile {
   /**
-   * @description get user profile
+   * @description Method for getting user profile
    * @param {object} req
    * @param {object} res
    * @returns {object} return object containing user profile
+   * @memberof Profile
    */
   static async getProfile(req, res) {
     const userName = req.params.username;
@@ -43,10 +44,11 @@ class Profile {
   }
 
   /**
-   * @description update user profile
+   * @description Method for updating user profile
    * @param {object} req
    * @param {object} res
    * @returns {object} return object containing updated user profile
+   * @memberof Profile
    */
   static async updateProfile(req, res) {
     let filename = '';
@@ -101,10 +103,9 @@ class Profile {
     );
   }
 
-  // GET users' profiles
   /**
    *
-   *
+   *@description Method for getting all user profiles
    * @static
    * @param {*} req
    * @param {*} res
