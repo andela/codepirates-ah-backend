@@ -2,6 +2,9 @@ import UserService from '../services/user.service';
 import Helper from '../helpers/helper';
 import EmailHelper from '../helpers/verification-email';
 import sendPasswordResetEmailHelper from '../services/resetpassword.service';
+import Util from '../helpers/util';
+
+const util = new Util();
 
 /**
  *
@@ -29,23 +32,17 @@ class UserController {
       }
 
       if (!theUser) {
-        return res.status(404).send({
-          status: 404,
-          message: 'Cannot find User with the email or username'
-        });
+        util.setError(404, 'Cannot find User with the email or username');
+        return util.send(res);
       }
       const validPassword = await Helper.comparePassword(theUser.password, req.body.password);
       if (!validPassword) {
-        return res.status(401).send({
-          status: 401,
-          message: 'Password is not correct'
-        });
+        util.setError(401, 'Password is not correct');
+        return util.send(res);
       }
       if (!theUser.verified) {
-        return res.status(401).send({
-          status: 401,
-          message: 'User verification not completed. Confirm your email address'
-        });
+        util.setError(401, 'User verification not completed. Confirm your email address');
+        return util.send(res);
       }
 
       const payload = {
@@ -57,15 +54,12 @@ class UserController {
       };
       const token = await Helper.generateToken(payload);
       return res.status(200).send({
-        status: 200,
         message: `welcome back ${theUser.firstname}`,
         token
       });
     } catch (error) {
-      return res.status(404).send({
-        status: 404,
-        message: error.message
-      });
+      util.setError(404, error.message);
+      return util.send(res);
     }
   }
 
@@ -83,25 +77,19 @@ class UserController {
       const theUser = await UserService.findOne(req.body.email, '');
       const theUserName = await UserService.findOne('', req.body.username);
       if (theUser) {
-        return res.status(409).send({
-          status: 409,
-          message: `Cannot register admin with an email ${req.body.email} which is already in use.`
-        });
+        util.setError(409, `Cannot register admin with an email ${req.body.email} which is already in use.`);
+        return util.send(res);
       }
       if (theUserName) {
-        return res.status(409).send({
-          status: 409,
-          message: `Cannot register admin with the username ${
-            req.body.username
-          } which is already in use.`
-        });
+        util.setError(409, `Cannot register admin with the username ${
+          req.body.username
+        } which is already in use.`);
+        return util.send(res);
       }
       const hashPassword = await Helper.hashPassword(req.body.password);
       if (!hashPassword) {
-        return res.status(401).send({
-          status: 401,
-          message: 'occur error while hashing'
-        });
+        util.setError(401, 'occur error while hashing');
+        return util.send(res);
       }
       const {
         firstname, lastname, email, role, username
@@ -140,11 +128,8 @@ class UserController {
         })
         : 'No verified';
     } catch (error) {
-      const { errors } = error;
-      return res.status(404).send({
-        status: 404,
-        message: errors[0].message
-      });
+      util.setError(404, error.message);
+      return util.send(res);
     }
   }
 
@@ -163,17 +148,13 @@ class UserController {
     try {
       const theUser = await UserService.findOne(req.body.email, '');
       if (theUser) {
-        return res.status(409).send({
-          status: 409,
-          message: 'An account with this email already exists'
-        });
+        util.setError(409, 'An account with this email already exists');
+        return util.send(res);
       }
       const hashPassword = await Helper.hashPassword(req.body.password);
       if (!hashPassword) {
-        return res.status(401).send({
-          status: 401,
-          message: 'occur error while hashing'
-        });
+        util.setError(401, 'occur error while hashing');
+        return util.send(res);
       }
       req.body.password = hashPassword;
       const createdUser = await UserService.addUser(newUser);
@@ -197,11 +178,8 @@ class UserController {
         token
       });
     } catch (error) {
-      const { response: { body: { errors } } } = error;
-      return res.status(404).send({
-        status: 404,
-        message: errors[0].message
-      });
+      util.setError(404, error.message);
+      return util.send(res);
     }
   }
 
@@ -218,21 +196,15 @@ class UserController {
     try {
       const allUsers = await UserService.getAllUsers();
       if (allUsers) {
-        return res.status(200).send({
-          status: 200,
-          message: 'All users successfully retrieved',
-          data: allUsers
-        });
+        util.setSuccess(200, 'All users successfully retrieved', allUsers);
+        return util.send(res);
       }
 
-      return res.status(200).send({
-        message: 'no users found'
-      });
+      util.setSuccess(200, 'no users found', null);
+      return util.send(res);
     } catch (error) {
-      return res.status(400).send({
-        status: 400,
-        message: error.message
-      });
+      util.setError(400, error.message);
+      return util.send(res);
     }
   }
 
@@ -248,29 +220,21 @@ class UserController {
   static async getOneUser(req, res) {
     const { id } = req.params;
     if (!Number(id)) {
-      return res.status(400).send({
-        status: 400,
-        message: 'Please input a valid numeric value'
-      });
+      util.setError(400, 'Please input a valid numeric value');
+      return util.send(res);
     }
     try {
       const theUser = await UserService.getOneUser(id);
       if (!theUser) {
-        return res.status(404).send({
-          status: 404,
-          message: `Can not find the user with id ${id}`
-        });
+        util.setError(404, `Can not find the user with id ${id}`);
+        return util.send(res);
       }
 
-      return res.status(200).send({
-        status: 200,
-        message: `User with id ${id} Found`,
-        data: theUser
-      });
+      util.setSuccess(200, `User with id ${id} Found`, theUser);
+      return util.send(res);
     } catch (error) {
-      return res.send({
-        message: error.message
-      });
+      util.setError(400, error.message);
+      return util.send(res);
     }
   }
 
@@ -286,24 +250,18 @@ class UserController {
   static async deleteUser(req, res) {
     const { id } = req.params;
     if (!Number(id)) {
-      return res.status(400).send({
-        status: 400,
-        message: 'Please provide numeric value'
-      });
+      util.setError(400, 'Please provide numeric value');
+      return util.send(res);
     }
     try {
       const UserTODelete = await UserService.deleteUser(id);
       if (UserTODelete) {
-        return res.status(200).send({
-          status: 200,
-          message: `User with id ${id} is successfully deleted`
-        });
+        util.setSuccess(200, `User with id ${id} is successfully deleted`);
+        return util.send(res);
       }
 
-      return res.status(404).send({
-        status: 404,
-        message: `User with id ${id} is not found`
-      });
+      util.setError(404, `User with id ${id} is not found`);
+      return util.send(res);
     } catch (error) {
       return res.send({
         message: error.message
@@ -324,30 +282,21 @@ class UserController {
     const alteredUser = req.body;
     const { email } = req.params;
     if (!email) {
-      return res.status(400).send({
-        status: 400,
-        message: 'Please provide invalid numeric value'
-      });
+      util.setError(400, 'Please provide invalid numeric value');
+      return util.send(res);
     }
     try {
       const updateUser = await UserService.updateUser(email, alteredUser);
       if (!updateUser) {
-        return res.status(404).send({
-          status: 404,
-          message: `User with email ${email} is not not found `
-        });
+        util.setError(404, `User with email ${email} is not not found `);
+        return util.send(res);
       }
 
-      return res.status(200).send({
-        status: 200,
-        message: `User with email ${email} is updated successfully`,
-        data: updateUser
-      });
+      util.setSuccess(200, `User with email ${email} is updated successfully`, updateUser);
+      return util.send(res);
     } catch (error) {
-      return res.status(404).send({
-        status: 404,
-        message: error.message
-      });
+      util.setError(404, error.message);
+      return util.send(res);
     }
   }
 
@@ -367,11 +316,8 @@ class UserController {
     const schema = { identifier, invalidToken };
     const rejectedToken = await UserService.createDroppedToken(schema);
 
-    return res.status(200).json({
-      status: 200,
-      message: 'Successfully logged out.',
-      data: rejectedToken
-    });
+    util.setSuccess(200, 'Successfully logged out.', rejectedToken);
+    return util.send(res);
   }
 
   /**
@@ -387,18 +333,14 @@ class UserController {
     // check if email provided exists in db
     const { email } = req.body;
     if (!email) {
-      return res.status(400).send({
-        status: 400,
-        message: 'Please provide an email address'
-      });
+      util.setError(400, 'Please provide an email address');
+      return util.send(res);
     }
     try {
       const user = await UserService.findOne(email, '');
       if (!user) {
-        return res.status(400).send({
-          status: 400,
-          message: `User with email ${email} is not not found `
-        });
+        util.setError(400, `User with email ${email} is not not found `);
+        return util.send(res);
       }
       // generate token
       const payload = {
@@ -412,17 +354,15 @@ class UserController {
 
       // send email to user email address
       const emailSent = await sendPasswordResetEmailHelper.sendEmail(user.email, user.username, resetUrl);
-      if (!emailSent) { return res.status(500).send({ status: 500, message: 'Failed to send email. Please contact site administrator for support' }); }
-
-      return res.status(200).send({
-        status: 200,
-        message: 'Check your email address to reset your password',
-      });
+      if (!emailSent) {
+        util.setError(500, 'Failed to send email. Please contact site administrator for support');
+        return util.send(res);
+      }
+      util.setSuccess(200, 'Check your email address to reset your password');
+      return util.send(res);
     } catch (error) {
-      return res.status(500).send({
-        status: 500,
-        message: error.message
-      });
+      util.setError(500, error.message);
+      return util.send(res);
     }
   }
 
@@ -440,52 +380,39 @@ class UserController {
     const { token } = req.params;
     const tokenDecoded = Helper.verifyToken(token);
     if (tokenDecoded === 'invalid token') {
-      return res.status(400).send({
-        status: 400,
-        message: 'Invalid token or Token expired'
-      });
+      util.setError(400, 'Invalid token or Token expired');
+      return util.send(res);
     }
 
     // check if payload's email address exists in database
     const { email } = tokenDecoded;
     const user = await UserService.findOne(email, '');
     if (!user) {
-      return res.status(400).send({
-        status: 400,
-        message: `User with email ${email} is not not found `
-      });
+      util.setError(400, `User with email ${email} is not not found `);
+      return util.send(res);
     }
 
     // check if old password equals new password
     const checkPassword = await Helper.comparePassword(user.password, req.body.password);
     if (checkPassword) {
-      return res.status(400).send({
-        status: 400,
-        message: 'New password cannot be the same as current password'
-      });
+      util.setError(400, 'New password cannot be the same as current password');
+      return util.send(res);
     }
 
     // update password
     const newPassword = req.body.password;
     const password = await Helper.hashPassword(newPassword);
     if (!password) {
-      return res.status(500).send({
-        status: 500,
-        message: 'An error occured, Contact your administrator'
-      });
+      util.setError(500, 'An error occured, Contact your administrator');
+      return util.send(res);
     }
     try {
       await UserService.updateUser(email, { password });
-
-      return res.status(200).send({
-        status: 200,
-        message: 'Password reset successfully'
-      });
+      util.setSuccess(200, 'Password reset successfully');
+      return util.send(res);
     } catch (error) {
-      return res.status(400).send({
-        status: 400,
-        message: 'Failed to fetch user'
-      });
+      util.setSuccess(400, 'Failed to fetch user');
+      return util.send(res);
     }
   }
 }

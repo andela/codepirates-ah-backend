@@ -17,9 +17,6 @@ describe('Test user stats', () => {
         .get('/api/v1/users/stats')
         .set('Authorization', token)
         .end((err, res) => {
-          console.log('<---------------------------');
-          console.log(res.body);
-          console.log('<---------------------------');
           expect(res.status).to.be.equal(404);
           expect(res.body.message).to.include('not found');
           done();
