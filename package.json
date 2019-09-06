@@ -8,8 +8,8 @@
     "seeds": "babel-node node_modules/.bin/sequelize db:seed:all --seeders-path src/seeders",
     "undoseeds": "babel-node node_modules/.bin/sequelize db:seed:undo:all",
     "migration": "babel-node node_modules/.bin/sequelize db:migrate",
-    "undomigration": "npm run undoseeds && babel-node node_modules/.bin/sequelize db:migrate:undo:all",
-    "runmigrations": "npm run undoseeds && npm run migration && npm run seeds",
+    "undomigration": "babel-node node_modules/.bin/sequelize db:migrate:undo:all",
+    "runmigrations": " npm run undomigration && npm run migration && npm run seeds",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "export NODE_ENV=test && npm run undomigration && npm run migration && npm run seeds && nyc --reporter=html --reporter=text mocha ./test --exit --require @babel/register",
     "dev": "nodemon --exec babel-node ./src/app.js"
