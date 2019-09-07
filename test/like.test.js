@@ -1,6 +1,7 @@
-
+import sinon from 'sinon';
 import 'dotenv/config';
 import { chai, server, expect } from './test-setup';
+import likeCtrl from '../src/controllers/likes.controller';
 
 let usertoken, adminToken, mikeToken;
 
@@ -289,5 +290,95 @@ describe('/likes and dislikes  feature', () => {
         expect(res.body.data.clapers).to.deep.equal(2);
         done();
       });
+  });
+  it('should throw a server error with unlike function', async () => {
+    const req = [
+      { params: { Article: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await likeCtrl.unlike(req, res);
+    expect(res.status).to.have.been.calledWith(500);
+  });
+  it('should throw a server error with dislike function', async () => {
+    const req = [
+      { params: { Article: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await likeCtrl.dislike(req, res);
+    expect(res.status).to.have.been.calledWith(500);
+  });
+  it('should throw a server error with clap function', async () => {
+    const req = [
+      { params: { Article: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await likeCtrl.clap(req, res);
+    expect(res.status).to.have.been.calledWith(500);
+  });
+  it('should throw a server error with getDislikes function', async () => {
+    const req = [
+      { params: { Article: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await likeCtrl.getDislikes(req, res);
+    expect(res.status).to.have.been.calledWith(500);
+  });
+  it('should throw a server error with getclaps function', async () => {
+    const req = [
+      { params: { Article: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await likeCtrl.getClaps(req, res);
+    expect(res.status).to.have.been.calledWith(500);
   });
 });

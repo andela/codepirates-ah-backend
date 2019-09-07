@@ -1,4 +1,6 @@
+import sinon from 'sinon';
 import { chai, server, expect } from './test-setup';
+import reportCtrl from '../src/controllers/report.comtroller';
 
 let usertoken, admintoken, usertwotoken;
 
@@ -300,5 +302,77 @@ describe('/Report an article', () => {
         expect(res.body.message).to.deep.equal('This article is not yet Reported');
         done();
       });
+  });
+  it('should throw a server error with getMyReport function', async () => {
+    const req = [
+      { params: { Article: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await reportCtrl.getMyReport(req, res);
+    expect(res.status).to.have.been.calledWith(500);
+  });
+  it('should throw a server error with getreportForArticle function', async () => {
+    const req = [
+      { params: { Article: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await reportCtrl.getReportsForArticle(req, res);
+    expect(res.status).to.have.been.calledWith(500);
+  });
+  it('should throw a server error with deleteReport function', async () => {
+    const req = [
+      { params: { Article: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await reportCtrl.deleteReport(req, res);
+    expect(res.status).to.have.been.calledWith(500);
+  });
+  it('should throw a server error with reportArticle function', async () => {
+    const req = [
+      { params: { Article: 'fakeslug' } },
+      {
+        auth: {
+          email: 'userthree@gmail.com'
+        }
+      }
+    ];
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await reportCtrl.reportArticle(req, res);
+    expect(res.status).to.have.been.calledWith(500);
   });
 });
