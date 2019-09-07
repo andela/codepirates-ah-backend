@@ -66,8 +66,8 @@ describe('test for favoriting and unfavoriting an article', () => {
       .end((error, res) => {
         expect(res.status).to.equal(404);
         expect(res.body).to.be.an('object');
-        expect(res.body).to.have.property('error');
-        expect(res.body.error).to.contain('Article not found');
+        expect(res.body.status).to.contain('error');
+        expect(res.body.message).to.contain('Article not found');
         done();
       });
   });

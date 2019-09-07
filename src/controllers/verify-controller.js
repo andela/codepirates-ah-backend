@@ -1,5 +1,8 @@
 import Helper from '../helpers/helper';
 import models from '../models/index';
+import Util from '../helpers/util';
+
+const util = new Util();
 
 const User = models.user;
 
@@ -10,9 +13,11 @@ const verifyEmail = async (req, res) => {
     const findUser = await User.findOne({ where: { email: decoded.email } });
     if (!findUser) return res.status(404).json({ status: 404, message: 'The user does not exists' });
     await User.update({ verified: true }, { where: { email: decoded.email } });
-    return res.status(200).json({ status: 200, message: 'You have been verified.' });
+    util.setSuccess(200, 'You have been verified.', { email: decoded.email });
+    return util.send(res);
   } catch (error) {
-    return res.status(400).json({ status: 400, message: 'invalid request' });
+    util.setError(400, 'invalid request');
+    return util.send(res);
   }
 };
 

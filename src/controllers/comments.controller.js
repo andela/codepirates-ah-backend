@@ -21,11 +21,11 @@ const database = models.Article;
 class Comments {
   /**
    *
-   *
+   * @description Method to create a new comment
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {object} data
+   * @returns {object} server response object
    * @memberof Comments
    */
   static async createComment(req, res) {
@@ -48,19 +48,18 @@ class Comments {
       await util.setSuccess(201, 'Comment successfully created', createdComment);
       return util.send(res);
     } catch (error) {
-      return res.send({
-        message: error.message
-      });
+      util.setError(400, error.message);
+      return util.send(res);
     }
   }
 
   /**
    *
-   *
+   * @description Method to delete a new comment
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {object} data
+   * @returns {object} server response object
    * @memberof Comments
    */
   static async deleteComment(req, res) {
@@ -83,25 +82,22 @@ class Comments {
         await util.setSuccess(200, `Comment with id ${id} is successfully deleted`);
         return util.send(res);
       }
-
-      return res.status(404).send({
-        status: 404,
-        message: `Comment with id ${id} is not found`
-      });
+      const message = `Comment with id ${id} is not found`;
+      util.setError(404, message);
+      return util.send(res);
     } catch (error) {
-      return res.send({
-        message: error.message
-      });
+      util.setError(400, error.message);
+      return util.send(res);
     }
   }
 
   /**
    *
-   *
+   * @description Method to get a all comments
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {object} data
+   * @returns {object} server response object
    * @memberof Comments
    */
   static async getComments(req, res) {
@@ -119,12 +115,12 @@ class Comments {
 
   /**
    *
-   *
+   * @description Method to update comment
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {Object} return comment updation message
-   * @memberof UserController
+   * @returns {object} server response object
+   * @memberof Comments
    */
   static async updateComment(req, res) {
     const getComment = await CommentsDb.findOne({ where: { id: req.params.id } });
@@ -139,7 +135,6 @@ class Comments {
       await util.setError(400, 'Please provide numeric value');
       return util.send(res);
     }
-
     const { body } = req.body;
     const commentRevisions = getComment.dataValues.body;
     const updateComment = await commentsService.updateComment(req.params.id, { body, commentRevisions });
@@ -149,11 +144,11 @@ class Comments {
 
   /**
    *
-   *
+   * @description Method to like a comment
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {Object} return json object
+   * @returns {object} server response object
    * @memberof Comments
    */
   static async likeComment(req, res) {
@@ -183,11 +178,11 @@ class Comments {
 
   /**
    *
-   *
+   * @description Method to update a like of comment
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {Object} return json object
+   * @returns {object} server response object
    * @memberof Comments
    */
   static async updateLikeComment(req, res) {
@@ -217,11 +212,11 @@ class Comments {
 
   /**
    *
-   *
+   * @description Method to get likes of a comment
    * @static
    * @param {*} req
    * @param {*} res
-   * @returns {Object} return json object
+   * @returns {object} server response object
    * @memberof Comments
    */
   static async getLikesComments(req, res) {

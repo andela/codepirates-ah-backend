@@ -13,8 +13,7 @@ const db = models.reporting;
  */
 class Report {
   /**
-   *
-   *
+   * @description Method for getting all reports
    * @static
    * @param {*} req
    * @param {*} res
@@ -41,8 +40,7 @@ class Report {
   }
 
   /**
-   *
-   *
+   * @description Method for getting a user report
    * @static
    * @param {*} req
    * @param {*} res
@@ -74,8 +72,7 @@ class Report {
   }
 
   /**
-   *
-   *
+   * @description Method for getting all reports for an article
    * @static
    * @param {*} req
    * @param {*} res
@@ -108,8 +105,7 @@ class Report {
   }
 
   /**
-   *
-   *
+   * @description Method for deleting a report
    * @static
    * @param {*} req
    * @param {*} res
@@ -141,8 +137,7 @@ class Report {
   }
 
   /**
-   *
-   *
+   * @description Method for reporting an article
    * @static
    * @param {*} req
    * @param {*} res

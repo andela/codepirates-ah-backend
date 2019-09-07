@@ -3,18 +3,19 @@ import Util from '../helpers/util';
 
 const util = new Util();
 /**
- * @author codepirates
- * @exports LikesController
  * @class ArticleController
- * @description Handles all related articles functioanlities
+ * @description Handles all related articles functionalities
  * */
 class LikesController {
   /**
-   * @param  {object} req - Request object
-   * @param {object} res - Response object
-   * @returns {object} response
-   *  @static
-   */
+ *
+ * @description Method for unliking an article you previously liked
+ * @static
+ * @param {object} req client request
+ * @param {object} res server response
+ * @returns {Object} server response object
+ * @memberof LikesController
+ */
   static async unlike(req, res) {
     try {
       if (req.body.likeId) {
@@ -40,11 +41,14 @@ class LikesController {
   }
 
   /**
-   * @param  {object} req - Request object
-   * @param {object} res - Response object
-   * @returns {object} response
-   *  @static
-   */
+ *
+ * @description Method for disliking an article
+ * @static
+ * @param {object} req client request
+ * @param {object} res server response
+ * @returns {Object} server response object
+ * @memberof LikesController
+ */
   static async dislike(req, res) {
     try {
       if (req.body.author === req.body.userId) {
@@ -89,11 +93,14 @@ class LikesController {
   }
 
   /**
-   * @param  {object} req - Request object
-   * @param {object} res - Response object
-   * @returns {object} response
-   *  @static
-   */
+ *
+ * @description Method for clapping for an article
+ * @static
+ * @param {object} req client request
+ * @param {object} res server response
+ * @returns {Object} server response object
+ * @memberof LikesController
+ */
   static async clap(req, res) {
     try {
       if (req.body.author === req.body.userId) {
@@ -135,11 +142,14 @@ class LikesController {
   }
 
   /**
-   * @param  {object} req - Request object
-   * @param {object} res - Response object
-   * @returns {object} response
-   *  @static
-   */
+ *
+ * @description Method for getting all dislikes
+ * @static
+ * @param {object} req client request
+ * @param {object} res server response
+ * @returns {Object} server response object
+ * @memberof LikesController
+ */
   static async getDislikes(req, res) {
     try {
       const dislike = await likeService.getAllADislike(req.params.Article);
@@ -157,11 +167,14 @@ class LikesController {
   }
 
   /**
-   * @param  {object} req - Request object
-   * @param {object} res - Response object
-   * @returns {object} response
-   *  @static
-   */
+ *
+ * @description Method for getting all claps for an article
+ * @static
+ * @param {object} req client request
+ * @param {object} res server response
+ * @returns {Object} server response object
+ * @memberof LikesController
+ */
   static async getClaps(req, res) {
     try {
       const claps = await likeService.getAllAClaps(req.params.Article);

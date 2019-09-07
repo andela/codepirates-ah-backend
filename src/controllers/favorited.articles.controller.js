@@ -1,4 +1,7 @@
 import models from '../models/index';
+import Util from '../helpers/util';
+
+const util = new Util();
 
 const { user, Favorites, Article } = models;
 
@@ -21,22 +24,26 @@ class FavoritesController {
       const { articleId } = req.params;
 
       const foundArticle = await Article.findOne({ where: { id: articleId } });
-      if (!foundArticle) return res.status(404).json({ error: 'Article not found' });
+      if (!foundArticle) {
+        util.setError(404, 'Article not found');
+        return util.send(res);
+      }
 
       await Favorites.findOrCreate({
         where: { articleId, userId },
         attributes: ['id', 'articleId', 'userId']
       }).spread(async (favorite, created) => {
         if (created) {
-          return res.status(200).json({
-            message: 'Article favorited successfully'
-          });
+          util.setSuccess(200, 'Article favorited successfully', { articleId });
+          return util.send(res);
         }
         await favorite.destroy({ force: true });
-        return res.status(200).json({ message: 'Favorite removed successfully' });
+        util.setSuccess(200, 'Favorite removed successfully', { articleId });
+        return util.send(res);
       });
     } catch (error) {
-      return (error);
+      util.setError(400, error.message);
+      return util.send(res);
     }
   }
 }
