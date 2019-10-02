@@ -45,20 +45,30 @@ describe('Social login tests', () => {
     });
   });
 
-  describe('New social be registered if consents', () => {
+  describe('Test social signup', () => {
     before((done) => {
       process.env.facebook = 'facebook_new';
       process.env.google = 'google_new';
       process.env.twitter = 'twitter_new';
       done();
     });
-    it('should notify of none existent of account', (done) => {
+    it('should notify register new social user', (done) => {
       chai.request(server)
         .get('/login/facebook')
         .end((err, res) => {
           if (err) { done(err); }
-          expect(res.status).to.be.equal(200);
-          expect(res.body.message).to.contain('account created');
+          expect(res.status).to.be.equal(201);
+          expect(res.body.message).to.contain('Account created');
+          done();
+        });
+    });
+    it('should remind of email update if using twitter', (done) => {
+      chai.request(server)
+        .get('/login/twitter')
+        .end((err, res) => {
+          if (err) { done(err); }
+          expect(res.status).to.be.equal(201);
+          expect(res.body.message).to.contain('and update your email');
           done();
         });
     });
