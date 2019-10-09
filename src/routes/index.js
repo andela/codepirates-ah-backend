@@ -1,6 +1,5 @@
 import express from 'express';
 import session from 'express-session';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import passport from 'passport';
@@ -14,9 +13,6 @@ import { mock } from '../middlewares/validators/socialLogin-mock';
 dotenv.config();
 
 const router = express.Router();
-
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }));
 router.use(cors());
 router.use(
   session({
