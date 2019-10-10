@@ -1,7 +1,10 @@
+import dotenv from 'dotenv';
 import User from '../services/user.service';
 import Helper from '../helpers/helper';
 import randPass from '../helpers/passwordgen';
 import dbService from '../services/db.service';
+
+dotenv.config();
 
 let data;
 
@@ -21,16 +24,19 @@ class Social {
    * @memberof Social
    */
   static async login(req, res) {
+    data = req.user;
+    const type = data.provider;
+    console.log(data);
     try {
       let user;
       let registeredUser;
-      data = req.user;
       const firstname = data.name ? data.name.givenName : data.displayName.split(' ')[0];
       const lastname = data.name ? data.name.middleName || data.name.familyName : data.displayName.split(' ')[1];
       const email = data.emails ? data.emails[0].value : '';
-      const username = `${firstname}.${lastname}`;
+      const image = data.photos ? data.photos[0].value : '';
+      const username = `${firstname}.${lastname}.${type}`;
       const tempUser = await User.findOne(email, username);
-      if (data.provider === 'twitter') {
+      if (type === 'twitter') {
         registeredUser = await dbService.getStat({
           firstname: lastname.toLowerCase(), lastname: firstname.toLowerCase()
         }, 'user')[0] || tempUser;
@@ -42,8 +48,9 @@ class Social {
       } else {
         const pass = randPass();
         const password = Helper.hashPassword(pass);
+        const verified = true;
         const newUser = {
-          firstname, lastname, email, username, password
+          firstname, lastname, email, username, password, verified, image
         };
         user = await User.addUser(newUser);
       }
@@ -54,9 +61,9 @@ class Social {
         verified: user.verified
       };
       const token = Helper.generateToken(payload);
-      return res.redirect(`${process.env.FRONT_END_URL}/social-login?token=${token}`);
+      return res.redirect(`${process.env.FRONT_END_URL}/${type}/social-login?socialToken=${token}`);
     } catch (error) {
-      return res.redirect(`${process.env.FRONT_END_URL}/social-login`);
+      return res.redirect(`${process.env.FRONT_END_URL}/${type}/social-login`);
     }
 
     // check if user is in db

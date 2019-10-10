@@ -30,7 +30,6 @@ const validateToken = async (req, res, next) => {
         message: 'You are logged out!'
       });
     }
-
     jwt.verify(token, process.env.SECRET_KEY, (err, decode) => {
       if (err) {
         return res.status(401).send({

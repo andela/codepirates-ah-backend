@@ -122,8 +122,7 @@ class UserController {
         verified: createdUser.verified
       };
       const token = await Helper.generateToken(payload);
-      const verifyUrl = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}/users/verify?
-      token=${token}`;
+      const verifyUrl = `${process.env.FRONT_END_URL}/verify?token=${token}`;
       const verify = EmailHelper.sendEmail(payload.email, username, verifyUrl);
 
       return verify
@@ -168,6 +167,13 @@ class UserController {
           message: 'An account with this email already exists'
         });
       }
+      const theUsername = await UserService.findOne('', req.body.username);
+      if (theUsername) {
+        return res.status(409).send({
+          status: 409,
+          message: 'username is taken'
+        });
+      }
       const hashPassword = await Helper.hashPassword(req.body.password);
       if (!hashPassword) {
         return res.status(401).send({
@@ -185,9 +191,7 @@ class UserController {
         verified: createdUser.verified
       };
       const token = await Helper.generateToken(payload);
-      const verifyUrl = `${process.env.BACKEND_URL}/api/${
-        process.env.API_VERSION
-      }/users/verify?token=${token}`;
+      const verifyUrl = `${process.env.FRONT_END_URL}/verify?token=${token}`;
       await EmailHelper.sendEmail(payload.email, newUser.username, verifyUrl);
       return res.status(201).json({
         status: 201,
@@ -197,10 +201,10 @@ class UserController {
         token
       });
     } catch (error) {
-      const { response: { body: { errors } } } = error;
+      // const { response: { body: { errors } } } = error;
       return res.status(404).send({
         status: 404,
-        message: errors[0].message
+        message: error
       });
     }
   }

@@ -16,7 +16,10 @@ export default (req, res, next) => {
       .max(20),
     bio: Joi.string()
       .trim()
-      .min(20)
+      .min(0)
+      .max(200)
+      .allow('')
+      .allow(null),
   };
   const { error } = Joi.validate({
     bio, username
