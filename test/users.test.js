@@ -262,7 +262,7 @@ describe('Users', () => {
     });
     chai
       .request(server)
-      .patch(`/api/v1/users/reset/${token}`)
+      .put(`/api/v1/users/reset/${token}`)
       .set('Accept', 'Application/JSON')
       .send({
         password: '',
@@ -281,7 +281,7 @@ describe('Users', () => {
     });
     chai
       .request(server)
-      .patch(`/api/v1/users/reset/${token}`)
+      .put(`/api/v1/users/reset/${token}`)
       .send({
         password: 'sss',
         confirmPassword: 'sss',
@@ -299,7 +299,7 @@ describe('Users', () => {
     });
     chai
       .request(server)
-      .patch(`/api/v1/users/reset/${token}`)
+      .put(`/api/v1/users/reset/${token}`)
       .send({
         password: 'ssssd',
         confirmPassword: 'sss',
