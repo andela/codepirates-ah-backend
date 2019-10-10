@@ -262,7 +262,7 @@ describe('Users', () => {
     });
     chai
       .request(server)
-      .patch(`/api/v1/users/reset/${token}`)
+      .put(`/api/v1/users/reset/${token}`)
       .set('Accept', 'Application/JSON')
       .send({
         password: '',
@@ -281,7 +281,7 @@ describe('Users', () => {
     });
     chai
       .request(server)
-      .patch(`/api/v1/users/reset/${token}`)
+      .put(`/api/v1/users/reset/${token}`)
       .send({
         password: 'sss',
         confirmPassword: 'sss',
@@ -299,7 +299,7 @@ describe('Users', () => {
     });
     chai
       .request(server)
-      .patch(`/api/v1/users/reset/${token}`)
+      .put(`/api/v1/users/reset/${token}`)
       .send({
         password: 'ssssd',
         confirmPassword: 'sss',
@@ -360,7 +360,7 @@ describe('Users', () => {
     it('should not verify an email', (done) => {
       chai
         .request(server)
-        .get(`/api/v1/users/verify?token=${'aaa'}`)
+        .put(`/verifyemail?token=${'aaa'}`)
         .end((error, res) => {
           expect(res.status).to.be.equal(400);
           expect(res.body).to.have.deep.property('message', 'invalid request');
@@ -371,7 +371,7 @@ describe('Users', () => {
     it('should verify an email', (done) => {
       chai
         .request(server)
-        .get(`/api/v1/users/verify?token=${userTwoToken}`)
+        .put(`/verifyemail?token=${userTwoToken}`)
         .end((error, res) => {
           expect(res.status).to.be.equal(200);
           expect(res.body).to.have.deep.property('message', 'You have been verified.');
