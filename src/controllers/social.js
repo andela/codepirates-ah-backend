@@ -26,7 +26,6 @@ class Social {
   static async login(req, res) {
     data = req.user;
     const type = data.provider;
-    console.log(data);
     try {
       let user;
       let registeredUser;
