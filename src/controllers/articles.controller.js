@@ -16,6 +16,8 @@ const { notifyViaEmailAndPush } = NotificationServices;
 const util = new Util();
 
 const db = models.Article;
+const viewDb = models.View;
+
 /**
  *
  *
@@ -23,14 +25,14 @@ const db = models.Article;
  */
 class Articles {
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {object} data
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {object} data
+	 * @memberof Articles
+	 */
   static async createArticles(req, res) {
     const userId = req.auth.id;
     const findUser = await Userservice.getOneUser(userId);
@@ -67,14 +69,14 @@ class Articles {
   }
 
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {object} articles
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {object} articles
+	 * @memberof Articles
+	 */
   static async getAllArticles(req, res) {
     const counter = await db.count();
     if (req.offset >= counter) {
@@ -85,7 +87,21 @@ class Articles {
     if (!articles) {
       return res.status(200).json({ status: 200, message: 'There is no article.' });
     }
-    const allArticles = _.map(articles, _.partialRight(_.pick, ['slug', 'title', 'description', 'body', 'taglist', 'favorited', 'favoritedcount', 'flagged', 'images', 'views']));
+    const allArticles = _.map(
+      articles,
+      _.partialRight(_.pick, [
+        'slug',
+        'title',
+        'description',
+        'body',
+        'taglist',
+        'favorited',
+        'favoritedcount',
+        'flagged',
+        'images',
+        'views'
+      ])
+    );
 
     allArticles.map((article) => {
       const readTime = Helper.calculateReadTime(article.body);
@@ -102,14 +118,14 @@ class Articles {
   }
 
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {object} article
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {object} article
+	 * @memberof Articles
+	 */
   static async getOneArticle(req, res) {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
@@ -120,9 +136,47 @@ class Articles {
         message: 'That article does not exist!'
       });
     }
-    const article = _.pick(findArticle, ['slug', 'title', 'description', 'body', 'taglist', 'favorited', 'favoritedcount', 'flagged', 'images', 'views']);
+
+    const article = _.pick(findArticle, [
+      'slug',
+      'title',
+      'description',
+      'body',
+      'taglist',
+      'favorited',
+      'favoritedcount',
+      'flagged',
+      'images',
+      'views'
+    ]);
     const readTime = Helper.calculateReadTime(article.body);
     article.readtime = readTime;
+    // find ip address
+    const ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
+
+    // check if the article was viewed
+    const findViewsOfArticle = await viewDb.findOne({ where: { articleId: findArticle.id } });
+
+    let viewObject = {
+      articleId: findArticle.id,
+      userId: req.auth ? req.auth.id : null,
+      IP_address: ipAddress,
+      userType: req.auth ? 'loggedInUser' : 'guest',
+      views: 1
+    };
+    // update or create article views
+    if (findViewsOfArticle) {
+      viewObject = { ...viewObject, views: findViewsOfArticle.views + 1 };
+      await viewDb.update(viewObject, {
+        where: {
+          articleId: findArticle.id
+        },
+        returing: true
+      });
+    } else {
+      await viewDb.create(viewObject);
+    }
+
     if (req.auth) {
       const { description } = article;
       const readerId = req.auth.id;
@@ -132,19 +186,20 @@ class Articles {
     return res.status(200).json({
       status: 200,
       message: 'Article successfully retrieved',
-      data: article
+      data: article,
+      views: findViewsOfArticle.views
     });
   }
 
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {object} message
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {object} message
+	 * @memberof Articles
+	 */
   static async deleteArticle(req, res) {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
@@ -171,14 +226,14 @@ class Articles {
   }
 
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {Object} updated article details
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {Object} updated article details
+	 * @memberof Articles
+	 */
   static async UpdateArticle(req, res) {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
@@ -207,14 +262,14 @@ class Articles {
   }
 
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {Object} share article over email and social media channelds
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {Object} share article over email and social media channelds
+	 * @memberof Articles
+	 */
   static async shareArticle(req, res) {
     const article = await db.findOne({
       where: { slug: req.params.slug }

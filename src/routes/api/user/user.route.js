@@ -4,7 +4,6 @@ import validateToken from '../../../middlewares/auth';
 import validateUser from '../../../middlewares/validators/signup.validation';
 import validateUserId from '../../../middlewares/validators/userId.validation';
 import admin from '../../../middlewares/admin';
-import verifyEmail from '../../../controllers/verify-controller';
 import confirmEmaiAuth from '../../../middlewares/emailVarification.middleware';
 import followController from '../../../controllers/follow.controller';
 import resetPasswordValidation from '../../../middlewares/validators/resetpassword.validation';
@@ -47,8 +46,6 @@ router.delete('/bookmarks', [validateToken, confirmEmaiAuth], checkUserBookMarks
 
 // stats route
 router.get('/stats', saveStat, checkStats, getStats);
-
-router.get('/verify', verifyEmail);
 router.get('/allusers', [validateToken, admin, confirmEmaiAuth], UserController.getAllUsers);
 router.post('/signup', validateUser, UserController.signup);
 router.post('/login', UserController.login);
@@ -68,6 +65,6 @@ router.patch('/reset/:token', resetPasswordValidation, UserController.handlePass
 
 // reset password route handlers
 router.post('/reset', UserController.requestPasswordReset);
-router.patch('/reset/:token', resetPasswordValidation, UserController.handlePasswordReset);
+router.put('/reset/:token', resetPasswordValidation, UserController.handlePasswordReset);
 
 export default router;

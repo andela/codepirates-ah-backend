@@ -86,18 +86,18 @@ describe('/Create Profile feature', async () => {
       });
   });
 
-  it('should not update profile when there  is invalid bio', (done) => {
+  it('should  update profile with empty bio', (done) => {
     chai
       .request(server)
       .put('/api/v1/profile')
       .set('Authorization', usertoken)
-      .field('bio', 'I am ')
+      .field('bio', '')
       .field('username', 'salviosage')
       .end((error, res) => {
         expect(res).to.be.an('object');
-        expect(res.status).to.equal(400);
-        expect(res.body).to.have.keys('status', 'message');
-        expect(res.body.status).to.deep.equal('error');
+        expect(res.status).to.equal(200);
+        expect(res.body.data).to.have.property('bio');
+        expect(res.body.data).to.have.property('image');
         done();
       });
   });
