@@ -2,6 +2,7 @@ import UserService from '../services/user.service';
 import Helper from '../helpers/helper';
 import EmailHelper from '../helpers/verification-email';
 import sendPasswordResetEmailHelper from '../services/resetpassword.service';
+import errorMiddleware from '../middlewares/error.middleware';
 
 /**
  *
@@ -201,7 +202,6 @@ class UserController {
         token
       });
     } catch (error) {
-      // const { response: { body: { errors } } } = error;
       return res.status(404).send({
         status: 404,
         message: error
