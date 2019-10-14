@@ -46,17 +46,17 @@ router.patch('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkT
 router.delete('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, deleteArticleTag);
 
 
-// Highlight
-router.post('/:slug/highlight', [auth], highlight.bodyHighlightedText);
-router.delete('/highlight/:id', auth, highlight.deleteHighlightComment);
-router.get('/:articleId/highlight', auth, highlight.getHighlights);
-router.get('/:id/highlight/share/:channel', [auth, share], highlight.shareHightlight);
+// // Highlight
+// router.post('/:slug/highlight', [auth], highlight.bodyHighlightedText);
+// router.delete('/highlight/:id', auth, highlight.deleteHighlightComment);
+// router.get('/:articleId/highlight', auth, highlight.getHighlights);
+// router.get('/:id/highlight/share/:channel', [auth, share], highlight.shareHightlight);
 
-// tags
+// // tags
 
-router.post('/:articleId/tags', [auth, confirmEmailAuth], checkArticle, tagLimit, tagLength, createArticleTag);
-router.get('/:articleId/tags', checkArticle, getArticleTags);
-router.patch('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, editArticleTag);
-router.delete('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, deleteArticleTag);
+// router.post('/:articleId/tags', [auth, confirmEmailAuth], checkArticle, tagLimit, tagLength, createArticleTag);
+// router.get('/:articleId/tags', checkArticle, getArticleTags);
+// router.patch('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, editArticleTag);
+// router.delete('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, deleteArticleTag);
 
 export default router;

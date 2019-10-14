@@ -16,7 +16,6 @@ const { notifyViaEmailAndPush } = NotificationServices;
 const util = new Util();
 
 const db = models.Article;
-const viewDb = models.View;
 
 /**
  *
@@ -87,6 +86,7 @@ class Articles {
     if (!articles) {
       return res.status(200).json({ status: 200, message: 'There is no article.' });
     }
+
     const allArticles = _.map(
       articles,
       _.partialRight(_.pick, [
@@ -103,7 +103,16 @@ class Articles {
       ])
     );
 
-    allArticles.map((article) => {
+    const popularArticles = allArticles.slice(0);
+    popularArticles.sort((a, b) => b.views - a.views);
+    const mostPopular = popularArticles.slice(0, 9);
+
+    if (req.query.popular) {
+      util.setSuccess(200, 'The most popular articles on authors haven', mostPopular);
+      return util.send(res);
+    }
+
+    allArticles.map(async (article) => {
       const readTime = Helper.calculateReadTime(article.body);
       article.readtime = readTime;
       return true;
@@ -130,6 +139,7 @@ class Articles {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
     });
+
     if (!findArticle) {
       return res.status(200).json({
         status: 200,
@@ -149,34 +159,31 @@ class Articles {
       'images',
       'views'
     ]);
-    const readTime = Helper.calculateReadTime(article.body);
-    article.readtime = readTime;
-    // find ip address
-    const ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
-
-    // check if the article was viewed
-    const findViewsOfArticle = await viewDb.findOne({ where: { articleId: findArticle.id } });
 
     let viewObject = {
-      articleId: findArticle.id,
-      userId: req.auth ? req.auth.id : null,
-      IP_address: ipAddress,
-      userType: req.auth ? 'loggedInUser' : 'guest',
+      slug: findArticle.slug,
+      title: findArticle.title,
+      description: findArticle.description,
+      body: findArticle.body,
+      flagged: findArticle.flagged,
+      favorited: findArticle.favorited,
+      favoritedcount: findArticle.favoritedcount,
+      images: findArticle.images,
       views: 1
     };
-    // update or create article views
-    if (findViewsOfArticle) {
-      viewObject = { ...viewObject, views: findViewsOfArticle.views + 1 };
-      await viewDb.update(viewObject, {
+    if (findArticle) {
+      viewObject = { ...viewObject, views: findArticle.views + 1 };
+      await db.update(viewObject, {
         where: {
-          articleId: findArticle.id
+          id: findArticle.id
         },
         returing: true
       });
     } else {
-      await viewDb.create(viewObject);
+      await db.create(viewObject);
     }
-
+    const readTime = Helper.calculateReadTime(article.body);
+    article.readtime = readTime;
     if (req.auth) {
       const { description } = article;
       const readerId = req.auth.id;
@@ -186,8 +193,7 @@ class Articles {
     return res.status(200).json({
       status: 200,
       message: 'Article successfully retrieved',
-      data: article,
-      views: findViewsOfArticle.views
+      data: article
     });
   }
 
