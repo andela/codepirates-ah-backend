@@ -65,6 +65,33 @@ class UserService {
    *
    *
    * @static
+   * @param {*} user
+   * @param {*} fieldToupdate
+   * @returns {object} object
+   * @memberof articleService
+   */
+  static async searchUser(user) {
+    try {
+      const results = await database.user.findAll({
+        where: {
+          [Op.or]: [
+            { firstname: { [Op.iLike]: `%${user}%` } },
+            { lastname: { [Op.iLike]: `%${user}%` } },
+            { email: { [Op.iLike]: `%${user}%` } },
+            { username: { [Op.iLike]: `%${user}%` } },
+            { bio: { [Op.iLike]: `%${user}%` } }]
+        }
+      });
+      return results;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
    * @returns
    * @memberof UserService
    * @returns {Object} return db result object
