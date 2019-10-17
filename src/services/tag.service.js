@@ -1,9 +1,11 @@
 /* eslint-disable require-jsdoc */
+import { Sequelize } from 'sequelize';
 import models from '../models';
 
 const { Tag, Article, ArticleTag } = models;
 
 const Models = { Article, Tag };
+const { Op } = Sequelize;
 
 
 class TagService {
@@ -18,6 +20,22 @@ class TagService {
     return Models[model].findAll({
       include
     });
+  }
+
+  static async searchTag(model, tag, offset, limit, include = null) {
+    try {
+      const results = await Models[model].findAll({
+        where: {
+          [Op.or]: [{ name: { [Op.iLike]: `%${tag}%` } }]
+        },
+        offset,
+        limit,
+        include,
+      });
+      return results;
+    } catch (error) {
+      throw error;
+    }
   }
 
   static async checkItem(id, model, include = null) {

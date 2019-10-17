@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import slug from 'slug';
 import _ from 'lodash';
+import moment from 'moment';
 import uniqid from 'uniqid';
 import models from '../models';
 import Userservice from '../services/user.service';
@@ -68,14 +69,14 @@ class Articles {
   }
 
   /**
-	 *
-	 *
-	 * @static
-	 * @param {*} req
-	 * @param {*} res
-	 * @returns {object} articles
-	 * @memberof Articles
-	 */
+  *
+  *
+  * @static
+  * @param {*} req
+  * @param {*} res
+  * @returns {object} articles
+  * @memberof Articles
+  */
   static async getAllArticles(req, res) {
     const counter = await db.count();
     if (req.offset >= counter) {
@@ -89,6 +90,7 @@ class Articles {
     const allArticles = _.map(
       articles,
       _.partialRight(_.pick, [
+        'authorId',
         'slug',
         'title',
         'description',
@@ -98,15 +100,26 @@ class Articles {
         'favoritedcount',
         'flagged',
         'images',
-        'views'
+        'views',
+        'createdAt',
       ])
     );
 
-    allArticles.map((article) => {
-      const readTime = Helper.calculateReadTime(article.body);
-      article.readtime = readTime;
-      return true;
-    });
+    await Promise.all(allArticles.map(async (article) => {
+      try {
+        const userDetails = await Userservice.getOneUser(article.authorId);
+        const { username, image } = userDetails;
+        const readTime = Helper.calculateReadTime(article.body);
+        const timeAgo = moment(article.createdAt).fromNow();
+        article.readtime = readTime;
+        article.username = username;
+        article.userImage = image;
+        article.timeCreated = timeAgo;
+        return true;
+      } catch (error) {
+        console.log(error);
+      }
+    }));
     const popularArticles = allArticles.slice(0);
     popularArticles.sort((a, b) => b.views - a.views);
     const mostPopular = popularArticles.slice(0, 9);
@@ -142,6 +155,7 @@ class Articles {
         message: 'That article does not exist!'
       });
     }
+
     const article = _.pick(findArticle, [
       'slug',
       'title',
@@ -152,7 +166,7 @@ class Articles {
       'favoritedcount',
       'flagged',
       'images',
-      'views'
+      'views',
     ]);
     const readTime = Helper.calculateReadTime(article.body);
     article.readtime = readTime;

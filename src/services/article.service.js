@@ -1,7 +1,9 @@
+import { Sequelize } from 'sequelize';
 import models from '../models';
 
 const db = models.Article;
 const highlightDb = models.Highlight;
+const { Op } = Sequelize;
 
 
 /**
@@ -65,6 +67,35 @@ class articleService {
   static async updateArticle(slug, fieldToupdate) {
     try {
       const results = await db.update(fieldToupdate, { where: { slug }, returning: true });
+      return results;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} keyword
+   * @param {*} offset
+   * @param {*} limit
+   * @param {*} fieldToupdate
+   * @returns {object} object
+   * @memberof articleService
+   */
+  static async searchArticle(keyword, offset, limit) {
+    try {
+      const results = await db.findAll({
+        where: {
+          [Op.or]: [
+            { title: { [Op.iLike]: `%${keyword}%` } },
+            { description: { [Op.iLike]: `%${keyword}%` } },
+            { body: { [Op.iLike]: `%${keyword}%` } }]
+        },
+        offset,
+        limit,
+      });
       return results;
     } catch (error) {
       throw error;
