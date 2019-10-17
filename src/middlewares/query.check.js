@@ -29,7 +29,7 @@ export const searchArticleQuerybuilder = (searchQueries) => {
 
 export const checkQuery = (req, res, next) => {
   let {
-    limit, page, ...searchQueries
+    limit, page, popular, ...searchQueries
   } = req.query;
   const validQueries = ['author', 'keyword', 'tag', 'title'];
   let isValidRequest = true;

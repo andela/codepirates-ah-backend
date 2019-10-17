@@ -13,10 +13,12 @@ import Comments from './comment/comments.route';
 import notifications from './notifications/notification.route';
 import tag from './tag/tag.routes';
 import reports from './reports/reports.routes';
+import search from './search/search.routes';
 
 const router = express.Router();
 router.use('/images', express.static(path.join(__dirname, 'images')));
 
+router.use('/search', search);
 router.use('/comments', Comments);
 router.use(oauth);
 router.use('/profile', profile);

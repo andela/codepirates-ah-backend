@@ -52,4 +52,20 @@ describe('test for sharing an article', () => {
     await Article.shareArticle(req, res);
     expect(res.status).to.have.been.calledWith(200);
   });
+  it('Should throw an error when trying to share unexisting article', async () => {
+    const req = {
+      params: { slug: 'fakeslugdxxx', channel: 'twitter' },
+      auth: {
+        email: 'user@gmail.com'
+      }
+    };
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await Article.shareArticle(req, res);
+    expect(res.status).to.have.been.calledWith(404);
+  });
 });

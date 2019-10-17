@@ -5,11 +5,18 @@ import EmailHelper from '../src/helpers/verification-email';
 import Helper from '../src/helpers/helper';
 
 let usertoken;
+let userThreeToken;
 describe('test for following and unfollowing a user', () => {
   usertoken = Helper.generateToken({
     id: 3,
     email: 'user@gmail.com',
     username: 'username',
+    verified: true
+  });
+  userThreeToken = Helper.generateToken({
+    id: 5,
+    email: 'userthree@gmail.com',
+    username: 'userthree',
     verified: true
   });
 
@@ -104,6 +111,33 @@ describe('test for following and unfollowing a user', () => {
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.property('message');
         expect(res.body.message).to.contain('You cannot follow yourself');
+        done();
+      });
+  });
+  it('test for userthree following usertwo', async () => {
+    const req = {
+      params: { userId: 3 },
+      auth: {
+        email: 'userthree@gmail.com'
+      }
+    };
+    const res = {
+      status() { },
+      send() { },
+      json() { }
+    };
+    sinon.stub(res, 'status').returnsThis();
+    await followController.follow(req, res);
+    expect(res.status).to.have.been.calledWith(200);
+  });
+  it('test for getting all my followers when there are there', (done) => {
+    chai.request(server)
+      .get('/api/v1/users/profiles/followers')
+      .send({})
+      .set('Authorization', usertoken)
+      .end((error, res) => {
+        expect(res.status).to.equal(200);
+        expect(res.body).to.be.an('object');
         done();
       });
   });

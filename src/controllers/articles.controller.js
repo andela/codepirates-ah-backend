@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import slug from 'slug';
 import _ from 'lodash';
+import moment from 'moment';
 import uniqid from 'uniqid';
 import models from '../models';
 import Userservice from '../services/user.service';
@@ -23,18 +24,19 @@ const db = models.Article;
  */
 class Articles {
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {object} data
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {object} data
+	 * @memberof Articles
+	 */
   static async createArticles(req, res) {
     const userId = req.auth.id;
     const findUser = await Userservice.getOneUser(userId);
-    const images = await cloudinaryHelper.generateCloudinaryUrl(req.files);
+    // const images = await cloudinaryHelper.generateCloudinaryUrl(req.files);
+    const { images } = req.body;
 
     if (findUser) {
       const { title } = req.body;
@@ -67,14 +69,14 @@ class Articles {
   }
 
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {object} articles
-   * @memberof Articles
-   */
+  *
+  *
+  * @static
+  * @param {*} req
+  * @param {*} res
+  * @returns {object} articles
+  * @memberof Articles
+  */
   static async getAllArticles(req, res) {
     const counter = await db.count();
     if (req.offset >= counter) {
@@ -85,14 +87,47 @@ class Articles {
     if (!articles) {
       return res.status(200).json({ status: 200, message: 'There is no article.' });
     }
-    const allArticles = _.map(articles, _.partialRight(_.pick, ['slug', 'title', 'description', 'body', 'taglist', 'favorited', 'favoritedcount', 'flagged', 'images', 'views']));
+    const allArticles = _.map(
+      articles,
+      _.partialRight(_.pick, [
+        'authorId',
+        'slug',
+        'title',
+        'description',
+        'body',
+        'taglist',
+        'favorited',
+        'favoritedcount',
+        'flagged',
+        'images',
+        'views',
+        'createdAt',
+      ])
+    );
 
-    allArticles.map((article) => {
-      const readTime = Helper.calculateReadTime(article.body);
-      article.readtime = readTime;
-      return true;
-    });
+    await Promise.all(allArticles.map(async (article) => {
+      try {
+        const userDetails = await Userservice.getOneUser(article.authorId);
+        const { username, image } = userDetails;
+        const readTime = Helper.calculateReadTime(article.body);
+        const timeAgo = moment(article.createdAt).fromNow();
+        article.readtime = readTime;
+        article.username = username;
+        article.userImage = image;
+        article.timeCreated = timeAgo;
+        return true;
+      } catch (error) {
+        console.log(error);
+      }
+    }));
+    const popularArticles = allArticles.slice(0);
+    popularArticles.sort((a, b) => b.views - a.views);
+    const mostPopular = popularArticles.slice(0, 9);
 
+    if (req.query.popular) {
+      util.setSuccess(200, 'The most popular articles on authors haven', mostPopular);
+      return util.send(res);
+    }
     return res.status(200).json({
       status: 200,
       message: 'List of all articles',
@@ -102,14 +137,14 @@ class Articles {
   }
 
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {object} article
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {object} article
+	 * @memberof Articles
+	 */
   static async getOneArticle(req, res) {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
@@ -120,7 +155,19 @@ class Articles {
         message: 'That article does not exist!'
       });
     }
-    const article = _.pick(findArticle, ['slug', 'title', 'description', 'body', 'taglist', 'favorited', 'favoritedcount', 'flagged', 'images', 'views']);
+
+    const article = _.pick(findArticle, [
+      'slug',
+      'title',
+      'description',
+      'body',
+      'taglist',
+      'favorited',
+      'favoritedcount',
+      'flagged',
+      'images',
+      'views',
+    ]);
     const readTime = Helper.calculateReadTime(article.body);
     article.readtime = readTime;
     if (req.auth) {
@@ -128,6 +175,28 @@ class Articles {
       const readerId = req.auth.id;
       const item = 'article';
       await statsService.createStat({ description, item, readerId }, 'Stats');
+    }
+    let viewObject = {
+      slug: findArticle.slug,
+      title: findArticle.title,
+      description: findArticle.description,
+      body: findArticle.body,
+      flagged: findArticle.flagged,
+      favorited: findArticle.favorited,
+      favoritedcount: findArticle.favoritedcount,
+      images: findArticle.images,
+      views: 1
+    };
+    if (findArticle) {
+      viewObject = { ...viewObject, views: findArticle.views + 1 };
+      await db.update(viewObject, {
+        where: {
+          id: findArticle.id
+        },
+        returing: true
+      });
+    } else {
+      await db.create(viewObject);
     }
     return res.status(200).json({
       status: 200,
@@ -137,14 +206,14 @@ class Articles {
   }
 
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {object} message
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {object} message
+	 * @memberof Articles
+	 */
   static async deleteArticle(req, res) {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
@@ -171,14 +240,14 @@ class Articles {
   }
 
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {Object} updated article details
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {Object} updated article details
+	 * @memberof Articles
+	 */
   static async UpdateArticle(req, res) {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
@@ -207,14 +276,14 @@ class Articles {
   }
 
   /**
-   *
-   *
-   * @static
-   * @param {*} req
-   * @param {*} res
-   * @returns {Object} share article over email and social media channelds
-   * @memberof Articles
-   */
+	 *
+	 *
+	 * @static
+	 * @param {*} req
+	 * @param {*} res
+	 * @returns {Object} share article over email and social media channelds
+	 * @memberof Articles
+	 */
   static async shareArticle(req, res) {
     const article = await db.findOne({
       where: { slug: req.params.slug }

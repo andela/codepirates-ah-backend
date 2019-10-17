@@ -151,7 +151,7 @@ class LikesController {
         return util.send(res);
       }
     } catch (error) {
-      util.setError(400, 'server error contact admin');
+      util.setError(500, 'server error contact admin');
       return util.send(res);
     }
   }
@@ -174,7 +174,7 @@ class LikesController {
         return util.send(res);
       }
     } catch (error) {
-      util.setError(400, 'server error contact admin');
+      util.setError(500, 'server error contact admin');
       return util.send(res);
     }
   }

@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get('/', validateToken, confirmEmaiAuth, ProfileController.getProfile);
 router.get('/authors', validateToken, confirmEmaiAuth, ProfileController.getProfiles);
-router.get('/:username', validateToken, confirmEmaiAuth, ProfileController.getProfile);
+router.get('/:username', ProfileController.getProfile);
 router.put('/', [validateToken, confirmEmaiAuth, connectMulti, profileVAlidator], ProfileController.updateProfile);
 
 
