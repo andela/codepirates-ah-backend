@@ -117,7 +117,7 @@ class Articles {
         article.timeCreated = timeAgo;
         return true;
       } catch (error) {
-        console.log(error);
+        throw (error);
       }
     }));
     const popularArticles = allArticles.slice(0);
@@ -168,8 +168,10 @@ class Articles {
       'images',
       'views',
     ]);
+    const timeAgo = moment(article.createdAt).fromNow();
     const readTime = Helper.calculateReadTime(article.body);
     article.readtime = readTime;
+    article.createdAt = timeAgo;
     if (req.auth) {
       const { description } = article;
       const readerId = req.auth.id;
