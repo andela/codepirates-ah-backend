@@ -24,14 +24,14 @@ const db = models.Article;
  */
 class Articles {
   /**
-	 *
-	 *
-	 * @static
-	 * @param {*} req
-	 * @param {*} res
-	 * @returns {object} data
-	 * @memberof Articles
-	 */
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} data
+   * @memberof Articles
+   */
   static async createArticles(req, res) {
     const userId = req.auth.id;
     const findUser = await Userservice.getOneUser(userId);
@@ -69,24 +69,31 @@ class Articles {
   }
 
   /**
-  *
-  *
-  * @static
-  * @param {*} req
-  * @param {*} res
-  * @returns {object} articles
-  * @memberof Articles
-  */
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} articles
+   * @memberof Articles
+   */
   static async getAllArticles(req, res) {
     const counter = await db.count();
     if (req.offset >= counter) {
       req.offset = 0;
     }
     const { searchQueries, offset, limit } = req;
-    const articles = await articleService.getAllArticles(offset, limit, searchQueries);
+    const articles = await articleService.getAllArticles(
+      offset,
+      limit,
+      searchQueries
+    );
     if (!articles) {
-      return res.status(200).json({ status: 200, message: 'There is no article.' });
+      return res
+        .status(200)
+        .json({ status: 200, message: 'There is no article.' });
     }
+
     const allArticles = _.map(
       articles,
       _.partialRight(_.pick, [
@@ -101,7 +108,7 @@ class Articles {
         'flagged',
         'images',
         'views',
-        'createdAt',
+        'createdAt'
       ])
     );
 
@@ -125,7 +132,11 @@ class Articles {
     const mostPopular = popularArticles.slice(0, 9);
 
     if (req.query.popular) {
-      util.setSuccess(200, 'The most popular articles on authors haven', mostPopular);
+      util.setSuccess(
+        200,
+        'The most popular articles on authors haven',
+        mostPopular
+      );
       return util.send(res);
     }
     return res.status(200).json({
@@ -137,14 +148,39 @@ class Articles {
   }
 
   /**
-	 *
-	 *
-	 * @static
-	 * @param {*} req
-	 * @param {*} res
-	 * @returns {object} article
-	 * @memberof Articles
-	 */
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} articles
+   * @memberof Articles
+   */
+  static async SpecificUserArticles(req, res) {
+    const findArticles = await db.findAll({
+      where: { authorId: req.auth.id }
+    });
+    if (!findArticles) {
+      return res.status(200).send({
+        message: 'no articles'
+      });
+    }
+    if (findArticles) {
+      return res.status(200).send({
+        data: findArticles
+      });
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} article
+   * @memberof Articles
+   */
   static async getOneArticle(req, res) {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
@@ -166,7 +202,7 @@ class Articles {
       'favoritedcount',
       'flagged',
       'images',
-      'views',
+      'views'
     ]);
     const timeAgo = moment(article.createdAt).fromNow();
     const readTime = Helper.calculateReadTime(article.body);
@@ -208,14 +244,14 @@ class Articles {
   }
 
   /**
-	 *
-	 *
-	 * @static
-	 * @param {*} req
-	 * @param {*} res
-	 * @returns {object} message
-	 * @memberof Articles
-	 */
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} message
+   * @memberof Articles
+   */
   static async deleteArticle(req, res) {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
@@ -229,7 +265,8 @@ class Articles {
     if (req.auth.id !== findArticle.authorId) {
       return res.status(403).json({
         status: 403,
-        message: 'Sorry you can not DELETE an article that does not belong to you.'
+        message:
+          'Sorry you can not DELETE an article that does not belong to you.'
       });
     }
     await db.destroy({
@@ -242,25 +279,28 @@ class Articles {
   }
 
   /**
-	 *
-	 *
-	 * @static
-	 * @param {*} req
-	 * @param {*} res
-	 * @returns {Object} updated article details
-	 * @memberof Articles
-	 */
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} updated article details
+   * @memberof Articles
+   */
   static async UpdateArticle(req, res) {
     const findArticle = await db.findOne({
       where: { slug: req.params.slug }
     });
     if (!findArticle) {
-      return res.status(200).json({ status: 200, message: 'That article does not exist' });
+      return res
+        .status(200)
+        .json({ status: 200, message: 'That article does not exist' });
     }
     if (req.auth.id !== findArticle.authorId) {
       return res.status(403).json({
         status: 403,
-        message: 'Sorry you can not UPDATE an article that does not belong to you.'
+        message:
+          'Sorry you can not UPDATE an article that does not belong to you.'
       });
     }
     const { title, body, description } = req.body;
@@ -278,14 +318,14 @@ class Articles {
   }
 
   /**
-	 *
-	 *
-	 * @static
-	 * @param {*} req
-	 * @param {*} res
-	 * @returns {Object} share article over email and social media channelds
-	 * @memberof Articles
-	 */
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} share article over email and social media channelds
+   * @memberof Articles
+   */
   static async shareArticle(req, res) {
     const article = await db.findOne({
       where: { slug: req.params.slug }
@@ -299,15 +339,21 @@ class Articles {
     const url = `${location}/articles/${req.params.slug}`;
     switch (req.params.channel) {
       case 'facebook':
-        await OpenUrlHelper.openUrl(`https:www.facebook.com/sharer/sharer.php?u=${url}`);
+        await OpenUrlHelper.openUrl(
+          `https:www.facebook.com/sharer/sharer.php?u=${url}`
+        );
         util.setSuccess(200, `Article shared to ${req.params.channel}`, url);
         return util.send(res);
       case 'twitter':
-        await OpenUrlHelper.openUrl(`https://twitter.com/intent/tweet?url=${url}`);
+        await OpenUrlHelper.openUrl(
+          `https://twitter.com/intent/tweet?url=${url}`
+        );
         util.setSuccess(200, `Article shared to ${req.params.channel}`, url);
         return util.send(res);
       case 'mail':
-        await OpenUrlHelper.openUrl(`mailto:?subject=${article.title}&body=${url}`);
+        await OpenUrlHelper.openUrl(
+          `mailto:?subject=${article.title}&body=${url}`
+        );
         util.setSuccess(200, `Article shared to ${req.params.channel}`, url);
         return util.send(res);
       default:
