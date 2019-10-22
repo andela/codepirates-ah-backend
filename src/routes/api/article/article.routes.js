@@ -16,46 +16,122 @@ import StatsWare from '../../../middlewares/stats';
 
 const router = express.Router();
 const {
-  checkArticle, checkTagName, tagLength, tagLimit
+ checkArticle, checkTagName, tagLength, tagLimit 
 } = TagWare;
 const {
-  createArticleTag, getArticleTags, editArticleTag, deleteArticleTag
+  createArticleTag,
+  getArticleTags,
+  editArticleTag,
+  deleteArticleTag
 } = tagController;
 
-router.post('/:articleId/favorite', [auth, confirmEmailAuth, validateId], FavoritesController.createOrRemoveFavorite);
-router.post('/', [auth, confirmEmailAuth], imageUpload.array('images', 10), validate(schema.articleSchema), articleController.createArticles);
+router.post(
+  '/:articleId/favorite',
+  [auth, confirmEmailAuth, validateId],
+  FavoritesController.createOrRemoveFavorite
+);
+router.post(
+  '/',
+  [auth, confirmEmailAuth],
+  imageUpload.array('images', 10),
+  validate(schema.articleSchema),
+  articleController.createArticles
+);
 router.get('/', checkQuery, articleController.getAllArticles);
+router.get(
+  '/mine',
+  [auth],
+  checkQuery,
+  articleController.SpecificUserArticles
+);
 router.get('/:slug', StatsWare.saveStat, articleController.getOneArticle);
-router.delete('/:slug', [auth, confirmEmailAuth], articleController.deleteArticle);
-router.patch('/:slug', [auth, confirmEmailAuth], imageUpload.array('images', 10), articleController.UpdateArticle);
-router.post('/:slug/share/:channel', [auth, confirmEmailAuth], articleController.shareArticle);
-
-
-// Highlight
-router.post('/:slug/highlight', [auth], highlight.bodyHighlightedText);
-router.delete('/highlight/:id', auth, highlight.deleteHighlightComment);
-router.get('/:articleId/highlight', auth, highlight.getHighlights);
-router.get('/:id/highlight/share/:channel', [auth, share], highlight.shareHightlight);
-
-// tags
-
-router.post('/:articleId/tags', [auth, confirmEmailAuth], checkArticle, tagLimit, tagLength, createArticleTag);
-router.get('/:articleId/tags', checkArticle, getArticleTags);
-router.patch('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, editArticleTag);
-router.delete('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, deleteArticleTag);
-
+router.delete(
+  '/:slug',
+  [auth, confirmEmailAuth],
+  articleController.deleteArticle
+);
+router.patch(
+  '/:slug',
+  [auth, confirmEmailAuth],
+  imageUpload.array('images', 10),
+  articleController.UpdateArticle
+);
+router.post(
+  '/:slug/share/:channel',
+  [auth, confirmEmailAuth],
+  articleController.shareArticle
+);
 
 // Highlight
 router.post('/:slug/highlight', [auth], highlight.bodyHighlightedText);
 router.delete('/highlight/:id', auth, highlight.deleteHighlightComment);
 router.get('/:articleId/highlight', auth, highlight.getHighlights);
-router.get('/:id/highlight/share/:channel', [auth, share], highlight.shareHightlight);
+router.get(
+  '/:id/highlight/share/:channel',
+  [auth, share],
+  highlight.shareHightlight
+);
 
 // tags
 
-router.post('/:articleId/tags', [auth, confirmEmailAuth], checkArticle, tagLimit, tagLength, createArticleTag);
+router.post(
+  '/:articleId/tags',
+  [auth, confirmEmailAuth],
+  checkArticle,
+  tagLimit,
+  tagLength,
+  createArticleTag
+);
 router.get('/:articleId/tags', checkArticle, getArticleTags);
-router.patch('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, editArticleTag);
-router.delete('/:articleId/:name', [auth, confirmEmailAuth], checkArticle, checkTagName, deleteArticleTag);
+router.patch(
+  '/:articleId/:name',
+  [auth, confirmEmailAuth],
+  checkArticle,
+  checkTagName,
+  editArticleTag
+);
+router.delete(
+  '/:articleId/:name',
+  [auth, confirmEmailAuth],
+  checkArticle,
+  checkTagName,
+  deleteArticleTag
+);
+
+// Highlight
+router.post('/:slug/highlight', [auth], highlight.bodyHighlightedText);
+router.delete('/highlight/:id', auth, highlight.deleteHighlightComment);
+router.get('/:articleId/highlight', auth, highlight.getHighlights);
+router.get(
+  '/:id/highlight/share/:channel',
+  [auth, share],
+  highlight.shareHightlight
+);
+
+// tags
+
+router.post(
+  '/:articleId/tags',
+  [auth, confirmEmailAuth],
+  checkArticle,
+  tagLimit,
+  tagLength,
+  createArticleTag
+);
+router.get('/:articleId/tags', checkArticle, getArticleTags);
+router.patch(
+  '/:articleId/:name',
+  [auth, confirmEmailAuth],
+  checkArticle,
+  checkTagName,
+  editArticleTag
+);
+router.delete(
+  '/:articleId/:name',
+  [auth, confirmEmailAuth],
+  checkArticle,
+  checkTagName,
+  deleteArticleTag
+);
 
 export default router;

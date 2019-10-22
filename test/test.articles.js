@@ -12,7 +12,6 @@ const usertoken = Helper.generateToken({
   username: 'user',
   verified: false
 });
-
 describe('Articles', () => {
   it('throw error when fields are missing', (done) => {
     chai
@@ -20,7 +19,11 @@ describe('Articles', () => {
       .post('/api/v1/articles')
       .set('Content-Type', 'application/json')
       .set('authorization', usertoken)
-      .attach('images', fs.readFileSync(`${__dirname}/mock/pic.jpeg`), 'pic.jpeg')
+      .attach(
+        'images',
+        fs.readFileSync(`${__dirname}/mock/pic.jpeg`),
+        'pic.jpeg'
+      )
       .end((err, res) => {
         expect(res.status).to.be.deep.equal(400);
         expect(res.body).to.have.deep.property('status');
@@ -36,13 +39,13 @@ describe('Articles', () => {
         files: 'nshuti',
         title: 'title1',
         description: 'hello world',
-        body: 'hello world',
+        body: 'hello world'
       }
     };
     const res = {
-      status() { },
-      send() { },
-      json() { }
+      status() {},
+      send() {},
+      json() {}
     };
     sinon.stub(res, 'status').returnsThis();
     sinon.stub(cloudinary, 'generateCloudinaryUrl').returns([]);
@@ -55,7 +58,10 @@ describe('Articles', () => {
       .get('/api/v1/articles')
       .end((err, res) => {
         expect(res.status).to.be.deep.equal(200);
-        expect(res.body).to.have.deep.property('message', 'List of all articles');
+        expect(res.body).to.have.deep.property(
+          'message',
+          'List of all articles'
+        );
         done();
       });
   });
@@ -65,7 +71,30 @@ describe('Articles', () => {
       .get('/api/v1/articles/fakeslug')
       .end((err, res) => {
         expect(res.status).to.be.deep.equal(200);
-        expect(res.body).to.have.deep.property('message', 'Article successfully retrieved');
+        expect(res.body).to.have.deep.property(
+          'message',
+          'Article successfully retrieved'
+        );
+        done();
+      });
+  });
+  it('view list of articles for a specific user ', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/articles/mine')
+      .set('x-access-token', usertoken)
+      .end((err, res) => {
+        expect(res.status).to.be.deep.equal(200);
+        done();
+      });
+  });
+  it('should return resource not found message if endpoint does not exist', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/articles/user/articless')
+      .end((error, res) => {
+        expect(res.status).to.be.equal(404);
+        expect(res.body).to.have.deep.property('error', 'Resource not found');
         done();
       });
   });
