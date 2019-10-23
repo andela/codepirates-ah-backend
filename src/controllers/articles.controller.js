@@ -8,7 +8,7 @@ import Userservice from '../services/user.service';
 import articleService from '../services/article.service';
 import Helper from '../helpers/helper';
 import NotificationServices from '../services/notification.service';
-import cloudinaryHelper from '../helpers/cloudinaryHelper';
+// import cloudinaryHelper from '../helpers/cloudinaryHelper';
 import OpenUrlHelper from '../helpers/share.article.helper';
 import Util from '../helpers/util';
 import statsService from '../services/db.service';
