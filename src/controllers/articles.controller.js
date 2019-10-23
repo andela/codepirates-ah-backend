@@ -112,21 +112,23 @@ class Articles {
       ])
     );
 
-    await Promise.all(allArticles.map(async (article) => {
-      try {
-        const userDetails = await Userservice.getOneUser(article.authorId);
-        const { username, image } = userDetails;
-        const readTime = Helper.calculateReadTime(article.body);
-        const timeAgo = moment(article.createdAt).fromNow();
-        article.readtime = readTime;
-        article.username = username;
-        article.userImage = image;
-        article.timeCreated = timeAgo;
-        return true;
-      } catch (error) {
-        throw (error);
-      }
-    }));
+    await Promise.all(
+      allArticles.map(async (article) => {
+        try {
+          const userDetails = await Userservice.getOneUser(article.authorId);
+          const { username, image } = userDetails;
+          const readTime = Helper.calculateReadTime(article.body);
+          const timeAgo = moment(article.createdAt).fromNow();
+          article.readtime = readTime;
+          article.username = username;
+          article.userImage = image;
+          article.timeCreated = timeAgo;
+          return true;
+        } catch (error) {
+          throw error;
+        }
+      })
+    );
     const popularArticles = allArticles.slice(0);
     popularArticles.sort((a, b) => b.views - a.views);
     const mostPopular = popularArticles.slice(0, 9);
@@ -160,16 +162,50 @@ class Articles {
     const findArticles = await db.findAll({
       where: { authorId: req.auth.id }
     });
+
     if (!findArticles) {
       return res.status(200).send({
         message: 'no articles'
       });
     }
-    if (findArticles) {
-      return res.status(200).send({
-        data: findArticles
-      });
-    }
+    const FoundArticles = _.map(
+      findArticles,
+      _.partialRight(_.pick, [
+        'authorId',
+        'slug',
+        'title',
+        'description',
+        'body',
+        'taglist',
+        'favorited',
+        'favoritedcount',
+        'flagged',
+        'images',
+        'views',
+        'createdAt'
+      ])
+    );
+    await Promise.all(
+      FoundArticles.map(async (value) => {
+        try {
+          const userDetails = await Userservice.getOneUser(value.authorId);
+          const { username, image } = userDetails;
+          const readTime = Helper.calculateReadTime(value.body);
+          const timeAgo = moment(value.createdAt).fromNow();
+          value.readtime = readTime;
+          value.username = username;
+          value.userImage = image;
+          value.timeCreated = timeAgo;
+          return true;
+        } catch (error) {
+          throw error;
+        }
+      })
+    );
+
+    return res.status(200).send({
+      data: FoundArticles
+    });
   }
 
   /**
