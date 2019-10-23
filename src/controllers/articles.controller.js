@@ -12,6 +12,8 @@ import cloudinaryHelper from '../helpers/cloudinaryHelper';
 import OpenUrlHelper from '../helpers/share.article.helper';
 import Util from '../helpers/util';
 import statsService from '../services/db.service';
+import likeService from '../services/likes.service';
+import RateService from '../services/rate.service';
 
 const { notifyViaEmailAndPush } = NotificationServices;
 const util = new Util();
@@ -116,13 +118,27 @@ class Articles {
       allArticles.map(async (article) => {
         try {
           const userDetails = await Userservice.getOneUser(article.authorId);
-          const { username, image } = userDetails;
+          const {
+            username, firstname, lastname, image
+          } = userDetails;
+          const user = {
+            username,
+            firstname,
+            lastname,
+            image
+          };
+          const rating = await RateService.getArticleRatingStatistic(article.slug);
+          let claps = await likeService.getAllAClaps(req.params.Article);
+          claps = Object.values(claps)[0];
           const readTime = Helper.calculateReadTime(article.body);
           const timeAgo = moment(article.createdAt).fromNow();
           article.readtime = readTime;
           article.username = username;
           article.userImage = image;
           article.timeCreated = timeAgo;
+          article.claps = claps;
+          article.rating = rating.dataValues.rating;
+          article.author = user;
           return true;
         } catch (error) {
           throw error;
@@ -229,6 +245,7 @@ class Articles {
     }
 
     const article = _.pick(findArticle, [
+      'authorId',
       'slug',
       'title',
       'description',
@@ -240,10 +257,26 @@ class Articles {
       'images',
       'views'
     ]);
+    const userDetails = await Userservice.getOneUser(article.authorId);
+    const {
+      username, firstname, lastname, image
+    } = userDetails;
+    const user = {
+      username,
+      firstname,
+      lastname,
+      image
+    };
     const timeAgo = moment(article.createdAt).fromNow();
     const readTime = Helper.calculateReadTime(article.body);
+    const rating = await RateService.getArticleRatingStatistic(article.slug);
+    let claps = await likeService.getAllAClaps(req.params.Article);
+    claps = Object.values(claps)[0];
     article.readtime = readTime;
     article.createdAt = timeAgo;
+    article.rating = rating.dataValues.rating;
+    article.claps = claps;
+    article.author = user;
     if (req.auth) {
       const { description } = article;
       const readerId = req.auth.id;
@@ -293,25 +326,18 @@ class Articles {
       where: { slug: req.params.slug }
     });
     if (!findArticle) {
-      return res.status(200).json({
-        status: 200,
-        message: 'That article does not exist!'
-      });
+      util.setError(404, 'That article does not exist!');
+      return util.send(res);
     }
     if (req.auth.id !== findArticle.authorId) {
-      return res.status(403).json({
-        status: 403,
-        message:
-          'Sorry you can not DELETE an article that does not belong to you.'
-      });
+      util.setError(403, 'Sorry you can not DELETE an article that does not belong to you.');
+      return util.send(res);
     }
     await db.destroy({
       where: { slug: req.params.slug }
     });
-    return res.status(200).json({
-      status: 200,
-      message: 'Article was deleted succussfully!'
-    });
+    util.setSuccess(200, 'Article was deleted succussfully!');
+    return util.send(res);
   }
 
   /**
@@ -328,16 +354,12 @@ class Articles {
       where: { slug: req.params.slug }
     });
     if (!findArticle) {
-      return res
-        .status(200)
-        .json({ status: 200, message: 'That article does not exist' });
+      util.setError(404, 'That article does not exist!');
+      return util.send(res);
     }
     if (req.auth.id !== findArticle.authorId) {
-      return res.status(403).json({
-        status: 403,
-        message:
-          'Sorry you can not UPDATE an article that does not belong to you.'
-      });
+      util.setError(401, 'Sorry you can not UPDATE an article that does not belong to you.');
+      return util.send(res);
     }
     const { title, body, description } = req.body;
     const updatedArticle = await articleService.updateArticle(req.params.slug, {
@@ -347,10 +369,8 @@ class Articles {
       description,
       taglist: req.body.taglist.split(' ')
     });
-    return res.status(200).json({
-      status: 200,
-      updatedArticle
-    });
+    util.setSuccess(200, 'Article Updated successfully!', updatedArticle);
+    return util.send(res);
   }
 
   /**
