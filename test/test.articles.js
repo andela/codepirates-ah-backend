@@ -98,4 +98,14 @@ describe('Articles', () => {
         done();
       });
   });
+  it('should return resource not found message if endpoint does not exist', (done) => {
+    chai
+      .request(server)
+      .get('/api/v1/articles/user/articl')
+      .end((error, res) => {
+        expect(res.status).to.be.equal(404);
+        expect(res.body).to.have.deep.property('error', 'Resource not found');
+        done();
+      });
+  });
 });
