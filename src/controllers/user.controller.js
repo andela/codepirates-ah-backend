@@ -412,7 +412,7 @@ class UserController {
 
       const token = await Helper.generateToken(payload, (60 * 60));
       // create password reset link
-      const resetUrl = `${process.env.FRONT_END_URL}/reset?token=${token}`;
+      const resetUrl = `${process.env.FRONT_END_URL}/resetpassword?token=${token}`;
 
       // send email to user email address
       const emailSent = await sendPasswordResetEmailHelper.sendEmail(user.email, user.username, resetUrl);
