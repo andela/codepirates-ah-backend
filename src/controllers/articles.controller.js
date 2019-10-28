@@ -128,7 +128,7 @@ class Articles {
             image
           };
           const rating = await RateService.getArticleRatingStatistic(article.slug);
-          let claps = await likeService.getAllAClaps(req.params.Article);
+          let claps = await likeService.getAllAClaps(article.slug);
           claps = Object.values(claps)[0];
           const readTime = Helper.calculateReadTime(article.body);
           const timeAgo = moment(article.createdAt).fromNow();

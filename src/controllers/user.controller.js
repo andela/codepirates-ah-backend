@@ -54,13 +54,14 @@ class UserController {
         email: theUser.email,
         username: theUser.username,
         role: theUser.role,
-        verified: theUser.verified
+        verified: theUser.verified,
+        image: theUser.image
       };
       const token = await Helper.generateToken(payload);
       return res.status(200).send({
         status: 200,
         message: `welcome back ${theUser.firstname}`,
-        token
+        token,
       });
     } catch (error) {
       return res.status(404).send({
@@ -120,7 +121,8 @@ class UserController {
         id: createdUser.id,
         email: createdUser.email,
         role: createdUser.role,
-        verified: createdUser.verified
+        verified: createdUser.verified,
+        image: createdUser.image
       };
       const token = await Helper.generateToken(payload);
       const verifyUrl = `${process.env.FRONT_END_URL}/verify?token=${token}`;
