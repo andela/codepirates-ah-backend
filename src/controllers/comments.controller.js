@@ -1,3 +1,5 @@
+import moment from 'moment';
+import _ from 'lodash';
 import commentsService from '../services/comments.service';
 import UserService from '../services/user.service';
 import models from '../models';
@@ -5,7 +7,6 @@ import Helper from '../helpers/helper';
 import NotificationServices from '../services/notification.service';
 import Util from '../helpers/util';
 import StatsService from '../services/db.service';
-
 
 const util = new Util();
 
@@ -41,7 +42,7 @@ class Comments {
         articleSlug: getArticle.slug,
         userId: req.auth.id,
         body: req.body.body,
-        parentCommentId: req.body.parentCommentId,
+        parentCommentId: req.body.parentCommentId
       };
       const createdComment = await commentsService.addComment(comment);
       await notifyUsersWhoFavorited(req, res, getArticle.id, req.params.slug);
@@ -123,6 +124,119 @@ class Comments {
    * @static
    * @param {*} req
    * @param {*} res
+   * @returns {object} data
+   * @memberof Comments
+   */
+  static async getAllCommentsOfArticle(req, res) {
+    const { offset, limit } = req.query;
+    const { articleSlug } = req.params;
+    const comments = await CommentsDb.findAll({
+      where: { articleSlug },
+      order: [['createdAt', 'DESC']],
+      offset,
+      limit
+    });
+    if (comments.length === 0) {
+      await util.setError(404, 'No comments found');
+      return util.send(res);
+    }
+    const allComments = _.map(
+      comments,
+      _.partialRight(_.pick, [
+        'id',
+        'userId',
+        'articleSlug',
+        'body',
+        'parentCommentId',
+        'commentRevisions',
+        'likesCount',
+        'likeInfo',
+        'createdAt'
+      ])
+    );
+    await Promise.all(
+      allComments.map(async (comment) => {
+        try {
+          const userDetails = await UserService.getOneUser(comment.userId);
+          const { username, image } = userDetails;
+          const timeAgo = moment(comment.createdAt).fromNow();
+          comment.username = username;
+          comment.userImage = image;
+          comment.timeCreated = timeAgo;
+          return true;
+        } catch (error) {
+          throw error;
+        }
+      })
+    );
+    await util.setSuccess(200, 'All comments successfully retrieved', allComments);
+    return util.send(res);
+  }
+
+  // delete a comment of a particular article.
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {object} data
+   * @memberof Comments
+   */
+  static async deleteCommentOfAnArticle(req, res) {
+    const userId = req.auth.id;
+    const getComment = await CommentsDb.findOne({ where: { id: req.params.id } });
+    if (!getComment) {
+      await util.setError(404, 'That article comment does not exit');
+      return util.send(res);
+    }
+    const commentedUser = getComment.dataValues.userId;
+    if (userId !== commentedUser) {
+      await util.setError(403, 'Sorry, you are not allowed to delete this comment');
+      return util.send(res);
+    }
+    await commentsService.deleteComment(req.params.id);
+    await util.setSuccess(200, 'Comment was successfully deleted');
+    return util.send(res);
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @returns {Object} return comment updation message
+   * @memberof UserController
+   */
+  static async updateParticularComment(req, res) {
+    const userId = req.auth.id;
+    const getComment = await CommentsDb.findOne({ where: { id: req.params.id } });
+    if (!getComment) {
+      await util.setError(404, 'That article comment does not exit');
+      return util.send(res);
+    }
+    const commentedUser = getComment.dataValues.userId;
+    if (userId !== commentedUser) {
+      await util.setError(403, 'Sorry, you are not allowed to update this comment');
+      return util.send(res);
+    }
+    const { body } = req.body;
+    const commentRevisions = getComment.dataValues.body;
+    const updateComment = await commentsService.updateComment(req.params.id, {
+      body,
+      commentRevisions
+    });
+    await util.setSuccess(200, 'Update is successfully', updateComment);
+    return util.send(res);
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
    * @returns {Object} return comment updation message
    * @memberof UserController
    */
@@ -142,7 +256,10 @@ class Comments {
 
     const { body } = req.body;
     const commentRevisions = getComment.dataValues.body;
-    const updateComment = await commentsService.updateComment(req.params.id, { body, commentRevisions });
+    const updateComment = await commentsService.updateComment(req.params.id, {
+      body,
+      commentRevisions
+    });
     await util.setSuccess(200, 'Update is successfully', updateComment);
     return util.send(res);
   }
