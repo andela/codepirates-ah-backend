@@ -364,12 +364,12 @@ class Articles {
       util.setError(401, 'Sorry you can not UPDATE an article that does not belong to you.');
       return util.send(res);
     }
-    const { title, body, description } = req.body;
+    const { title, body, description, images, } = req.body;
     const updatedArticle = await articleService.updateArticle(req.params.slug, {
-      slug: `${slug(title)}-${uniqid()}`,
       title,
       body,
       description,
+      images,
       taglist: req.body.taglist.split(' ')
     });
     util.setSuccess(200, 'Article Updated successfully!', updatedArticle);
