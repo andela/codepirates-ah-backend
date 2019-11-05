@@ -1,7 +1,13 @@
 /* eslint-disable require-jsdoc */
+import moment from 'moment';
+import _ from 'lodash';
 import Util from '../helpers/util';
 import dbService from '../services/data.service';
 import models from '../models';
+import Userservice from '../services/user.service';
+import Helper from '../helpers/helper';
+
+const db = models.Article;
 
 const {
   checkItem, ensureItem, checkItems, deleteItem, updateItem
@@ -100,10 +106,55 @@ class BookMarkController {
 
   static async getUserBookMarks(req, res) {
     const bookmarks = await checkItems({ userId: req.auth.id });
-    return res.status(200).json({
-      message: `${bookmarks.length} bookmarks found`,
-      data: bookmarks
-    });
+    const findbookmarks = _.map(
+      bookmarks,
+      _.partialRight(_.pick, [
+        'id',
+        'articleId',
+        'userId',
+        'name',
+        'collection',
+        'createdAt',
+        'updatedAt',
+      ])
+    );
+    await Promise.all(
+      findbookmarks.map(async (bookmark) => {
+        try {
+          const articleDetail = await db.findOne({
+            where: { id: bookmark.articleId }
+          });
+          const {
+            description, title, slug
+          } = articleDetail;
+          const anArticle = {
+            description, title, slug
+          };
+          const readTime = Helper.calculateReadTime(articleDetail.body);
+          const timeAgo = moment(articleDetail.createdAt).fromNow();
+          const userDetails = await Userservice.getOneUser(bookmark.userId);
+          const {
+            username, firstname, lastname, image
+          } = userDetails;
+          const user = {
+            username,
+            firstname,
+            lastname,
+            image
+          };
+          anArticle.readtime = readTime;
+          anArticle.timeCreated = timeAgo;
+          anArticle.author = user;
+          bookmark.article = anArticle;
+          return true;
+        } catch (error) {
+          util.setError(404, 'error occured contact administration');
+          return util;
+        }
+      })
+    );
+    util.setSuccess(200, `${bookmarks.length} bookmarks found`, findbookmarks);
+    return util.send(res);
   }
 
   static async getUserBookMark(req, res) {
