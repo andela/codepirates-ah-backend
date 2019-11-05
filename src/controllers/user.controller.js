@@ -62,6 +62,7 @@ class UserController {
         status: 200,
         message: `welcome back ${theUser.firstname}`,
         token,
+        profile: theUser,
       });
     } catch (error) {
       return res.status(404).send({
