@@ -71,4 +71,16 @@ describe('test for opting in and out of notifications', () => {
         done();
       });
   });
+  it('test for getting user notifications', (done) => {
+    chai.request(server)
+      .get('/api/v1/notifications/')
+      .set('Authorization', usertoken)
+      .end((error, res) => {
+        expect(res.status).to.equal(404);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('message');
+        expect(res.body.message).to.contain('You currently do not have notifications');
+        done();
+      });
+  });
 });
