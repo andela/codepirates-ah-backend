@@ -128,7 +128,9 @@ class Articles {
             lastname,
             image
           };
-          const rating = await RateService.getArticleRatingStatistic(article.slug);
+          const rating = await RateService.getArticleRatingStatistic(
+            article.slug
+          );
           let claps = await likeService.getAllAClaps(article.slug);
           claps = Object.values(claps)[0];
           const readTime = Helper.calculateReadTime(article.body);
@@ -333,7 +335,10 @@ class Articles {
       return util.send(res);
     }
     if (req.auth.id !== findArticle.authorId) {
-      util.setError(403, 'Sorry you can not DELETE an article that does not belong to you.');
+      util.setError(
+        403,
+        'Sorry you can not DELETE an article that does not belong to you.'
+      );
       return util.send(res);
     }
     await db.destroy({
@@ -361,10 +366,15 @@ class Articles {
       return util.send(res);
     }
     if (req.auth.id !== findArticle.authorId) {
-      util.setError(401, 'Sorry you can not UPDATE an article that does not belong to you.');
+      util.setError(
+        401,
+        'Sorry you can not UPDATE an article that does not belong to you.'
+      );
       return util.send(res);
     }
-    const { title, body, description, images, } = req.body;
+    const {
+      title, body, description, images
+    } = req.body;
     const updatedArticle = await articleService.updateArticle(req.params.slug, {
       title,
       body,
