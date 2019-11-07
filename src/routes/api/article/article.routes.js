@@ -50,7 +50,7 @@ router.delete(
   [auth, confirmEmailAuth],
   articleController.deleteArticle
 );
-router.patch(
+router.put(
   '/:slug',
   [auth, confirmEmailAuth],
   imageUpload.array('images', 10),
