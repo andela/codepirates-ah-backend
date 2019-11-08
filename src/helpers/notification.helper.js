@@ -1,6 +1,5 @@
 import models from '../models/index';
 
-
 export default async (req, res, next, userColumn) => {
   const userDetails = await models.user.findOne({ where: { email: req.auth.email } });
   const { id } = userDetails;
