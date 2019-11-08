@@ -41,14 +41,15 @@ class Articles {
     const { images } = req.body;
 
     if (findUser) {
-      const { title } = req.body;
+      const { title, } = req.body;
       const article = {
         slug: `${slug(title)}-${uniqid()}`,
         title,
         description: req.body.description,
         body: req.body.body,
         authorId: req.auth.id,
-        images
+        images,
+        taglist: req.body.taglist
       };
       const createdArticle = await articleService.addArticle(article);
       await notifyViaEmailAndPush(req, res, createdArticle.slug);
@@ -64,7 +65,8 @@ class Articles {
           favoritedcount: createdArticle.favoritedcount,
           images: createdArticle.images,
           createdAt: createdArticle.createdAt,
-          updatedAt: createdArticle.updatedAt
+          updatedAt: createdArticle.updatedAt,
+          taglist: createdArticle.taglist
         }
       });
     }
