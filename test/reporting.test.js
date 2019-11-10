@@ -125,20 +125,6 @@ describe('/Report an article', () => {
         done();
       });
   });
-
-  it('admin should see if  there is no report made yet', (done) => {
-    chai
-      .request(server)
-      .get('/api/v1/reports/all')
-      .set('Authorization', admintoken)
-      .end((error, res) => {
-        expect(res).to.be.an('object');
-        expect(res.status).to.equal(404);
-        expect(res.body).to.have.keys('message', 'status');
-        expect(res.body.message).to.deep.equal('No reports found');
-        done();
-      });
-  });
   it('should report an article ', (done) => {
     chai
       .request(server)
@@ -218,21 +204,6 @@ describe('/Report an article', () => {
         expect(res.body).to.have.keys('message', 'status', 'data');
         expect(res.body.message).to.deep.equal('Article Successfully reported');
         expect(res.body.data).to.have.keys('articleSlug', 'reason', 'id');
-        done();
-      });
-  });
-  it('admin should see all reports ', (done) => {
-    chai
-      .request(server)
-      .get('/api/v1/reports/all/?page=2&&limit=5')
-      .set('Authorization', admintoken)
-      .end((error, res) => {
-        expect(res).to.be.an('object');
-        expect(res.status).to.equal(200);
-        expect(res.body).to.have.keys('message', 'status', 'data');
-        expect(res.body.message).to.deep.equal('Reports retrieved successfully');
-        expect(res.body.data).to.have.keys('count', 'reports');
-        expect(res.body.data.count).to.deep.equal(3);
         done();
       });
   });
