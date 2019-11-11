@@ -9,10 +9,18 @@ router.post('/:slug', [auth, CommentsValidation], Comments.createComment);
 router.get('/:articleSlug', Comments.getAllCommentsOfArticle);
 router.get('/', [auth], Comments.getComments);
 router.delete('/:id', [auth], Comments.deleteComment);
-router.delete('/particularArticle/:id', [auth], Comments.deleteCommentOfAnArticle);
-router.put('/particularArticle/:id', [auth, CommentsValidation], Comments.updateParticularComment);
+router.delete(
+  '/particularArticle/:id',
+  [auth],
+  Comments.deleteCommentOfAnArticle
+);
+router.put(
+  '/particularArticle/:id',
+  [auth, CommentsValidation],
+  Comments.updateParticularComment
+);
 router.put('/:id', [auth, CommentsValidation], Comments.updateComment);
-router.get('/like/:id', [auth, confirmEmailAuth], Comments.getLikesComments);
+router.get('/like/:id', Comments.getLikesComments);
 router.post('/like/:id', [auth, confirmEmailAuth], Comments.likeComment);
 router.put('/like/:id', [auth, confirmEmailAuth], Comments.updateLikeComment);
 

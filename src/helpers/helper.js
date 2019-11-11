@@ -37,9 +37,10 @@ class Helper {
    * @returns {string} token
    */
   static generateToken(payload, expiresInPeriod) {
-    const expiresInTime = expiresInPeriod || (24 * 60 * 60);
-    const token = jwt.sign(payload,
-      process.env.SECRET_KEY, { expiresIn: expiresInTime });
+    const expiresInTime = expiresInPeriod || 24 * 60 * 60;
+    const token = jwt.sign(payload, process.env.SECRET_KEY, {
+      expiresIn: expiresInTime
+    });
     return token;
   }
 
@@ -84,7 +85,7 @@ class Helper {
   static calculateReadTime(body) {
     const readingSpeedInWordsPerMinute = 256; // Average reading speed of an adult
     const wordCount = this.countWords(body);
-    const readTime = Math.ceil((wordCount / readingSpeedInWordsPerMinute));
+    const readTime = Math.ceil(wordCount / readingSpeedInWordsPerMinute);
     const formatedReadTime = `${readTime} min read`;
     return formatedReadTime;
   }
@@ -94,18 +95,19 @@ class Helper {
    *
    * @static
    * @param {*} likeInfo
+   * @param {*} auth
    * @returns {string} formarted comment like information
    * @memberof Helper
    */
-  static formatLikeInfo(likeInfo) {
-    let formattedOutput = 'You';
+  static formatLikeInfo(likeInfo, auth = true) {
+    let formattedOutput = auth ? 'You' : '';
     const usernames = likeInfo.split(', ');
 
     if (usernames.length === 2) {
       formattedOutput += ' like this comment';
       return formattedOutput;
     }
-    for (let i = 1; i < (usernames.length - 1); i += 1) {
+    for (let i = 1; i < usernames.length - 1; i += 1) {
       if (i === 5) break;
       formattedOutput += `, ${usernames[i]} `;
     }
@@ -115,7 +117,8 @@ class Helper {
       return formattedOutput;
     }
 
-    formattedOutput += `and ${(usernames.length - 6)} more people like this comment`;
+    formattedOutput += `and ${usernames.length
+      - 6} more people like this comment`;
     return formattedOutput;
   }
 }

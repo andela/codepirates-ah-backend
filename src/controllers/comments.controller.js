@@ -35,8 +35,12 @@ class Comments {
     const getArticle = await database.findOne({
       where: { slug: req.params.slug }
     });
-    if (!getUser) return res.status(404).send({ message: `User with id ${req.auth.id} not found` });
-    if (!getArticle) return res.status(404).send({ message: `Article with slug ${req.params.slug}  not found` });
+    if (!getUser) {return res
+        .status(404)
+        .send({ message: `User with id ${req.auth.id} not found` });}
+    if (!getArticle) {return res
+        .status(404)
+        .send({ message: `Article with slug ${req.params.slug}  not found` });}
     try {
       const comment = {
         articleSlug: getArticle.slug,
@@ -46,7 +50,11 @@ class Comments {
       };
       const createdComment = await commentsService.addComment(comment);
       await notifyUsersWhoFavorited(req, res, getArticle.id, req.params.slug);
-      await util.setSuccess(201, 'Comment successfully created', createdComment);
+      await util.setSuccess(
+        201,
+        'Comment successfully created',
+        createdComment
+      );
       return util.send(res);
     } catch (error) {
       return res.send({
@@ -81,7 +89,10 @@ class Comments {
     try {
       const CommentTODelete = await commentsService.deleteComment(id);
       if (CommentTODelete) {
-        await util.setSuccess(200, `Comment with id ${id} is successfully deleted`);
+        await util.setSuccess(
+          200,
+          `Comment with id ${id} is successfully deleted`
+        );
         return util.send(res);
       }
 
@@ -113,7 +124,10 @@ class Comments {
     }
     const readerId = req.auth.id;
     const item = 'comment';
-    await StatsService.createStat({ readerId, item, slug: 'all comments' }, 'Stats');
+    await StatsService.createStat(
+      { readerId, item, slug: 'all comments' },
+      'Stats'
+    );
     await util.setSuccess(200, 'All comments successfully retrieved', comments);
     return util.send(res);
   }
@@ -169,7 +183,11 @@ class Comments {
         }
       })
     );
-    await util.setSuccess(200, 'All comments successfully retrieved', allComments);
+    await util.setSuccess(
+      200,
+      'All comments successfully retrieved',
+      allComments
+    );
     return util.send(res);
   }
 
@@ -185,14 +203,19 @@ class Comments {
    */
   static async deleteCommentOfAnArticle(req, res) {
     const userId = req.auth.id;
-    const getComment = await CommentsDb.findOne({ where: { id: req.params.id } });
+    const getComment = await CommentsDb.findOne({
+      where: { id: req.params.id }
+    });
     if (!getComment) {
       await util.setError(404, 'That article comment does not exit');
       return util.send(res);
     }
     const commentedUser = getComment.dataValues.userId;
     if (userId !== commentedUser) {
-      await util.setError(403, 'Sorry, you are not allowed to delete this comment');
+      await util.setError(
+        403,
+        'Sorry, you are not allowed to delete this comment'
+      );
       return util.send(res);
     }
     await commentsService.deleteComment(req.params.id);
@@ -211,14 +234,19 @@ class Comments {
    */
   static async updateParticularComment(req, res) {
     const userId = req.auth.id;
-    const getComment = await CommentsDb.findOne({ where: { id: req.params.id } });
+    const getComment = await CommentsDb.findOne({
+      where: { id: req.params.id }
+    });
     if (!getComment) {
       await util.setError(404, 'That article comment does not exit');
       return util.send(res);
     }
     const commentedUser = getComment.dataValues.userId;
     if (userId !== commentedUser) {
-      await util.setError(403, 'Sorry, you are not allowed to update this comment');
+      await util.setError(
+        403,
+        'Sorry, you are not allowed to update this comment'
+      );
       return util.send(res);
     }
     const { body } = req.body;
@@ -241,7 +269,9 @@ class Comments {
    * @memberof UserController
    */
   static async updateComment(req, res) {
-    const getComment = await CommentsDb.findOne({ where: { id: req.params.id } });
+    const getComment = await CommentsDb.findOne({
+      where: { id: req.params.id }
+    });
     const gottenComent = getComment && getComment.get().id;
     const { id } = req.params;
 
@@ -343,7 +373,6 @@ class Comments {
    */
   static async getLikesComments(req, res) {
     const { id } = req.params;
-    const { username } = req.auth;
     const comment = await commentsService.findOne(id);
 
     if (!comment) {
@@ -352,14 +381,10 @@ class Comments {
     }
     const { likesCount, likeInfo } = comment;
 
-    const userHasLikedBefore = likeInfo.search(username);
-
-    if (userHasLikedBefore === -1) {
-      util.setSuccess(200, 'Likes successfully retrieved', { data: { likesCount, likeInfo } });
-      return util.send(res);
-    }
-    const formattedLikeInfo = Helper.formatLikeInfo(likeInfo.replace(`${username}, `, ''));
-    util.setSuccess(200, { data: { likesCount, formattedLikeInfo } });
+    const formattedLikeInfo = Helper.formatLikeInfo(likeInfo, false);
+    util.setSuccess(200, 'Likes successfully retrieved', {
+      data: { likesCount, likeInfo: formattedLikeInfo }
+    });
     return util.send(res);
   }
 }
