@@ -10,19 +10,23 @@ module.exports = {
       slug: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+        unique: true
       },
       title: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
       },
       description: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: false
+      },
+      taglist: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        allowNull: true
       },
       body: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: false
       },
       favorited: {
         type: Sequelize.BOOLEAN,
