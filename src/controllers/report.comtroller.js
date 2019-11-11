@@ -1,6 +1,13 @@
 import 'dotenv/config';
+import _ from 'lodash';
+import moment from 'moment';
+import Helper from '../helpers/helper';
 import models from '../models';
+import Userservice from '../services/user.service';
 import reportService from '../services/report.service';
+import articleService from '../services/article.service';
+import RateService from '../services/rate.service';
+import likeService from '../services/likes.service';
 import Util from '../helpers/util';
 
 const util = new Util();
@@ -30,12 +37,75 @@ class Report {
     if (req.offset >= counter) {
       req.offset = 0;
     }
-    const { offset, limit } = req;
-    const reports = await reportService.getAllReport(offset, limit);
+    const reports = await reportService.getAllReport();
+    const reportedArticlesObj = [];
+    await Promise.all(reports.map(async (report) => {
+      const article = await articleService.getOneArticle(report.articleSlug);
+      article.reportReason = report.reason;
+      reportedArticlesObj.push(article);
+    }));
+    const allReportedArticles = _.map(
+      reportedArticlesObj,
+      _.partialRight(_.pick, [
+        'authorId',
+        'slug',
+        'reportReason',
+        'title',
+        'id',
+        'description',
+        'body',
+        'taglist',
+        'favorited',
+        'favoritedcount',
+        'flagged',
+        'images',
+        'views',
+        'createdAt'
+      ])
+    );
+    let myreportedArticles = allReportedArticles;
+    if (req.auth.role !== 'admin') {
+      myreportedArticles = allReportedArticles
+        .filter(report => report.authorId === req.auth.id);
+    }
+    await Promise.all(
+      myreportedArticles.map(async (article) => {
+        try {
+          const userDetails = await Userservice.getOneUser(article.authorId);
+          const {
+            username, firstname, lastname, image
+          } = userDetails;
+          const user = {
+            username,
+            firstname,
+            lastname,
+            image
+          };
+          const rating = await RateService.getArticleRatingStatistic(
+            article.slug
+          );
+          let claps = await likeService.getAllAClaps(article.slug);
+          claps = Object.values(claps)[0];
+          const readTime = Helper.calculateReadTime(article.body);
+          const timeAgo = moment(article.createdAt).fromNow();
+          article.readtime = readTime;
+          article.username = username;
+          article.userImage = image;
+          article.timeCreated = timeAgo;
+          article.claps = claps;
+          article.rating = rating.dataValues.rating;
+          article.author = user;
+          return true;
+        } catch (error) {
+          throw error;
+        }
+      })
+    );
     const response = {
-      count: counter,
-      reports,
+      count: myreportedArticles.length,
+      myreportedArticles,
     };
+
     util.setSuccess(200, 'Reports retrieved successfully', response);
     return util.send(res);
   }
@@ -60,10 +130,14 @@ class Report {
         req.offset = 0;
       }
       const { offset, limit } = req;
+      const reportedArticles = [];
       const reports = await reportService.getMyReport(offset, limit, req.auth.id,);
+      await Promise.all(reports.map(async (report) => {
+        reportedArticles.push(await articleService.getOneArticle(report.articleSlug));
+      }));
       const response = {
         count: counter,
-        yourReport: reports,
+        yourReport: reportedArticles,
       };
       util.setSuccess(200, 'Your reports retrieved successfully', response);
       return util.send(res);
