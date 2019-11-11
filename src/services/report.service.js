@@ -33,7 +33,7 @@ class ReportService {
    * @returns {object} data
    * @memberof articleService
    */
-  static async getAllReport(offset, limit) {
+  static async getAllReport() {
     try {
       return await db.findAll({
         attributes: {
@@ -41,9 +41,7 @@ class ReportService {
         },
         order: [
           ['createdAt', 'DESC']
-        ],
-        offset,
-        limit,
+        ]
       });
     } catch (error) {
       throw error;
