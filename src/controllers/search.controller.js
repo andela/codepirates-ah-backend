@@ -65,12 +65,18 @@ class Search {
         }
       })
     );
+    const users = await UserModel.searchUser(searchQuery.user, offset, limit);
+    const foundUsers = _.map(
+      users,
+      _.partialRight(_.pick, ["username", "image", "bio"])
+    );
     let duplicateFoundTags = [];
-    foundArticles.map(article => {
+    const allArticles = await ArticleModel.getAllArticles();
+    allArticles.map(article => {
       const articleTags = article.taglist;
-      const found = articleTags.filter(
-        articleTag => articleTag === searchQuery.tag
-      );
+      const found = articleTags
+        ? articleTags.filter(articleTag => articleTag === searchQuery.tag)
+        : [];
       if (found.length >= 1) {
         for (let i = 0; i <= found.length - 1; i++) {
           duplicateFoundTags = [found[i], ...duplicateFoundTags];
@@ -84,11 +90,7 @@ class Search {
     if (foundTags[0] === "") {
       foundTags = [];
     }
-    const users = await UserModel.searchUser(searchQuery.user, offset, limit);
-    const foundUsers = _.map(
-      users,
-      _.partialRight(_.pick, ["username", "image", "bio"])
-    );
+
     util.setSuccess(200, "Search successful", {
       foundArticles,
       foundUsers,
