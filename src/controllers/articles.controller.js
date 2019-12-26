@@ -122,8 +122,8 @@ class Articles {
         try {
           const userDetails = await Userservice.getOneUser(article.authorId);
           const {
-            username, firstname, lastname, image
-          } = userDetails;
+ username, firstname, lastname, image 
+} = userDetails;
           const user = {
             username,
             firstname,
@@ -266,8 +266,8 @@ class Articles {
     ]);
     const userDetails = await Userservice.getOneUser(article.authorId);
     const {
-      username, firstname, lastname, image
-    } = userDetails;
+ username, firstname, lastname, image 
+} = userDetails;
     const user = {
       username,
       firstname,
@@ -375,8 +375,8 @@ class Articles {
       return util.send(res);
     }
     const {
-      title, body, description, images
-    } = req.body;
+ title, body, description, images 
+} = req.body;
     const updatedArticle = await articleService.updateArticle(req.params.slug, {
       title,
       body,
@@ -406,8 +406,7 @@ class Articles {
       util.setError(404, 'Article is not found.');
       return util.send(res);
     }
-    const location = `${process.env.BACKEND_URL}/api/${process.env.API_VERSION}`;
-    const url = `${location}/articles/${req.params.slug}`;
+    const { url } = req.body;
     switch (req.params.channel) {
       case 'facebook':
         await OpenUrlHelper.openUrl(
